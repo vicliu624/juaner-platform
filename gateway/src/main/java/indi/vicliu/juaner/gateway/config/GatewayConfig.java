@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @RefreshScope
 @Configuration
-public class GatewatConfig {
+public class GatewayConfig {
 
     public static String RSA_PUBLIC_KEY;
 

@@ -4,7 +4,7 @@ import indi.vicliu.juaner.common.core.CommonConstant;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.gateway.client.AuthProvider;
 import indi.vicliu.juaner.gateway.client.service.AuthService;
-import indi.vicliu.juaner.gateway.config.GatewatConfig;
+import indi.vicliu.juaner.gateway.config.GatewayConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean invalidJwtAccessToken(String authentication) {
-        verifier = Optional.ofNullable(verifier).orElse(new RsaVerifier(getRSAPublidKeyBybase64(GatewatConfig.RSA_PUBLIC_KEY)));
+        verifier = Optional.ofNullable(verifier).orElse(new RsaVerifier(getRSAPublidKeyBybase64(GatewayConfig.RSA_PUBLIC_KEY)));
         //是否无效true表示无效
         boolean invalid = Boolean.TRUE;
         try {
