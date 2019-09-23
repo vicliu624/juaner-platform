@@ -29,7 +29,7 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
         while(headerNames.hasMoreElements()){
             String headerName = headerNames.nextElement();
             String content = request.getHeader(headerName);
-            log.debug("request header:{}, content:{}",headerName,content);
+            log.info("request header:{}, content:{}",headerName,content);
         }
         String userInfoString = StringUtils.defaultIfBlank(request.getHeader(CommonConstant.X_CLIENT_TOKEN_USER), "{}");
         UserContextHolder.getInstance().setContext(new ObjectMapper().readValue(userInfoString, Map.class));

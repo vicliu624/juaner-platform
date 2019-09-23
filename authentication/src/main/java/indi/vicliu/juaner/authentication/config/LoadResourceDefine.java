@@ -29,7 +29,7 @@ public class LoadResourceDefine {
     @Bean
     public Map<RequestMatcher, ConfigAttribute> resourceConfigAttributes() {
         Set<PermissionInfo> resources = permissionService.findAll();
-        resources.stream().forEach( item -> log.debug(" put url:{},method:{}",item.getPermUrl(),item.getMethod()));
+        resources.forEach( item -> log.debug(" put url:{},method:{}",item.getPermUrl(),item.getMethod()));
         Map<RequestMatcher, ConfigAttribute> map = resources.stream()
                 .collect(Collectors.toMap(
                         resource -> {

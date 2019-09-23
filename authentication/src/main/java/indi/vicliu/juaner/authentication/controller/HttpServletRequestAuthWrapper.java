@@ -1,11 +1,8 @@
 package indi.vicliu.juaner.authentication.controller;
 
-import lombok.Data;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-@Data
 public class HttpServletRequestAuthWrapper extends HttpServletRequestWrapper {
 
     private String url;
@@ -19,5 +16,15 @@ public class HttpServletRequestAuthWrapper extends HttpServletRequestWrapper {
         super(request);
         this.url = url;
         this.method = method;
+    }
+
+    @Override
+    public String getMethod() {
+        return this.method;
+    }
+
+    @Override
+    public String getServletPath() {
+        return this.url;
     }
 }

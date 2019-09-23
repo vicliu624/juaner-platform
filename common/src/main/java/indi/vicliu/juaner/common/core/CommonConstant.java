@@ -10,4 +10,9 @@ public class CommonConstant {
      * 服务间调用token用户信息,格式为json
      */
     public final static String X_CLIENT_TOKEN_USER = "x-client-token-user";
+
+    /**
+     * Authorization认证开头是"bearer "
+     */
+    public static final int BEARER_BEGIN_INDEX = 7;
 }

@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.gateway.client.service.impl;
 
+import indi.vicliu.juaner.common.core.CommonConstant;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.gateway.client.AuthProvider;
 import indi.vicliu.juaner.gateway.client.service.AuthService;
@@ -101,10 +102,10 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Jwt getJwt(String authentication) {
-        return JwtHelper.decode(StringUtils.substring(authentication, BEARER_BEGIN_INDEX));
+        return JwtHelper.decode(StringUtils.substring(authentication, CommonConstant.BEARER_BEGIN_INDEX));
     }
 
-    public RSAPublicKey getRSAPublidKeyBybase64(String base64s) {
+    private RSAPublicKey getRSAPublidKeyBybase64(String base64s) {
         Base64.Decoder decoder = Base64.getDecoder();
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decoder.decode(base64s));
         RSAPublicKey publicKey = null;
