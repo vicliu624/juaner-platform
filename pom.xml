@@ -57,6 +57,8 @@
 
         <docker.url>http://127.0.0.1:4243</docker.url>
         <registry.url>127.0.0.1:5010</registry.url>
+
+        <sentinel.version>1.6.3</sentinel.version>
     </properties>
 
     <dependencies>

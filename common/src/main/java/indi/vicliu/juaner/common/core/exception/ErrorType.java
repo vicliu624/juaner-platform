@@ -12,6 +12,7 @@ public enum ErrorType {
     SYSTEM_ERROR("-1", "系统异常"),
     OAUTH_ERROR("-2", "认证异常"),
     AUTH_ERROR("-3", "鉴权异常"),
+    TOO_MANY_REQUEST_ERROR("-4", "请求过于频繁"),
     NOT_FOUND("404", "访问的资源不存在");
 
     /**
