@@ -10,6 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.stereotype.Component;
 
+/**
+ * @Auther: liuweikai
+ * @Date: 2019/3/19 15:12
+ * @Description: 改掉了默认的oauth返回格式
+ */
 @Component
 @Aspect
 @Slf4j
