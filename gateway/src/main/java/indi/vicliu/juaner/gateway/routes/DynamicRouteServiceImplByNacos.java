@@ -5,10 +5,10 @@ import com.alibaba.nacos.api.NacosFactory;
 import com.alibaba.nacos.api.config.ConfigService;
 import com.alibaba.nacos.api.config.listener.Listener;
 import com.alibaba.nacos.api.exception.NacosException;
+import indi.vicliu.juaner.gateway.config.GatewayConfig;
 import indi.vicliu.juaner.gateway.service.impl.DynamicRouteServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.stereotype.Component;
 
@@ -30,21 +30,6 @@ public class DynamicRouteServiceImplByNacos {
     private DynamicRouteServiceImpl dynamicRouteService;
 
 
-    @Value("${spring.cloud.nacos.discovery.server-addr}")
-    private String NACOS_SERVER_ADDR;
-
-    @Value("${spring.cloud.nacos.discovery.namespace}")
-    private String NACOS_NAMESPACE;
-
-    @Value("${nacos.gateway.config.data-id}")
-    private String CONFIG_DATA_ID;
-
-    @Value("${nacos.gateway.config.group}")
-    private String CONFIG_GROUP;
-
-    private static final long DEFAULT_TIMEOUT = 30000;
-
-
     private ConfigService configService;
 
     @PostConstruct
@@ -56,7 +41,7 @@ public class DynamicRouteServiceImplByNacos {
                 log.warn("initConfigService fail");
                 return;
             }
-            String configInfo = configService.getConfig(CONFIG_DATA_ID, CONFIG_GROUP, DEFAULT_TIMEOUT);
+            String configInfo = configService.getConfig(GatewayConfig.NACOS_ROUTE_DATA_ID, GatewayConfig.NACOS_ROUTE_GROUP, GatewayConfig.DEFAULT_TIMEOUT);
             log.info("获取网关当前配置:\r\n{}",configInfo);
             List<RouteDefinition> definitionList = JSON.parseArray(configInfo, RouteDefinition.class);
             for(RouteDefinition definition : definitionList){
@@ -66,8 +51,7 @@ public class DynamicRouteServiceImplByNacos {
         } catch (Exception e) {
             log.error("初始化网关路由时发生错误",e);
         }
-
-        dynamicRouteByNacosListener(CONFIG_DATA_ID,CONFIG_GROUP);
+        dynamicRouteByNacosListener(GatewayConfig.NACOS_ROUTE_DATA_ID,GatewayConfig.NACOS_ROUTE_GROUP);
     }
 
     /**
@@ -102,8 +86,8 @@ public class DynamicRouteServiceImplByNacos {
     private ConfigService initConfigService(){
         try{
             Properties properties = new Properties();
-            properties.setProperty("serverAddr",NACOS_SERVER_ADDR);
-            properties.setProperty("namespace",NACOS_NAMESPACE);
+            properties.setProperty("serverAddr",GatewayConfig.NACOS_SERVER_ADDR);
+            properties.setProperty("namespace",GatewayConfig.NACOS_NAMESPACE);
             return configService= NacosFactory.createConfigService(properties);
         } catch (Exception e) {
             log.error("初始化网关路由时发生错误",e);
