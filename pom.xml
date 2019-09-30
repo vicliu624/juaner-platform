@@ -151,6 +151,13 @@
             <version>${alibaba-nacos-config.version}</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/com.jayway.jsonpath/json-path -->
+        <dependency>
+            <groupId>com.jayway.jsonpath</groupId>
+            <artifactId>json-path</artifactId>
+            <version>2.4.0</version>
+        </dependency>
+
     </dependencies>
 
     <dependencyManagement>

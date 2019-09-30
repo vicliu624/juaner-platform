@@ -61,6 +61,14 @@ public class UserContextHolder {
         return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_name");
     }
 
+    public String getClientId() {
+        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("client_id");
+    }
+
+    public String getAuthorities() {
+        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("authorities");
+    }
+
     /**
      * 清空上下文
      */

@@ -104,3 +104,13 @@ CREATE TABLE `tbl_user_role_map` (
 SET FOREIGN_KEY_CHECKS = 1;
 
 ```
+
+
+## 启动
+```cmd
+java -Dloader.path="lib/" -jar upms-1.0-SNAPSHOT.jar --spring.profiles.active=test
+```
+
+```cmd
+nohup java -Dloader.path="lib/" -jar upms-1.0-SNAPSHOT.jar --spring.profiles.active=test > /dev/null 2>&1 &
+```
