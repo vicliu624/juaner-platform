@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.upms.domain.service.impl;
 
 import indi.vicliu.juaner.common.core.message.Result;
+import indi.vicliu.juaner.upms.client.IdProvider;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserRoleMapMapper;
@@ -35,6 +36,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private TblUserRoleMapMapper tblUserRoleMapMapper;
 
+    @Autowired
+    private IdProvider idProvider;
+
     @Override
     public TblUserInfo findByUserName(String userName) throws UserException {
         Example example = new Example(TblUserInfo.class);
@@ -60,6 +64,7 @@ public class UserServiceImpl implements UserService {
         TblUserInfo info=new TblUserInfo();
         BeanUtils.copyProperties(userInfo,info);
         info.setCreateTime(new Date());
+        info.setId(idProvider.nextId());
         //校验角色信息
         TblRoleInfo roleInfo = tblRoleInfoMapper.selectByPrimaryKey(userInfo.getRoleId());
         if(roleInfo==null){

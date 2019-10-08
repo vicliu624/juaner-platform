@@ -1,0 +1,21 @@
+<configuration>
+    <!--添加本地的info日志存储-->
+    <appender name="fileInLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} %-5level %logger{15}[L:%L] - %msg%n
+            </pattern>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--添加路径-->
+            <fileNamePattern>./logs/id_service.%d.log</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <!--指明配置项用在哪-->
+    <root level="INFO">
+        <!--引用日志存储器-->
+        <appender-ref ref="fileInLog"/>
+    </root>
+</configuration>

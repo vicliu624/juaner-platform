@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.upms.domain.service.impl;
 
 import indi.vicliu.juaner.common.core.message.Result;
+import indi.vicliu.juaner.upms.client.IdProvider;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
 import indi.vicliu.juaner.upms.domain.entity.TblRoleInfo;
 import indi.vicliu.juaner.upms.domain.service.RoleService;
@@ -23,6 +24,9 @@ public class RoleServiceImpl implements RoleService {
     @Autowired
     private TblRoleInfoMapper roleInfoMapper;
 
+    @Autowired
+    private IdProvider idProvider;
+
     @Override
     public List<TblRoleInfo> queryRolesByUserId(Long userId) throws RoleException {
         if(userId == null){
@@ -36,6 +40,7 @@ public class RoleServiceImpl implements RoleService {
             return Result.fail("角色名角色描述不可为空");
         }
         role.setCreateTime(new Date());
+        role.setId(idProvider.nextId());
         int i = roleInfoMapper.insert(role);
         if(i==0){
             return Result.fail("创建角色失败");
