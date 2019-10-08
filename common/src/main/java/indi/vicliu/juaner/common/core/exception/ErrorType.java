@@ -6,7 +6,7 @@ package indi.vicliu.juaner.common.core.exception;
  * @Date: 2019-09-15 13:35
  * @Description:
  */
-public enum ErrorType {
+public enum ErrorType implements Error {
 
     NO_ERROR("000000", "处理成功"),
     SYSTEM_ERROR("-1", "系统异常"),
@@ -29,18 +29,23 @@ public enum ErrorType {
         this.message = message;
     }
 
+
+    @Override
     public String getCode() {
-        return code;
+        return this.code;
     }
 
+    @Override
     public void setCode(String code) {
         this.code = code;
     }
 
+    @Override
     public String getMessage() {
-        return message;
+        return this.message;
     }
 
+    @Override
     public void setMessage(String message) {
         this.message = message;
     }

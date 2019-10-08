@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import indi.vicliu.juaner.common.core.exception.BaseException;
 import indi.vicliu.juaner.common.core.exception.ErrorType;
+import indi.vicliu.juaner.common.core.exception.Error;
 import lombok.Data;
 
 import java.time.Instant;
@@ -27,13 +28,13 @@ public class Result<T> {
         this.timestamp = ZonedDateTime.now().toInstant();
     }
 
-    public Result(ErrorType errorType) {
-        this.code = errorType.getCode();
-        this.message = errorType.getMessage();
+    public Result(Error error) {
+        this.code = error.getCode();
+        this.message = error.getMessage();
         this.timestamp = ZonedDateTime.now().toInstant();
     }
 
-    public Result(ErrorType errorType, T data) {
+    public Result(Error errorType, T data) {
         this(errorType);
         this.data = data;
     }
@@ -107,7 +108,7 @@ public class Result<T> {
      * @param data
      * @return Result
      */
-    public static Result fail(ErrorType errorType, Object data) {
+    public static Result fail(Error errorType, Object data) {
         return new Result<>(errorType, data);
     }
 
@@ -117,7 +118,7 @@ public class Result<T> {
      * @param errorType
      * @return Result
      */
-    public static Result fail(ErrorType errorType) {
+    public static Result fail(Error errorType) {
         return Result.fail(errorType, null);
     }
 

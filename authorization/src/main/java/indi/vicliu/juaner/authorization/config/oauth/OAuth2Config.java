@@ -2,6 +2,7 @@ package indi.vicliu.juaner.authorization.config.oauth;
 
 import indi.vicliu.juaner.authorization.config.AuthExceptionEntryPoint;
 import indi.vicliu.juaner.authorization.config.custom.CustomTokenEnhancer;
+import indi.vicliu.juaner.authorization.config.oauth.wx.provider.WeixinMiniProgramClientDetailsService;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import indi.vicliu.juaner.authorization.exception.CustomWebResponseExceptionTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -28,7 +28,9 @@ import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFacto
 
 import javax.sql.DataSource;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Auther: liuweikai
@@ -51,6 +53,9 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private WeixinMiniProgramClientDetailsService weixinMiniProgramClientDetailsService;
 
     /**
      * 定义了token切点的安全限制。
