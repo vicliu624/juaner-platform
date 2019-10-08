@@ -1,7 +1,9 @@
 package indi.vicliu.juaner.upms.domain.service;
 
+import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.exception.UserException;
+import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
 
 /**
  * @Auther: liuweikai
@@ -10,4 +12,8 @@ import indi.vicliu.juaner.upms.exception.UserException;
  */
 public interface UserService {
     TblUserInfo findByUserName(String userName) throws UserException;
+
+    Result addUserInfo(AddUserInfoVO userInfo);
+
+    Result updateUserInfo(TblUserInfo user);
 }
