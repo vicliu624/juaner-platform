@@ -5,8 +5,10 @@ import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.domain.service.UserService;
 import indi.vicliu.juaner.upms.exception.UserException;
+import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -35,5 +37,14 @@ public class UserController {
                 return Result.fail(ErrorType.SYSTEM_ERROR,"查询用户信息时出错");
             }
         }
+    }
+    @RequestMapping("/user/addUser")
+    public Result addUserInfo(@RequestBody @Validated AddUserInfoVO userInfo){
+        return userService.addUserInfo(userInfo);
+    }
+
+    @RequestMapping("/user/updateUser")
+    public Result updateUserInfo(@RequestBody TblUserInfo info){
+        return userService.updateUserInfo(info);
     }
 }
