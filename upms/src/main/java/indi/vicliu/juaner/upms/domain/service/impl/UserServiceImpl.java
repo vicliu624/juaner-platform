@@ -14,6 +14,7 @@ import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
@@ -50,8 +51,9 @@ public class UserServiceImpl implements UserService {
         }
         return userInfoList.get(0);
     }
+    @Transactional
     @Override
-    public Result addUserInfo(AddUserInfoVO userInfo) {
+    public Result addUserInfo(AddUserInfoVO userInfo) throws UserException {
 
         Example example = new Example(TblUserInfo.class);
         example.createCriteria().andEqualTo("phone",userInfo.getPhone());
@@ -83,7 +85,7 @@ public class UserServiceImpl implements UserService {
         userRole.setUserId(info.getId());
         int insert = tblUserRoleMapMapper.insert(userRole);
         if(insert==0){
-            return Result.fail("创建用户角色失败！！");
+            throw new UserException("创建用户角色失败");
         }
         return Result.success(info);
     }

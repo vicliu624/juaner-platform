@@ -40,7 +40,16 @@ public class UserController {
     }
     @RequestMapping("/user/addUser")
     public Result addUserInfo(@RequestBody @Validated AddUserInfoVO userInfo){
-        return userService.addUserInfo(userInfo);
+        try {
+            return userService.addUserInfo(userInfo);
+        } catch (Exception e) {
+            if(e instanceof UserException){
+                return Result.fail(e.getMessage());
+            }else {
+                return Result.fail(ErrorType.SYSTEM_ERROR,"创建用户角色失败");
+            }
+
+        }
     }
 
     @RequestMapping("/user/updateUser")

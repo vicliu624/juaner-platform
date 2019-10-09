@@ -36,6 +36,11 @@ public class RoleController {
             }
         }
     }
+
+    @GetMapping("/getRoleList")
+    public Result getRolesList(@RequestParam String roleName){
+        return roleService.getRolesList(roleName);
+    }
     @RequestMapping("/addRole")
     public Result addRole(@RequestBody TblRoleInfo role){
         return roleService.addRole(role);

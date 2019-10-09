@@ -16,4 +16,6 @@ public interface RoleService {
     Result addRole(TblRoleInfo role);
 
     Result updateRole(TblRoleInfo role);
+
+    Result getRolesList(String roleName);
 }
