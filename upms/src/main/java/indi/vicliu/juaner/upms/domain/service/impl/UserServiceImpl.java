@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
         example.setOrderByClause(" create_time desc limit 1");
         List<TblUserInfo> userInfoList = this.userInfoMapper.selectByExample(example);
         if(userInfoList.size()==0){
-            return Result.fail("用户不存在");
+            return Result.success();
         }
         return Result.success(userInfoList.get(0));
     }
