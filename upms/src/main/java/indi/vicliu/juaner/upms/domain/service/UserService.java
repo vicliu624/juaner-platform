@@ -16,4 +16,6 @@ public interface UserService {
     Result addUserInfo(AddUserInfoVO userInfo) throws UserException;
 
     Result updateUserInfo(TblUserInfo user);
+
+    Result findByUserPhone(String phone);
 }

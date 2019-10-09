@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
             return Result.fail("用户角色不存在");
         }
         info.setNickName(roleInfo.getRoleName());
-        int count = userInfoMapper.insert(info);
+        int count = userInfoMapper.insertSelective(info);
         if(count==0){
             return Result.fail("创建用户失败！！");
         }
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService {
         userRole.setCreateTime(new Date());
         userRole.setRoleId(userInfo.getRoleId());
         userRole.setUserId(info.getId());
-        int insert = tblUserRoleMapMapper.insert(userRole);
+        int insert = tblUserRoleMapMapper.insertSelective(userRole);
         if(insert==0){
             throw new UserException("创建用户角色失败");
         }
@@ -103,5 +103,17 @@ public class UserServiceImpl implements UserService {
         userInfo.setUpdateTime(new Date());
         userInfoMapper.updateByPrimaryKeySelective(user);
         return Result.success("修改成功");
+    }
+
+    @Override
+    public Result findByUserPhone(String phone) {
+        Example example = new Example(TblUserInfo.class);
+        example.createCriteria().andEqualTo("phone",phone);
+        example.setOrderByClause(" create_time desc limit 1");
+        List<TblUserInfo> userInfoList = this.userInfoMapper.selectByExample(example);
+        if(userInfoList.size()==0){
+            return Result.fail("用户不存在");
+        }
+        return Result.success(userInfoList.get(0));
     }
 }

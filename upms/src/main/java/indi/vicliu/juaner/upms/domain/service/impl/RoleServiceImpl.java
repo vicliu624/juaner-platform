@@ -40,9 +40,16 @@ public class RoleServiceImpl implements RoleService {
         if(StringUtils.isBlank(role.getRoleDesc()) || StringUtils.isBlank(role.getRoleName())){
             return Result.fail("角色名角色描述不可为空");
         }
+        Example example = new Example(TblRoleInfo.class);
+        example.createCriteria().andEqualTo("roleName",role.getRoleName());
+        example.setOrderByClause(" create_time desc limit 1");
+        List<TblRoleInfo> userInfoList = this.roleInfoMapper.selectByExample(example);
+        if(userInfoList.size()>0){
+            return Result.fail("该角色已存在，请勿创建");
+        }
         role.setCreateTime(new Date());
         role.setId(idProvider.nextId());
-        int i = roleInfoMapper.insert(role);
+        int i = roleInfoMapper.insertSelective(role);
         if(i==0){
             return Result.fail("创建角色失败");
         }

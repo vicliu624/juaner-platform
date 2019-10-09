@@ -38,6 +38,12 @@ public class UserController {
             }
         }
     }
+
+    /**
+     * 创建用户
+     * @param userInfo
+     * @return
+     */
     @RequestMapping("/user/addUser")
     public Result addUserInfo(@RequestBody @Validated AddUserInfoVO userInfo){
         try {
@@ -52,8 +58,23 @@ public class UserController {
         }
     }
 
+    /**
+     * 修改用户信息
+     * @param info
+     * @return
+     */
     @RequestMapping("/user/updateUser")
     public Result updateUserInfo(@RequestBody TblUserInfo info){
         return userService.updateUserInfo(info);
+    }
+
+    /**
+     * 根据手机号码查询用户信息
+     * @param phone
+     * @return
+     */
+    @GetMapping("/user/findByUserPhone")
+    public Result findByUserPhone(@RequestParam String phone){
+        return userService.findByUserPhone(phone);
     }
 }
