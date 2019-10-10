@@ -6,10 +6,7 @@ import indi.vicliu.juaner.upms.domain.service.RoleService;
 import indi.vicliu.juaner.upms.exception.RoleException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -39,4 +36,35 @@ public class RoleController {
             }
         }
     }
+
+    /**
+     * 根据角色名获取角色信息
+     * @param roleName
+     * @return
+     */
+    @GetMapping("/getRoleList")
+    public Result getRolesList(@RequestParam String roleName){
+        return roleService.getRolesList(roleName);
+    }
+
+    /**
+     * 添加角色
+     * @param role
+     * @return
+     */
+    @RequestMapping("/addRole")
+    public Result addRole(@RequestBody TblRoleInfo role){
+        return roleService.addRole(role);
+    }
+
+    /**
+     * 修改角色信息
+     * @param role
+     * @return
+     */
+    @RequestMapping("/updateRole")
+    public Result updateRole(@RequestBody TblRoleInfo role){
+        return roleService.updateRole(role);
+    }
+
 }
