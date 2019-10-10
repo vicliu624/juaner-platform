@@ -10,4 +10,5 @@ import indi.vicliu.juaner.upms.exception.UserException;
  */
 public interface UserService {
     TblUserInfo findByUserName(String userName) throws UserException;
+    TblUserInfo findByPhone(String phone) throws UserException;
 }

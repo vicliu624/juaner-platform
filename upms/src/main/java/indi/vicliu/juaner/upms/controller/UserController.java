@@ -36,4 +36,19 @@ public class UserController {
             }
         }
     }
+
+    @GetMapping("/user/fullInfo/byPhone")
+    public Result getFullUserInfoByPhone(@RequestParam String phone) {
+        try{
+            TblUserInfo userInfo = this.userService.findByPhone(phone);
+            return Result.success(userInfo);
+        } catch (Exception e){
+            log.error(" getFullUserInfoByUserName fail ",e);
+            if(e instanceof UserException){
+                return Result.fail(e.getMessage());
+            } else {
+                return Result.fail(ErrorType.SYSTEM_ERROR,"查询用户信息时出错");
+            }
+        }
+    }
 }

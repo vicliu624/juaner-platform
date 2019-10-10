@@ -32,4 +32,16 @@ public class UserServiceImpl implements UserService {
         }
         return userInfoList.get(0);
     }
+
+    @Override
+    public TblUserInfo findByPhone(String phone) throws UserException {
+        Example example = new Example(TblUserInfo.class);
+        example.createCriteria().andEqualTo("phone",phone);
+        example.setOrderByClause(" create_time desc limit 1");
+        List<TblUserInfo> userInfoList = this.userInfoMapper.selectByExample(example);
+        if(userInfoList.size() == 0){
+            throw new UserException("找不到该用户");
+        }
+        return userInfoList.get(0);
+    }
 }
