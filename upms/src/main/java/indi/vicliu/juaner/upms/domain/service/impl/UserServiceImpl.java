@@ -116,4 +116,10 @@ public class UserServiceImpl implements UserService {
         }
         return Result.success(userInfoList.get(0));
     }
+
+    @Override
+    public Result findByUserId(Long userId) {
+        TblUserInfo userInfo = this.userInfoMapper.selectByPrimaryKey(userId);
+        return Result.success(userInfo);
+    }
 }

@@ -18,4 +18,6 @@ public interface UserService {
     Result updateUserInfo(TblUserInfo user);
 
     Result findByUserPhone(String phone);
+
+    Result findByUserId(Long userId);
 }

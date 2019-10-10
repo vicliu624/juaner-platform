@@ -77,4 +77,14 @@ public class UserController {
     public Result findByUserPhone(@RequestParam String phone){
         return userService.findByUserPhone(phone);
     }
+
+    /**
+     * 根据手机号码查询用户信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/user/getByUserId")
+    public Result findByUserPhone(@RequestParam Long userId){
+        return userService.findByUserId(userId);
+    }
 }
