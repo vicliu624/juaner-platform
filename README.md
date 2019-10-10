@@ -8,6 +8,8 @@
 - 启动authentication
 - 启动gateway
 
+
+
 ## nacos配置
 在部署前先在nacos内添加test命名空间
 ![截图](/doc/img/create_namespace.png)
