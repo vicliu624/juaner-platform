@@ -39,13 +39,52 @@ public class UserController {
         }
     }
 
+    /**
+     * 创建用户
+     * @param userInfo
+     * @return
+     */
     @RequestMapping("/user/addUser")
     public Result addUserInfo(@RequestBody @Validated AddUserInfoVO userInfo){
-        return userService.addUserInfo(userInfo);
+        try {
+            return userService.addUserInfo(userInfo);
+        } catch (Exception e) {
+            if(e instanceof UserException){
+                return Result.fail(e.getMessage());
+            }else {
+                return Result.fail(ErrorType.SYSTEM_ERROR,"创建用户角色失败");
+            }
+
+        }
     }
 
+    /**
+     * 修改用户信息
+     * @param info
+     * @return
+     */
     @RequestMapping("/user/updateUser")
     public Result updateUserInfo(@RequestBody TblUserInfo info){
         return userService.updateUserInfo(info);
+    }
+
+    /**
+     * 根据手机号码查询用户信息
+     * @param phone
+     * @return
+     */
+    @GetMapping("/user/findByUserPhone")
+    public Result findByUserPhone(@RequestParam String phone){
+        return userService.findByUserPhone(phone);
+    }
+
+    /**
+     * 根据手机号码查询用户信息
+     * @param userId
+     * @return
+     */
+    @GetMapping("/user/getByUserId")
+    public Result findByUserPhone(@RequestParam Long userId){
+        return userService.findByUserId(userId);
     }
 }

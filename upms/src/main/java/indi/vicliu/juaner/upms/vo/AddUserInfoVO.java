@@ -22,7 +22,6 @@ public class AddUserInfoVO {
     /**
      * 昵称
      */
-    @NotBlank(message = "用户昵称不可为空")
     private String nickName;
 
 

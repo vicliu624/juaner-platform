@@ -13,8 +13,9 @@ import java.util.List;
  */
 public interface RoleService {
     List<TblRoleInfo> queryRolesByUserId(Long userId) throws RoleException;
-
     Result addRole(TblRoleInfo role);
 
     Result updateRole(TblRoleInfo role);
+
+    Result getRolesList(String roleName);
 }
