@@ -110,9 +110,9 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         endpoints.tokenStore(tokenStore())
                 .authorizationCodeServices(authorizationCodeServices())
                 //add
-                .tokenServices(tokenServices())
+                //.tokenServices(tokenServices())
                 .approvalStore(approvalStore())
-                .tokenGranter(tokenGranter())
+                //.tokenGranter(tokenGranter())
                 .tokenEnhancer(tokenEnhancerChain())
                 .authenticationManager(authenticationManager)
                 .userDetailsService(customUserDetailsService)

@@ -36,9 +36,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().permitAll();
 
+        /*
         SmsCodeAuthenticationProvider smsCodeAuthenticationProvider = new SmsCodeAuthenticationProvider();
         smsCodeAuthenticationProvider.setUserDetailsService(customUserDetailsService);
         http.authenticationProvider(smsCodeAuthenticationProvider);
+         */
     }
 
     /**
