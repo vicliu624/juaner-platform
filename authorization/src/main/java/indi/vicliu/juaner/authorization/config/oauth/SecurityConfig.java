@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.authorization.config.oauth;
 
+import indi.vicliu.juaner.authorization.config.oauth.sms.SmsCodeAuthenticationProvider;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -34,6 +35,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().permitAll();
+
+        /*
+        SmsCodeAuthenticationProvider smsCodeAuthenticationProvider = new SmsCodeAuthenticationProvider();
+        smsCodeAuthenticationProvider.setUserDetailsService(customUserDetailsService);
+        http.authenticationProvider(smsCodeAuthenticationProvider);
+         */
     }
 
     /**

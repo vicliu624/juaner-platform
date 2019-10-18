@@ -1,4 +1,4 @@
-package indi.vicliu.juaner.id.id;
+package indi.vicliu.juaner.id;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

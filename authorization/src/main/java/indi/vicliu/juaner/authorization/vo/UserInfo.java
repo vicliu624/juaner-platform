@@ -8,7 +8,6 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-@Table(name = "tbl_user_info")
 @Data
 public class UserInfo implements Serializable {
     /**

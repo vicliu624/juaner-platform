@@ -1,6 +1,6 @@
-package indi.vicliu.juaner.id.id.service;
+package indi.vicliu.juaner.id.service;
 
-import indi.vicliu.juaner.id.id.utils.SequenceGenerator;
+import indi.vicliu.juaner.id.utils.SequenceGenerator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;

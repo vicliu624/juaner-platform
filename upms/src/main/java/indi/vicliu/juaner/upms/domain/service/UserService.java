@@ -12,6 +12,7 @@ import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
  */
 public interface UserService {
     TblUserInfo findByUserName(String userName) throws UserException;
+    TblUserInfo findByPhone(String phone) throws UserException;
 
     Result addUserInfo(AddUserInfoVO userInfo) throws UserException;
 

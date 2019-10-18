@@ -134,6 +134,31 @@ COMMIT;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
+
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+--  Table structure for `tbl_weixin_mini_program_client_config`
+-- ----------------------------
+DROP TABLE IF EXISTS `tbl_weixin_mini_program_client_config`;
+CREATE TABLE `tbl_weixin_mini_program_client_config` (
+  `channel_id` varchar(64) NOT NULL COMMENT '托管渠道编号',
+  `app_id` varchar(32) NOT NULL COMMENT '托管的微信平台appId',
+  `app_secret` varchar(128) DEFAULT NULL COMMENT '托管的微信平台appSecret',
+  `remark` varchar(64) DEFAULT NULL COMMENT '备注',
+  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `create_by` bigint(18) NOT NULL COMMENT '创建者',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `update_by` bigint(18) DEFAULT NULL COMMENT '更新者',
+  `is_valid` int(8) NOT NULL DEFAULT '1' COMMENT '1-启用 2-不启用',
+  PRIMARY KEY (`channel_id`),
+  UNIQUE KEY `idx_wx_app_id` (`app_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+SET FOREIGN_KEY_CHECKS = 1;
+
+
 ```
 
 ## jks证书生成

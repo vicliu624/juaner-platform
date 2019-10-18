@@ -1,4 +1,4 @@
-package indi.vicliu.juaner.id.id.utils;
+package indi.vicliu.juaner.id.utils;
 
 import lombok.extern.slf4j.Slf4j;
 

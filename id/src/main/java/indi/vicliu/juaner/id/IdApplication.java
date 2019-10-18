@@ -1,4 +1,4 @@
-package indi.vicliu.juaner.id.id;
+package indi.vicliu.juaner.id;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationArguments;

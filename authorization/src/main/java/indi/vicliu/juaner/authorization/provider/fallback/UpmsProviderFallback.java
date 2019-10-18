@@ -25,4 +25,10 @@ public class UpmsProviderFallback implements UpmsProvider {
         log.error("UpmsProviderFallback getRolesByUserId 熔断被触发");
         return Result.fail("未能获取到用户的角色信息,请稍后再试.");
     }
+
+    @Override
+    public Result getFullUserInfoByPhone(String phone) {
+        log.error("UpmsProviderFallback getFullUserInfoByPhone 熔断被触发");
+        return Result.fail("未能获取到用户信息,请稍后再试.");
+    }
 }

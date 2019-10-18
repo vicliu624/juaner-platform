@@ -1,6 +1,6 @@
-package indi.vicliu.juaner.id.id.controller;
+package indi.vicliu.juaner.id.controller;
 
-import indi.vicliu.juaner.id.id.service.SequenceService;
+import indi.vicliu.juaner.id.service.SequenceService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
