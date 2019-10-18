@@ -247,7 +247,7 @@
                             <!--jar包不包含唯一版本标识-->
                             <useUniqueVersions>false</useUniqueVersions>
                             <!--指定入口类-->
-                            <mainClass>com.inesanet.ynytcloud.id.service.YnytCloudIdServiceApplication</mainClass>
+                            <mainClass>indi.vicliu.juaner.id.id.IdApplication</mainClass>
                         </manifest>
                         <manifestEntries>
                             <!--MANIFEST.MF 中 Class-Path 加入资源文件目录-->
