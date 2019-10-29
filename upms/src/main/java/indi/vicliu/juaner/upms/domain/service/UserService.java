@@ -4,6 +4,7 @@ import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @Auther: liuweikai
@@ -21,4 +22,8 @@ public interface UserService {
     Result findByUserPhone(String phone);
 
     Result findByUserId(Long userId);
+
+    Result updateCenterOpenIdByUsername(String openId,String accountId);
+
+    Result getByUsername(@RequestParam("username") String username) throws UserException;
 }

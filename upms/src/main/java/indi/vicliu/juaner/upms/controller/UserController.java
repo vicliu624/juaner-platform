@@ -39,6 +39,21 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user/getByUsername")
+    public Result getByUsername(@RequestParam("username") String username){
+        try {
+            Result result = userService.getByUsername(username);
+            return result;
+        }catch (Exception e){
+            log.error(" getByUsername fail ",e);
+            if(e instanceof UserException){
+                return Result.fail(e.getMessage());
+            } else {
+                return Result.fail(ErrorType.SYSTEM_ERROR,"查询用户信息时出错");
+            }
+        }
+    }
+
     @GetMapping("/user/fullInfo/byPhone")
     public Result getFullUserInfoByPhone(@RequestParam String phone) {
         try{
@@ -51,6 +66,23 @@ public class UserController {
             } else {
                 return Result.fail(ErrorType.SYSTEM_ERROR,"查询用户信息时出错");
             }
+        }
+    }
+
+    /**
+     * 绑定系统用户与部平台关系
+     * @param openId
+     * @param accountId
+     * @return
+     */
+    @GetMapping("/user/updateCenterOpenIdByUsername")
+    public Result updateCenterOpenIdByUsername(@RequestParam("openId")String openId, @RequestParam("accountId")String accountId) {
+
+        try {
+            Result result = userService.updateCenterOpenIdByUsername(openId, accountId);
+            return result;
+        }catch (Exception e){
+            return Result.fail(ErrorType.SYSTEM_ERROR,"关联部平台信息失败");
         }
     }
 

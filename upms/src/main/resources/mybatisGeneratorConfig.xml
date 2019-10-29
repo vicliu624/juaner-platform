@@ -64,7 +64,7 @@
       <property name="trimStrings" value="true"/>
     </javaClientGenerator>
 
-    <table tableName="tbl_user_info"
+   <!-- <table tableName="tbl_user_info"
            enableInsert="true"
            enableCountByExample="true"
            enableUpdateByExample="true" enableUpdateByPrimaryKey="true"
@@ -93,6 +93,13 @@
     </table>
 
     <table tableName="tbl_role_perm_map"
+           enableInsert="true"
+           enableCountByExample="true"
+           enableUpdateByExample="true" enableUpdateByPrimaryKey="true"
+           enableSelectByExample="true" enableSelectByPrimaryKey="true">
+    </table>-->
+
+    <table tableName="tbl_user_ministry_map"
            enableInsert="true"
            enableCountByExample="true"
            enableUpdateByExample="true" enableUpdateByPrimaryKey="true"

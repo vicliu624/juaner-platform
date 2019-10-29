@@ -1,14 +1,18 @@
 package indi.vicliu.juaner.upms.domain.service.impl;
 
 import indi.vicliu.juaner.common.core.message.Result;
+import indi.vicliu.juaner.common.core.util.UserContextHolder;
 import indi.vicliu.juaner.upms.client.IdProvider;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserInfoMapper;
+import indi.vicliu.juaner.upms.data.mapper.TblUserMinistryMapMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserRoleMapMapper;
 import indi.vicliu.juaner.upms.domain.entity.TblRoleInfo;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
+import indi.vicliu.juaner.upms.domain.entity.TblUserMinistryMap;
 import indi.vicliu.juaner.upms.domain.entity.TblUserRoleMap;
 import indi.vicliu.juaner.upms.domain.service.UserService;
+import indi.vicliu.juaner.upms.dto.UserInfoDTO;
 import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +23,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @Auther: liuweikai
@@ -39,6 +44,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private IdProvider idProvider;
+
+    @Autowired
+    private TblUserMinistryMapMapper tblUserMinistryMapMapper;
 
     @Override
     public TblUserInfo findByUserName(String userName) throws UserException {
@@ -133,5 +141,63 @@ public class UserServiceImpl implements UserService {
             throw new UserException("找不到该用户");
         }
         return userInfoList.get(0);
+    }
+
+    /**
+     * 绑定系统用户与部平台关系
+     * @param userName
+     * @param openId
+     * @param accountId
+     * @return
+     */
+    @Override
+    public Result updateCenterOpenIdByUsername( String openId, String accountId) {
+        String userName = UserContextHolder.getInstance().getUsername();
+        Example example = new Example(TblUserInfo.class);
+        example.createCriteria().andEqualTo("userName",userName);
+        example.setOrderByClause(" create_time desc limit 1");
+        TblUserInfo userInfo = userInfoMapper.selectOneByExample(example);
+        if(Objects.isNull(userInfo)){
+            return Result.fail("用户不存在");
+        }
+        Example e=new Example(TblUserMinistryMap.class);
+        example.createCriteria().andEqualTo("userId",userInfo.getId());
+        TblUserMinistryMap ministryMap = tblUserMinistryMapMapper.selectOneByExample(e);
+        boolean flag=false;
+        if(Objects.isNull(ministryMap)){
+            ministryMap=new TblUserMinistryMap();
+            flag=true;
+        }
+        ministryMap.setAccountId(accountId);
+        ministryMap.setOpenId(openId);
+        ministryMap.setUserId(userInfo.getId());
+        if(flag){
+            tblUserMinistryMapMapper.insertSelective(ministryMap);
+        }else {
+            tblUserMinistryMapMapper.updateByPrimaryKey(ministryMap);
+        }
+
+        return Result.success();
+    }
+
+    @Override
+    public Result getByUsername(String username) throws UserException {
+        Example example = new Example(TblUserInfo.class);
+        example.createCriteria().andEqualTo("userName",username);
+        example.setOrderByClause(" create_time desc limit 1");
+        TblUserInfo userInfo = userInfoMapper.selectOneByExample(example);
+        if(Objects.isNull(userInfo)){
+            throw new UserException("找不到该用户");
+        }
+        UserInfoDTO userInfoDTO=new UserInfoDTO();
+        BeanUtils.copyProperties(userInfo,userInfoDTO);
+        Example e=new Example(TblUserMinistryMap.class);
+        example.createCriteria().andEqualTo("userId",userInfo.getId());
+        TblUserMinistryMap ministryMap = tblUserMinistryMapMapper.selectOneByExample(e);
+        if(Objects.nonNull(ministryMap)){
+            userInfoDTO.setAccountId(ministryMap.getAccountId());
+            userInfoDTO.setCenterOpenId(ministryMap.getOpenId());
+        }
+        return Result.success(userInfoDTO);
     }
 }
