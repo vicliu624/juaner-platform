@@ -13,4 +13,8 @@ public interface PermissionService {
     List<TblPermissionInfo> findAll();
     List<TblPermissionInfo> queryByRoles(String[] roles);
     TblPermissionInfo findByURI(String uri,String method);
+
+    void updatePermissionAllCache();
+    void updateRolePermissionCache(String role);
+    void updateUrlPermissionCache(TblPermissionInfo permissionInfo);
 }

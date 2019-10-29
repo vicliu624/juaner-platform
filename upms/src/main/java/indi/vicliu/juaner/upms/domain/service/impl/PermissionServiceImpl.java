@@ -30,7 +30,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Autowired
     private RedisStringUtil redisStringUtil;
 
-    private static final int EXPIRE=30;
+    private static final int EXPIRE=10;
 
     @Override
     public List<TblPermissionInfo> findAll() {
@@ -92,4 +92,39 @@ public class PermissionServiceImpl implements PermissionService {
 
     }
 
+    /**
+     * 新增菜单，数据更新redis
+     */
+    @Override
+    public void updatePermissionAllCache() {
+        List<TblPermissionInfo> tblPermissionInfos = permissionInfoMapper.selectAll();
+        if(!tblPermissionInfos.isEmpty()){
+            redisStringUtil.setKeyExpire("permissionInfoAll",JSONObject.toJSONString(tblPermissionInfos),EXPIRE, TimeUnit.MINUTES);
+        }
+    }
+
+    /**
+     * 角色权限发生变化，数据更新redis
+     * @param role
+     */
+    @Override
+    public void updateRolePermissionCache(String role) {
+        String key = "rolesPermission"+role;
+        List<TblPermissionInfo> infos = permissionInfoMapper.queryByRoleCode(role);
+        if(!infos.isEmpty()){
+            redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(infos),EXPIRE, TimeUnit.MINUTES);
+        }
+    }
+
+    /**
+     * 修改菜单，数据更新redis
+     * @param permissionInfo
+     */
+    @Override
+    public void updateUrlPermissionCache(TblPermissionInfo permissionInfo) {
+        String key="urlPermission"+permissionInfo.getPermUrl()+permissionInfo.getMethod();
+        if (Objects.nonNull(permissionInfo)) {
+            redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(permissionInfo),EXPIRE, TimeUnit.MINUTES);
+        }
+    }
 }
