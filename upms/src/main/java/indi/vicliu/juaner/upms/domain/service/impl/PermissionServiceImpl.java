@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +42,7 @@ public class PermissionServiceImpl implements PermissionService {
             }
         }
         List<TblPermissionInfo> tblPermissionInfos = permissionInfoMapper.selectAll();
-        if(tblPermissionInfos.isEmpty()){
+        if(!tblPermissionInfos.isEmpty()){
             redisStringUtil.setKeyExpire("permissionInfoAll",JSONObject.toJSONString(tblPermissionInfos),EXPIRE, TimeUnit.MINUTES);
         }
         return tblPermissionInfos;
@@ -49,17 +50,24 @@ public class PermissionServiceImpl implements PermissionService {
 
     @Override
     public List<TblPermissionInfo> queryByRoles(String[] roles) {
-        String key = "rolesPermission"+Arrays.stream(roles).reduce("", String::concat);
-        String data=redisStringUtil.getValue(key);
-        if(Objects.nonNull(data)){
-            List<TblPermissionInfo> permissionInfos = JSONObject.parseArray(data, TblPermissionInfo.class);
-            return permissionInfos;
+       // String key = "rolesPermission"+Arrays.stream(roles).reduce("", String::concat);
+        //方便进行redis更新数据
+        List<TblPermissionInfo> tblPermissionInfoList=new ArrayList<>();
+        for (String role:roles){
+            String key = "rolesPermission"+role;
+            String data=redisStringUtil.getValue(key);
+            if(Objects.nonNull(data)){
+                List<TblPermissionInfo> permissionInfos = JSONObject.parseArray(data, TblPermissionInfo.class);
+                tblPermissionInfoList.addAll(permissionInfos);
+            }else {
+                List<TblPermissionInfo> infos = permissionInfoMapper.queryByRoleCode(role);
+                tblPermissionInfoList.addAll(infos);
+                if(!infos.isEmpty()){
+                    redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(infos),EXPIRE, TimeUnit.MINUTES);
+                }
+            }
         }
 
-        List<TblPermissionInfo> tblPermissionInfoList = permissionInfoMapper.queryByRoleCodes(roles);
-        if(tblPermissionInfoList.isEmpty()){
-            redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(tblPermissionInfoList),EXPIRE, TimeUnit.MINUTES);
-        }
         return tblPermissionInfoList;
 
     }
