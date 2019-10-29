@@ -1,16 +1,16 @@
 package indi.vicliu.juaner.upms.domain.service.impl;
 
-import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.client.IdProvider;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
 import indi.vicliu.juaner.upms.domain.entity.TblRoleInfo;
 import indi.vicliu.juaner.upms.domain.service.RoleService;
 import indi.vicliu.juaner.upms.exception.RoleException;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
+import javax.xml.bind.ValidationException;
 import java.util.Date;
 import java.util.List;
 
@@ -36,44 +36,39 @@ public class RoleServiceImpl implements RoleService {
         return roleInfoMapper.queryRolesByUserId(userId);
     }
     @Override
-    public Result addRole(TblRoleInfo role) {
+    public int addRole(TblRoleInfo role) throws Exception {
         if(StringUtils.isBlank(role.getRoleDesc()) || StringUtils.isBlank(role.getRoleName())){
-            return Result.fail("角色名角色描述不可为空");
+            throw new ValidationException("角色名角色描述不可为空");
         }
         Example example = new Example(TblRoleInfo.class);
         example.createCriteria().andEqualTo("roleName",role.getRoleName());
         example.setOrderByClause(" create_time desc limit 1");
         List<TblRoleInfo> userInfoList = this.roleInfoMapper.selectByExample(example);
-        if(userInfoList.size()>0){
-            return Result.fail("该角色已存在，请勿创建");
+        if(!userInfoList.isEmpty()){
+            throw new ValidationException("该角色已存在，请勿重复创建");
         }
         role.setCreateTime(new Date());
         role.setId(idProvider.nextId());
-        int i = roleInfoMapper.insertSelective(role);
-        if(i==0){
-            return Result.fail("创建角色失败");
-        }
-        return Result.success("创建成功");
+        return roleInfoMapper.insertSelective(role);
     }
 
     @Override
-    public Result updateRole(TblRoleInfo role) {
+    public int updateRole(TblRoleInfo role) throws Exception {
         if(role.getId()==null){
-            return Result.fail("角色编号不可为空");
+            throw new ValidationException("角色编号不可为空");
         }
-        roleInfoMapper.updateByPrimaryKeySelective(role);
-        return Result.success("修改成功");
+        return roleInfoMapper.updateByPrimaryKeySelective(role);
     }
 
     @Override
-    public Result getRolesList(String roleName) {
+    public TblRoleInfo getRoleByName(String roleName) throws Exception {
         Example example = new Example(TblRoleInfo.class);
         example.createCriteria().andEqualTo("roleName",roleName);
         example.setOrderByClause(" create_time desc limit 1");
-        List<TblRoleInfo> userInfoList = this.roleInfoMapper.selectByExample(example);
-        if(userInfoList.size()==0){
-            return Result.fail("没有该角色，请重新创建");
+        List<TblRoleInfo> roleInfoList = this.roleInfoMapper.selectByExample(example);
+        if(roleInfoList.isEmpty()){
+            return null;
         }
-        return Result.success(userInfoList.get(0));
+        return roleInfoList.get(0);
     }
 }

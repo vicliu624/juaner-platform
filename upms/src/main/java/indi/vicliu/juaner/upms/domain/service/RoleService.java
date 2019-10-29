@@ -1,6 +1,5 @@
 package indi.vicliu.juaner.upms.domain.service;
 
-import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblRoleInfo;
 import indi.vicliu.juaner.upms.exception.RoleException;
 
@@ -13,9 +12,9 @@ import java.util.List;
  */
 public interface RoleService {
     List<TblRoleInfo> queryRolesByUserId(Long userId) throws RoleException;
-    Result addRole(TblRoleInfo role);
+    int addRole(TblRoleInfo role) throws Exception;
 
-    Result updateRole(TblRoleInfo role);
+    int updateRole(TblRoleInfo role) throws Exception;
 
-    Result getRolesList(String roleName);
+    TblRoleInfo getRoleByName(String roleName) throws Exception;
 }

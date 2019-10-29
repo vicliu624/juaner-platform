@@ -42,9 +42,13 @@ public class RoleController {
      * @param roleName
      * @return
      */
-    @GetMapping("/getRoleList")
-    public Result getRolesList(@RequestParam String roleName){
-        return roleService.getRolesList(roleName);
+    @GetMapping("/getRoleByName")
+    public Result getRoleByName(@RequestParam String roleName){
+        try{
+            return Result.success(roleService.getRoleByName(roleName));
+        } catch (Exception e){
+            return Result.fail("查询出错:" + e.getMessage());
+        }
     }
 
     /**
@@ -54,7 +58,12 @@ public class RoleController {
      */
     @RequestMapping("/addRole")
     public Result addRole(@RequestBody TblRoleInfo role){
-        return roleService.addRole(role);
+        try{
+            roleService.addRole(role);
+            return Result.success();
+        } catch (Exception e){
+            return Result.fail("创建失败:" + e.getMessage());
+        }
     }
 
     /**
@@ -64,7 +73,11 @@ public class RoleController {
      */
     @RequestMapping("/updateRole")
     public Result updateRole(@RequestBody TblRoleInfo role){
-        return roleService.updateRole(role);
+        try{
+            roleService.updateRole(role);
+            return Result.success();
+        } catch (Exception e){
+            return Result.fail("更新失败:" + e.getMessage());
+        }
     }
-
 }

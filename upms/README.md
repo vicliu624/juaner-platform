@@ -8,7 +8,7 @@
  Target Server Version : 50724
  File Encoding         : utf-8
 
- Date: 09/21/2019 11:37:35 AM
+ Date: 10/18/2019 11:00:03 AM
 */
 
 SET NAMES utf8mb4;
@@ -21,7 +21,6 @@ DROP TABLE IF EXISTS `tbl_permission_info`;
 CREATE TABLE `tbl_permission_info` (
   `id` bigint(18) NOT NULL COMMENT '权限编号',
   `perm_name` varchar(32) NOT NULL COMMENT '权限名称',
-  `perm_type` int(9) NOT NULL COMMENT '权限类型 0-action',
   `create_time` datetime DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '记录修改时间',
   `method` varchar(20) NOT NULL COMMENT 'http method',
@@ -44,7 +43,8 @@ CREATE TABLE `tbl_role_info` (
   `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   `create_by` bigint(18) NOT NULL DEFAULT '0' COMMENT '创建者',
   `update_by` bigint(18) DEFAULT NULL COMMENT '修改者',
-  PRIMARY KEY (`id`) USING BTREE
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `idx_role_name` (`role_name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
@@ -71,7 +71,7 @@ CREATE TABLE `tbl_user_info` (
   `id` bigint(18) NOT NULL COMMENT '用户编号',
   `user_name` varchar(32) NOT NULL COMMENT '用户名',
   `password` varchar(256) NOT NULL COMMENT '密码',
-  `nick_name` varchar(10) DEFAULT NULL COMMENT '昵称',
+  `nick_name` varchar(30) DEFAULT NULL COMMENT '昵称',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_time` datetime DEFAULT NULL COMMENT '修改时间',
   `account_non_expired` tinyint(1) NOT NULL COMMENT '帐号是否未过期 1-是 0-否',
@@ -82,6 +82,7 @@ CREATE TABLE `tbl_user_info` (
   `update_by` bigint(18) DEFAULT '0' COMMENT '修改人',
   `enabled` tinyint(1) NOT NULL COMMENT '用户是否启用 1-启用 0-不启用',
   PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `idx_phone` (`phone`) USING BTREE,
   KEY `idx_user_name` (`user_name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
@@ -92,7 +93,7 @@ DROP TABLE IF EXISTS `tbl_user_role_map`;
 CREATE TABLE `tbl_user_role_map` (
   `user_id` bigint(18) NOT NULL COMMENT '用户编号',
   `role_id` bigint(18) NOT NULL COMMENT '角色编号',
-  `create_by` bigint(18) NOT NULL DEFAULT '0' COMMENT '创建者',
+  `create_by` bigint(18) DEFAULT '0' COMMENT '创建者',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   `update_by` bigint(18) DEFAULT NULL COMMENT '更新者',
   `update_time` datetime DEFAULT NULL COMMENT '更新时间',
