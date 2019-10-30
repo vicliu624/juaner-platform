@@ -4,6 +4,7 @@ import indi.vicliu.juaner.common.core.exception.ErrorType;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.domain.service.UserService;
+import indi.vicliu.juaner.upms.dto.UserInfoDTO;
 import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class UserController {
     @GetMapping("/user/fullInfo")
     public Result getFullUserInfoByUserName(@RequestParam String userName){
         try{
-            TblUserInfo userInfo = this.userService.findByUserName(userName);
+            UserInfoDTO userInfo = this.userService.findByUserName(userName);
             return Result.success(userInfo);
         } catch (Exception e){
             log.error(" getFullUserInfoByUserName fail ",e);
