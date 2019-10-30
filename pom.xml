@@ -41,7 +41,7 @@
 
         <lombok.version>1.16.20</lombok.version>
 
-        <logstash-logback.version>6.1</logstash-logback.version>
+        <logstash-logback.version>6.2</logstash-logback.version>
 
         <mysql.version>5.1.40</mysql.version>
         <druid.version>1.1.18</druid.version>
