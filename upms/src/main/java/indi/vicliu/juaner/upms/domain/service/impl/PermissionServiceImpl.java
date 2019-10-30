@@ -43,7 +43,9 @@ public class PermissionServiceImpl implements PermissionService {
         }
         List<TblPermissionInfo> tblPermissionInfos = permissionInfoMapper.selectAll();
         if(!tblPermissionInfos.isEmpty()){
-            redisStringUtil.setKeyExpire("permissionInfoAll",JSONObject.toJSONString(tblPermissionInfos),EXPIRE, TimeUnit.MINUTES);
+            // TODO 线上发布redis不设置缓存时间
+           // redisStringUtil.setKeyExpire("permissionInfoAll",JSONObject.toJSONString(tblPermissionInfos),EXPIRE, TimeUnit.MINUTES);
+           redisStringUtil.setKey("permissionInfoAll",JSONObject.toJSONString(tblPermissionInfos));
         }
         return tblPermissionInfos;
     }
@@ -56,14 +58,16 @@ public class PermissionServiceImpl implements PermissionService {
         for (String role:roles){
             String key = "rolesPermission"+role;
             String data=redisStringUtil.getValue(key);
-            if(Objects.nonNull(data)){
+            if(Objects.nonNull(data) && Objects.nonNull(JSONObject.parseArray(data, TblPermissionInfo.class))){
                 List<TblPermissionInfo> permissionInfos = JSONObject.parseArray(data, TblPermissionInfo.class);
                 tblPermissionInfoList.addAll(permissionInfos);
             }else {
                 List<TblPermissionInfo> infos = permissionInfoMapper.queryByRoleCode(role);
                 tblPermissionInfoList.addAll(infos);
                 if(!infos.isEmpty()){
-                    redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(infos),EXPIRE, TimeUnit.MINUTES);
+                    // TODO 线上发布redis不设置缓存时间
+                    //redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(infos),EXPIRE, TimeUnit.MINUTES);
+                    redisStringUtil.setKey(key,JSONObject.toJSONString(infos));
                 }
             }
         }
@@ -78,14 +82,18 @@ public class PermissionServiceImpl implements PermissionService {
         String data=redisStringUtil.getValue(key);
         if(Objects.nonNull(data)){
             TblPermissionInfo tblPermissionInfo = JSONObject.parseObject(data, TblPermissionInfo.class);
-            return tblPermissionInfo;
+            if(Objects.nonNull(tblPermissionInfo)){
+                return tblPermissionInfo;
+            }
         }
 
         Example example = new Example(TblPermissionInfo.class);
         example.createCriteria().andEqualTo("permUrl",uri).andEqualTo("method",method);
         TblPermissionInfo permissionInfo = permissionInfoMapper.selectOneByExample(example);
         if (Objects.nonNull(permissionInfo)) {
-            redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(permissionInfo),EXPIRE, TimeUnit.MINUTES);
+            // TODO 线上发布redis不设置缓存时间
+            //redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(permissionInfo),EXPIRE, TimeUnit.MINUTES);
+            redisStringUtil.setKey(key,JSONObject.toJSONString(permissionInfo));
         }
         return permissionInfo;
 
@@ -99,7 +107,9 @@ public class PermissionServiceImpl implements PermissionService {
     public void updatePermissionAllCache() {
         List<TblPermissionInfo> tblPermissionInfos = permissionInfoMapper.selectAll();
         if(!tblPermissionInfos.isEmpty()){
+            // TODO 线上发布redis不设置缓存时间
             redisStringUtil.setKeyExpire("permissionInfoAll",JSONObject.toJSONString(tblPermissionInfos),EXPIRE, TimeUnit.MINUTES);
+            // redisStringUtil.setKey("permissionInfoAll",JSONObject.toJSONString(tblPermissionInfos));
         }
     }
 
@@ -112,7 +122,9 @@ public class PermissionServiceImpl implements PermissionService {
         String key = "rolesPermission"+role;
         List<TblPermissionInfo> infos = permissionInfoMapper.queryByRoleCode(role);
         if(!infos.isEmpty()){
+            // TODO 线上发布redis不设置缓存时间
             redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(infos),EXPIRE, TimeUnit.MINUTES);
+            //redisStringUtil.setKey(key,JSONObject.toJSONString(infos));
         }
     }
 
@@ -124,7 +136,9 @@ public class PermissionServiceImpl implements PermissionService {
     public void updateUrlPermissionCache(TblPermissionInfo permissionInfo) {
         String key="urlPermission"+permissionInfo.getPermUrl()+permissionInfo.getMethod();
         if (Objects.nonNull(permissionInfo)) {
+            // TODO 线上发布redis不设置缓存时间
             redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(permissionInfo),EXPIRE, TimeUnit.MINUTES);
+           // redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(permissionInfo),EXPIRE, TimeUnit.MINUTES);
         }
     }
 }
