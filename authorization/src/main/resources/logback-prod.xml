@@ -9,7 +9,7 @@
     <!-- 日志在工程中的输出位置 -->
     <property name="LOG_FILE_INFO" value="${BUILD_FOLDER:-build}/${springAppName}-%d-info.log" />
     <property name="LOG_FILE_ERROR" value="${BUILD_FOLDER:-build}/${springAppName}-%d-error.log" />
-
+    <property name="LOG_HIS_MAX" value="7" />
     <!-- 控制台的日志输出样式 -->
     <property name="CONSOLE_LOG_PATTERN"
               value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
@@ -29,6 +29,9 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--添加路径-->
             <fileNamePattern>${LOG_FILE_INFO}</fileNamePattern>
+            <!-- 日志文件最大的保存历史 数量-->
+            <maxHistory>${LOG_HIS_MAX}</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
     </appender>
 
