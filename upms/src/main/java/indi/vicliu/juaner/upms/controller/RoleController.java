@@ -56,7 +56,7 @@ public class RoleController {
      * @param role
      * @return
      */
-    @RequestMapping("/addRole")
+    @PostMapping("/addRole")
     public Result addRole(@RequestBody TblRoleInfo role){
         try{
             roleService.addRole(role);
@@ -71,7 +71,7 @@ public class RoleController {
      * @param role
      * @return
      */
-    @RequestMapping("/updateRole")
+    @PutMapping("/updateRole")
     public Result updateRole(@RequestBody TblRoleInfo role){
         try{
             roleService.updateRole(role);

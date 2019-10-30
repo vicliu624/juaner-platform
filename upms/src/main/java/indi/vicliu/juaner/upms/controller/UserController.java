@@ -91,7 +91,7 @@ public class UserController {
      * @param userInfo
      * @return
      */
-    @RequestMapping("/user/addUser")
+    @PostMapping("/user/addUser")
     public Result addUserInfo(@RequestBody @Validated AddUserInfoVO userInfo){
         try {
             return userService.addUserInfo(userInfo);
@@ -110,7 +110,7 @@ public class UserController {
      * @param info
      * @return
      */
-    @RequestMapping("/user/updateUser")
+    @PutMapping("/user/updateUser")
     public Result updateUserInfo(@RequestBody TblUserInfo info){
         return userService.updateUserInfo(info);
     }
