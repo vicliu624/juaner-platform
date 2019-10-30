@@ -166,3 +166,10 @@ SET FOREIGN_KEY_CHECKS = 1;
 keytool -genkeypair -alias juaner -keyalg RSA -keypass juaner-cloud -keystore keystore.jks -storepass juaner-cloud
 keytool -importkeystore -srckeystore keystore.jks -destkeystore keystore.jks -deststoretype pkcs12
 ```
+
+### 导出公钥
+```cmd
+keytool -v -importkeystore -srckeystore keystore.jks -srcstoretype jks -srcstorepass juaner-cloud -destkeystore juaner.pfx -deststoretype pkcs12 -deststorepass juaner-cloud -destkeypass juaner-cloud
+openssl pkcs12 -in juaner.pfx -nocerts -nodes -out juanerPri.key
+openssl rsa -in juanerPri.key -pubout -out juanerPub.key
+```
