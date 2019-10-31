@@ -23,10 +23,6 @@ public class GatewayConfig {
 
     public static String NACOS_ROUTE_GROUP;
 
-    public static String NACOS_RATE_LIMIT_DATA_ID;
-
-    public static String NACOS_RATE_LIMIT_GROUP;
-
     @Value("${jks.key}")
     public void setRsaPublicKey(String rsaPublicKey) {
         RSA_PUBLIC_KEY = rsaPublicKey;
@@ -51,16 +47,4 @@ public class GatewayConfig {
     public void setNacosRouteGroup(String nacosRouteGroup){
         NACOS_ROUTE_GROUP = nacosRouteGroup;
     }
-
-    @Value("${nacos.gateway.limit.config.data-id}")
-    public void setNacosRateLimitDataId(String nacosRateLimitDataId){
-        NACOS_RATE_LIMIT_DATA_ID = nacosRateLimitDataId;
-    }
-
-    @Value("${nacos.gateway.limit.config.group}")
-    public void setNacosRateLimitGroup(String nacosRateLimitGroup){
-        NACOS_RATE_LIMIT_GROUP = nacosRateLimitGroup;
-    }
-
-
 }
