@@ -2,6 +2,12 @@
 
 接入nacos 1.1.3
 
+## 发布到maven仓库
+
+```cmd
+mvn clean deploy
+```
+
 ## 启动顺序
 - 启动upms
 - 启动authorization

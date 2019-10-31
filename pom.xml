@@ -17,6 +17,7 @@
         <module>authentication</module>
         <module>gateway</module>
         <module>id</module>
+        <module>admin</module>
     </modules>
 
     <properties>
@@ -88,6 +89,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>${openfeign.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <!--日志跟踪-->

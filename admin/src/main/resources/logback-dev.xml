@@ -1,0 +1,58 @@
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+
+    <springProperty scope="context" name="springAppName"
+                    source="spring.application.name" />
+
+    <!-- 日志在工程中的输出位置 -->
+    <property name="LOG_FILE_INFO" value="${BUILD_FOLDER:-build}/${springAppName}-%d-info.log" />
+    <property name="LOG_FILE_ERROR" value="${BUILD_FOLDER:-build}/${springAppName}-%d-error.log" />
+
+    <!-- 控制台的日志输出样式 -->
+    <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread] %logger{15}[L:%L] - %msg%n" />
+
+    <!--添加日志存储器,控制台-->
+    <appender name="consoleLog" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </layout>
+    </appender>
+
+    <!--添加本地的info日志存储-->
+    <appender name="fileInLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--添加路径-->
+            <fileNamePattern>${LOG_FILE_INFO}</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <!--添加本地的error日志存储-->
+    <appender name="fileErrorLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <charset>utf8</charset>
+        </encoder>
+        <!--滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--添加路径-->
+            <fileNamePattern>${LOG_FILE_ERROR}</fileNamePattern>
+        </rollingPolicy>
+    </appender>
+
+    <!--指明配置项用在哪-->
+    <root level="INFO">
+        <!--引用日志存储器-->
+        <appender-ref ref="consoleLog"/>
+        <appender-ref ref="fileInLog"/>
+        <appender-ref ref="fileErrorLog"/>
+    </root>
+</configuration>
