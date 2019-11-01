@@ -9,6 +9,7 @@ mvn clean deploy
 ```
 
 ## 启动顺序
+- 启动admin
 - 启动upms
 - 启动authorization
 - 启动authentication
