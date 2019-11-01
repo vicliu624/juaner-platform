@@ -1,5 +1,7 @@
 package indi.vicliu.juaner.authorization.domain.service.impl;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
+import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.authorization.provider.UpmsProvider;
 import indi.vicliu.juaner.authorization.vo.RoleInfo;
@@ -31,6 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UpmsProvider upmsProvider;
 
+    @SentinelResource(value = "loadUserByUsername" , blockHandler = "exceptionHandler" ,fallback = "fallbackHandler")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
@@ -60,6 +63,16 @@ public class CustomUserDetailsService implements UserDetailsService {
                 userInfo.getCredentialsNonExpired(),
                 userInfo.getAccountNonLocked(),
                 this.getGrantedAuthorities(userInfo));
+    }
+
+    //熔断
+    public void fallbackHandler(String userName) throws Exception {
+        throw new Exception("系统繁忙,请稍后再试");
+    }
+
+    // 限流与阻塞处理
+    public void exceptionHandler(String userName, BlockException ex) throws Exception  {
+        throw new Exception("请求过频,请稍后再试");
     }
 
     private Set<GrantedAuthority> getGrantedAuthorities(UserInfo user) {
