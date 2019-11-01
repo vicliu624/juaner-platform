@@ -17,6 +17,7 @@
         <module>authentication</module>
         <module>gateway</module>
         <module>id</module>
+        <module>admin</module>
     </modules>
 
     <properties>
@@ -41,7 +42,7 @@
 
         <lombok.version>1.16.20</lombok.version>
 
-        <logstash-logback.version>6.1</logstash-logback.version>
+        <logstash-logback.version>6.2</logstash-logback.version>
 
         <mysql.version>5.1.40</mysql.version>
         <druid.version>1.1.18</druid.version>
@@ -88,6 +89,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
             <version>${openfeign.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <!--日志跟踪-->
