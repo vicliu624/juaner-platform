@@ -5,6 +5,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +37,13 @@ public class RedisStringUtil {
 
     public Set<String> searchKeyLike(String key){
         return template.keys(key);
+    }
+
+    public void delKey(String key){
+        template.delete(key);
+    }
+    public void delKeyList(List<String> key){
+        template.delete(key);
     }
 
 }

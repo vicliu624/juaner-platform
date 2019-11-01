@@ -132,7 +132,7 @@ public class UserController {
      * @return
      */
     @GetMapping("/user/getByUserId")
-    public Result findByUserPhone(@RequestParam Long userId){
+    public Result findByUserId(@RequestParam Long userId){
         return userService.findByUserId(userId);
     }
 }
