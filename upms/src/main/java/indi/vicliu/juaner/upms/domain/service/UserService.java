@@ -2,7 +2,6 @@ package indi.vicliu.juaner.upms.domain.service;
 
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
-import indi.vicliu.juaner.upms.dto.UserInfoDTO;
 import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @Description:
  */
 public interface UserService {
-    UserInfoDTO findByUserName(String userName) throws UserException;
+    TblUserInfo findByUserName(String userName) throws UserException;
     TblUserInfo findByPhone(String phone) throws UserException;
 
     Result addUserInfo(AddUserInfoVO userInfo) throws UserException;
@@ -23,8 +22,6 @@ public interface UserService {
     Result findByUserPhone(String phone);
 
     Result findByUserId(Long userId);
-
-    Result updateCenterOpenIdByUsername(String openId,String accountId);
 
     Result getByUsername(@RequestParam("username") String username) throws UserException;
 

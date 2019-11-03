@@ -1,4 +1,4 @@
-package indi.vicliu.juaner.authorization.config;
+package indi.vicliu.juaner.common.config;
 
 import com.alibaba.csp.sentinel.annotation.aspectj.SentinelResourceAspect;
 import org.springframework.context.annotation.Bean;

@@ -4,7 +4,6 @@ import indi.vicliu.juaner.common.core.exception.ErrorType;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.domain.service.UserService;
-import indi.vicliu.juaner.upms.dto.UserInfoDTO;
 import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,7 @@ public class UserController {
     @GetMapping("/user/fullInfo")
     public Result getFullUserInfoByUserName(@RequestParam String userName){
         try{
-            UserInfoDTO userInfo = this.userService.findByUserName(userName);
+            TblUserInfo userInfo = this.userService.findByUserName(userName);
             return Result.success(userInfo);
         } catch (Exception e){
             log.error(" getFullUserInfoByUserName fail ",e);
@@ -67,23 +66,6 @@ public class UserController {
             } else {
                 return Result.fail(ErrorType.SYSTEM_ERROR,"查询用户信息时出错");
             }
-        }
-    }
-
-    /**
-     * 绑定系统用户与部平台关系
-     * @param openId
-     * @param accountId
-     * @return
-     */
-    @GetMapping("/user/updateCenterOpenIdByUsername")
-    public Result updateCenterOpenIdByUsername(@RequestParam("openId")String openId, @RequestParam("accountId")String accountId) {
-
-        try {
-            Result result = userService.updateCenterOpenIdByUsername(openId, accountId);
-            return result;
-        }catch (Exception e){
-            return Result.fail(ErrorType.SYSTEM_ERROR,"关联部平台信息失败");
         }
     }
 
@@ -135,4 +117,5 @@ public class UserController {
     public Result findByUserId(@RequestParam Long userId){
         return userService.findByUserId(userId);
     }
+
 }
