@@ -22,7 +22,7 @@ mvn clean deploy
 在部署前先在nacos内添加test命名空间
 ![截图](/doc/img/create_namespace.png)
 
-并在test命名空间内初始化一个网关的配置
+并在test命名空间内新增一个网关的动态路由配置
 ![截图](/doc/img/create_gateway_init_route_config.png)
 
 内容为
