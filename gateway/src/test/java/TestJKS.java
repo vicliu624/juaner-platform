@@ -36,20 +36,4 @@ public class TestJKS {
 
         }
     }
-
-    public static KeyPair getKeyPair(KeyStore keystore, String alias, char[] password) throws Exception {
-        // Get private key
-        Key key = keystore.getKey(alias, password);
-        if (key instanceof PrivateKey) {
-            // Get certificate of public key
-            java.security.cert.Certificate cert = keystore.getCertificate(alias);
-
-            // Get public key
-            PublicKey publicKey = cert.getPublicKey();
-
-            // Return a key pair
-            return new KeyPair(publicKey, (PrivateKey)key);
-        }
-        return null;
-    }
 }

@@ -7,8 +7,9 @@
                     source="spring.application.name" />
 
     <!-- 日志在工程中的输出位置 -->
-    <property name="LOG_FILE_INFO" value="${BUILD_FOLDER:-build}/${springAppName}-%d-info.log" />
-    <property name="LOG_FILE_ERROR" value="${BUILD_FOLDER:-build}/${springAppName}-%d-error.log" />
+    <property name="LOG_FILE_INFO" value="../${BUILD_FOLDER:-build}/${springAppName}-%d-info.log" />
+    <property name="LOG_FILE_ERROR" value="../${BUILD_FOLDER:-build}/${springAppName}-%d-error.log" />
+    <!--保留多少天的日志-->
     <property name="LOG_HIS_MAX" value="7" />
     <!-- 控制台的日志输出样式 -->
     <property name="CONSOLE_LOG_PATTERN"
