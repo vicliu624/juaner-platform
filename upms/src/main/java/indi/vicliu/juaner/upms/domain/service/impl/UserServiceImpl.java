@@ -3,6 +3,7 @@ package indi.vicliu.juaner.upms.domain.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.client.IdProvider;
+import indi.vicliu.juaner.upms.client.UserProvider;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserRoleMapMapper;
@@ -47,6 +48,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RedisStringUtil redisStringUtil;
+
+    @Autowired
+    private UserProvider userProvider;
 
     @Override
     public TblUserInfo findByUserName(String userName) throws UserException {
@@ -103,6 +107,7 @@ public class UserServiceImpl implements UserService {
         if(insert==0){
             throw new UserException("创建用户角色失败");
         }
+        userProvider.createUserInfo(info);
         return Result.success(info);
     }
 
