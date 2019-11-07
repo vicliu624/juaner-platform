@@ -8,6 +8,7 @@ import indi.vicliu.juaner.common.core.exception.Error;
 import lombok.Data;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 /**
@@ -25,7 +26,7 @@ public class Result<T> {
     private T data;
 
     public Result() {
-        this.timestamp = ZonedDateTime.now().toInstant();
+        this.timestamp = ZonedDateTime.now(ZoneId.of("Asia/Shanghai")).toInstant();
     }
 
     public Result(Error error) {
