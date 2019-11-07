@@ -79,7 +79,9 @@ public class UserController {
         try {
             return userService.addUserInfo(userInfo);
         } catch (Exception e) {
+            log.info("创建用户异常：{}",e);
             if(e instanceof UserException){
+
                 return Result.fail(e.getMessage());
             }else {
                 return Result.fail(ErrorType.SYSTEM_ERROR,"创建用户角色失败");

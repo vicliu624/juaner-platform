@@ -107,7 +107,14 @@ public class UserServiceImpl implements UserService {
         if(insert==0){
             throw new UserException("创建用户角色失败");
         }
-        userProvider.createUserInfo(info);
+        try {
+            Result result = userProvider.createUserInfo(info);
+            if(result.isFail()){
+                log.info("同步用户到userservice服务失败：{}",JSONObject.toJSONString(info));
+            }
+        }catch (Exception e){
+            log.info("同步用户到userservice服务失败,异常信息：{}，同步数据：{}",e,JSONObject.toJSONString(info));
+        }
         return Result.success(info);
     }
 
@@ -127,6 +134,8 @@ public class UserServiceImpl implements UserService {
             updateUserInfoCache(userInfo.getUserName());
         } catch (UserException ex) {
             log.info("更新用户缓存失败：{}",JSONObject.toJSONString(userInfo));
+        }finally {
+
         }
         return Result.success("修改成功");
     }
