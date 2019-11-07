@@ -26,7 +26,7 @@ public class Result<T> {
     private T data;
 
     public Result() {
-        this.timestamp = ZonedDateTime.now(ZoneId.of("Asia/Shanghai")).toInstant();
+        this.timestamp = ZonedDateTime.now(ZoneId.systemDefault()).toInstant();
     }
 
     public Result(Error error) {
