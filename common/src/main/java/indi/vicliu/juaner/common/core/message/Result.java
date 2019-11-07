@@ -32,7 +32,7 @@ public class Result<T> {
     public Result(Error error) {
         this.code = error.getCode();
         this.message = error.getMessage();
-        this.timestamp = ZonedDateTime.now().toInstant();
+        this.timestamp = ZonedDateTime.now(ZoneId.systemDefault()).toInstant();
     }
 
     public Result(Error errorType, T data) {
@@ -51,7 +51,7 @@ public class Result<T> {
         this.code = code;
         this.message = message;
         this.data = data;
-        this.timestamp = ZonedDateTime.now().toInstant();
+        this.timestamp = ZonedDateTime.now(ZoneId.systemDefault()).toInstant();
     }
 
     /**
