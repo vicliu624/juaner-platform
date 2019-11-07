@@ -85,7 +85,7 @@ public class AuthServiceImpl implements AuthService {
             jwt.verifySignature(verifier);
             invalid = Boolean.FALSE;
         } catch (InvalidSignatureException | IllegalArgumentException ex) {
-            log.warn("user token has expired or signature error ");
+            log.error("user token has expired or signature error ", ex);
         }
         return invalid;
     }
