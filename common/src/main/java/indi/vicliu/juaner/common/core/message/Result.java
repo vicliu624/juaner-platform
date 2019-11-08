@@ -10,6 +10,7 @@ import lombok.Data;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Auther: liuweikai
@@ -26,13 +27,13 @@ public class Result<T> {
     private T data;
 
     public Result() {
-        this.timestamp = ZonedDateTime.now(ZoneId.systemDefault()).toInstant();
+        this.timestamp = ZonedDateTime.now().toInstant().plusMillis(TimeUnit.HOURS.toMillis(8));
     }
 
     public Result(Error error) {
         this.code = error.getCode();
         this.message = error.getMessage();
-        this.timestamp = ZonedDateTime.now(ZoneId.systemDefault()).toInstant();
+        this.timestamp = ZonedDateTime.now().toInstant().plusMillis(TimeUnit.HOURS.toMillis(8));
     }
 
     public Result(Error errorType, T data) {
@@ -51,7 +52,7 @@ public class Result<T> {
         this.code = code;
         this.message = message;
         this.data = data;
-        this.timestamp = ZonedDateTime.now(ZoneId.systemDefault()).toInstant();
+        this.timestamp = ZonedDateTime.now().toInstant().plusMillis(TimeUnit.HOURS.toMillis(8));
     }
 
     /**
