@@ -3,6 +3,7 @@ package indi.vicliu.juaner.upms.domain.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.client.IdProvider;
+import indi.vicliu.juaner.upms.client.UserProvider;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserRoleMapMapper;
@@ -47,6 +48,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RedisStringUtil redisStringUtil;
+
+    @Autowired
+    private UserProvider userProvider;
 
     @Override
     public TblUserInfo findByUserName(String userName) throws UserException {
@@ -103,6 +107,14 @@ public class UserServiceImpl implements UserService {
         if(insert==0){
             throw new UserException("创建用户角色失败");
         }
+        try {
+            Result result = userProvider.createUserInfo(info);
+            if(result.isFail()){
+                log.info("同步用户到userservice服务失败：{}",JSONObject.toJSONString(info));
+            }
+        }catch (Exception e){
+            log.info("同步用户到userservice服务失败,异常信息：{}，同步数据：{}",e,JSONObject.toJSONString(info));
+        }
         return Result.success(info);
     }
 
@@ -122,6 +134,8 @@ public class UserServiceImpl implements UserService {
             updateUserInfoCache(userInfo.getUserName());
         } catch (UserException ex) {
             log.info("更新用户缓存失败：{}",JSONObject.toJSONString(userInfo));
+        }finally {
+
         }
         return Result.success("修改成功");
     }
