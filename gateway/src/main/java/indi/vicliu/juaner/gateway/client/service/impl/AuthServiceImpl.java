@@ -46,11 +46,6 @@ public class AuthServiceImpl implements AuthService {
      */
     private RsaVerifier verifier;
 
-    /**
-     * Authorization认证开头是"bearer "
-     */
-    private static final int BEARER_BEGIN_INDEX = 7;
-
     @Override
     public Result authenticate(String authentication, String url, String method) {
         /*
@@ -85,7 +80,9 @@ public class AuthServiceImpl implements AuthService {
             jwt.verifySignature(verifier);
             invalid = Boolean.FALSE;
         } catch (InvalidSignatureException | IllegalArgumentException ex) {
-            log.error("user token has expired or signature error ", ex);
+            log.error("user token has expired or signature error,error authentication:" + authentication, ex);
+        } catch (RuntimeException e){
+            log.error("signature error,error authentication:" + authentication, e);
         }
         return invalid;
     }
