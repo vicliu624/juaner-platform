@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class CustomOAuthExceptionJacksonSerializer extends StdSerializer<CustomOAuth2Exception> {
@@ -25,7 +26,7 @@ public class CustomOAuthExceptionJacksonSerializer extends StdSerializer<CustomO
         //jsonGenerator.writeObjectField("status", e.getHttpErrorCode());
         jsonGenerator.writeObjectField("code", ErrorType.OAUTH_ERROR.getCode());
         jsonGenerator.writeStringField("message", ErrorType.OAUTH_ERROR.getMessage());
-        jsonGenerator.writeObjectField("timestamp", ZonedDateTime.now().toInstant());
+        jsonGenerator.writeObjectField("timestamp", ZonedDateTime.now().toInstant().plusMillis(TimeUnit.HOURS.toMillis(8)));
         jsonGenerator.writeObjectField("data", "用户名或密码错误");
 
         if (e.getAdditionalInformation()!=null) {

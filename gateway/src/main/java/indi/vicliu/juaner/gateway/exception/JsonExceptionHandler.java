@@ -15,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.ZonedDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Auther: liuweikai
@@ -107,7 +108,7 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
         Map<String, Object> map = new HashMap<>();
         map.put("code", status);
         map.put("message", errorMessage);
-        map.put("timestamp", ZonedDateTime.now().toInstant());
+        map.put("timestamp", ZonedDateTime.now().toInstant().plusMillis(TimeUnit.HOURS.toMillis(8)));
         return map;
     }
 
