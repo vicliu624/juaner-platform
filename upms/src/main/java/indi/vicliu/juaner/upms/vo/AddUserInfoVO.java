@@ -10,6 +10,7 @@ public class AddUserInfoVO {
 
     private static final long serialVersionUID = 1L;
 
+    private Long id;
     @NotBlank(message = "用户名不可为空")
     private String userName;
 

@@ -45,7 +45,7 @@ public class AccessGatewayFilter implements GlobalFilter {
         String authentication = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String method = request.getMethodValue();
         String url = request.getPath().value();
-        log.debug("url:{},method:{},headers:{}", url, method, request.getHeaders());
+        log.info("url:{},method:{},headers:{}", url, method, request.getHeaders());
         //不需要网关签权的url
         if (authService.ignoreAuthentication(url)) {
             return chain.filter(exchange);
@@ -63,7 +63,7 @@ public class AccessGatewayFilter implements GlobalFilter {
             //将jwt token中的用户信息传给服务
             String jwt = authService.getJwt(authentication).getClaims();
             builder.header(CommonConstant.X_CLIENT_TOKEN_USER, jwt);
-            log.debug("get jwt by authentication:{} gen jwt:{}",authentication,jwt);
+            log.info("get jwt by authentication:{} gen jwt:{}",authentication,jwt);
             return chain.filter(exchange.mutate().request(builder.build()).build());
         }
         return unauthorized(exchange);

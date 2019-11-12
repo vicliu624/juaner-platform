@@ -87,7 +87,9 @@ public class UserServiceImpl implements UserService {
         TblUserInfo info=new TblUserInfo();
         BeanUtils.copyProperties(userInfo,info);
         info.setCreateTime(new Date());
-        info.setId(idProvider.nextId());
+        if(userInfo.getId()==null){
+            info.setId(idProvider.nextId());
+        }
         //校验角色信息
         TblRoleInfo roleInfo = tblRoleInfoMapper.selectByPrimaryKey(userInfo.getRoleId());
         if(roleInfo==null){
