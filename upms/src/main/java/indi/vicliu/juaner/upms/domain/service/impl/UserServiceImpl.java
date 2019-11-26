@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public TblUserInfo findByUserName(String userName) throws UserException {
-        String key="user_"+userName;
+        String key="upms_user_"+userName;
         String value = redisStringUtil.getValue(key);
         if(Objects.nonNull(value)){
             TblUserInfo userInfo = JSONObject.parseObject(value, TblUserInfo.class);
@@ -69,6 +69,7 @@ public class UserServiceImpl implements UserService {
         if(userInfoList.size() == 0){
             throw new UserException("找不到该用户");
         }
+        redisStringUtil.setKey(key, JSONObject.toJSONString(userInfoList.get(0)));
         return userInfoList.get(0);
     }
     @Transactional
@@ -86,7 +87,9 @@ public class UserServiceImpl implements UserService {
         TblUserInfo info=new TblUserInfo();
         BeanUtils.copyProperties(userInfo,info);
         info.setCreateTime(new Date());
-        info.setId(idProvider.nextId());
+        if(userInfo.getId()==null){
+            info.setId(idProvider.nextId());
+        }
         //校验角色信息
         TblRoleInfo roleInfo = tblRoleInfoMapper.selectByPrimaryKey(userInfo.getRoleId());
         if(roleInfo==null){
@@ -174,7 +177,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Result getByUsername(String username) throws UserException {
-        String key="user_"+username;
+        String key="upms_user_"+username;
         String value = redisStringUtil.getValue(key);
         if(Objects.nonNull(value)){
             TblUserInfo userInfo = JSONObject.parseObject(value, TblUserInfo.class);
@@ -188,7 +191,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUserInfoCache(String userName) throws UserException {
-        String key="user_"+userName;
+        String key="upms_user_"+userName;
         getUserCache(userName, key);
     }
 

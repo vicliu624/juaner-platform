@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean ignoreAuthentication(String url) {
-        log.debug("ignoreUrls:{},url:{}",this.ignoreUrls,url);
+        log.info("ignoreUrls:{},url:{}",this.ignoreUrls,url);
         return Stream.of(this.ignoreUrls.split(",")).anyMatch(ignoreUrl -> url.startsWith(StringUtils.trim(ignoreUrl)));
     }
 
