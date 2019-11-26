@@ -10,6 +10,7 @@ import indi.vicliu.juaner.gateway.service.impl.DynamicRouteServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.route.RouteDefinition;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -24,6 +25,7 @@ import java.util.concurrent.Executor;
  */
 @Component
 @Slf4j
+@DependsOn({"gatewayConfig"})
 public class DynamicRouteServiceImplByNacos {
 
     @Autowired
