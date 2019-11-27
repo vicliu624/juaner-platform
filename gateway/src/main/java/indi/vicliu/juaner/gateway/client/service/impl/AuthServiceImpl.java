@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
 import org.springframework.security.jwt.crypto.sign.InvalidSignatureException;
@@ -29,6 +30,7 @@ import java.util.stream.Stream;
  */
 @Slf4j
 @Service
+@DependsOn({"gatewayConfig"})
 public class AuthServiceImpl implements AuthService {
 
     @Autowired
