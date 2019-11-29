@@ -15,4 +15,6 @@ public class CommonConstant {
      * Authorization认证开头是"bearer "
      */
     public static final int BEARER_BEGIN_INDEX = 7;
+
+    public static final String USER_TOKEN_KEY = "user_token_";
 }
