@@ -86,7 +86,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private ConfigAttribute findConfigAttributesByUrl(HttpServletRequest authRequest) {
-        this.resourceConfigAttributes.forEach((requestMatcher, configAttribute) -> log.info("----{}",requestMatcher.toString()));
+        this.resourceConfigAttributes.forEach((requestMatcher, configAttribute) -> log.debug("----{}",requestMatcher.toString()));
         ConfigAttribute attribute = this.resourceConfigAttributes.keySet().stream()
                 .filter(requestMatcher -> {
                     log.debug("requestMatcher {} ",requestMatcher.toString());
@@ -117,7 +117,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                         .findFirst()
                         .orElse(new SecurityConfig(NONEXISTENT_URL));
             } else {
-                log.info("{}:{}在资源表中未找到");
+                log.info("{}:{}在资源表中未找到",authRequest.getServletPath(),authRequest.getMethod());
             }
         }
 
