@@ -44,6 +44,14 @@ public interface AuthService {
      */
     boolean invalidJwtAccessToken(String authentication);
 
+
+    /**
+     * 是否无效authentication
+     * @param jwt
+     * @return
+     */
+    boolean invalidJwtAccessToken(Jwt jwt);
+
     /**
      * 调用签权服务，判断用户是否有权限
      *

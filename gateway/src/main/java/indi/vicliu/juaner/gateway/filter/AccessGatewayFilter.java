@@ -1,7 +1,9 @@
 package indi.vicliu.juaner.gateway.filter;
 
+import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.common.core.CommonConstant;
 import indi.vicliu.juaner.gateway.client.service.AuthService;
+import indi.vicliu.juaner.gateway.utils.RedisStringUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.jwt.Jwt;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,6 +33,9 @@ public class AccessGatewayFilter implements GlobalFilter {
      */
     @Autowired
     private AuthService authService;
+
+    @Autowired
+    private RedisStringUtil redisStringUtil;
 
     /**
      * 1.首先网关检查token是否有效，无效直接返回401，不调用签权服务
@@ -55,15 +61,31 @@ public class AccessGatewayFilter implements GlobalFilter {
             return unauthorized(exchange);
         }
 
+        Jwt jwt = authService.getJwt(authentication);
+
+        //校验jwt
+        //token是否有效
+        if (authService.invalidJwtAccessToken(jwt)) {
+            return unauthorized(exchange);
+        }
+
+        //token是否是当前生效的token
+        String claims = jwt.getClaims();
+        log.debug("get jwt by authentication:{} claims:{}",authentication,claims);
+
+        JSONObject jsonObject = JSONObject.parseObject(claims);
+        String userName = (String) jsonObject.get("user_name");
+        String jti = (String) jsonObject.get("jti");
+        String redisJti = redisStringUtil.getValue(CommonConstant.USER_TOKEN_KEY + userName);
+        if(redisJti != null && !jti.equals(redisJti)){
+            return conflict(exchange);
+        }
+
         //调用签权服务看用户是否有权限，若有权限进入下一个filter
         if (authService.hasPermission(authentication, url, method)) {
             ServerHttpRequest.Builder builder = request.mutate();
             //TODO 转发的请求都加上服务间认证token
-            //builder.header(X_CLIENT_TOKEN, "TODO zhoutaoo添加服务间简单认证");
-            //将jwt token中的用户信息传给服务
-            String jwt = authService.getJwt(authentication).getClaims();
-            builder.header(CommonConstant.X_CLIENT_TOKEN_USER, jwt);
-            log.debug("get jwt by authentication:{} gen jwt:{}",authentication,jwt);
+            builder.header(CommonConstant.X_CLIENT_TOKEN_USER, claims);
             return chain.filter(exchange.mutate().request(builder.build()).build());
         }
         return unauthorized(exchange);
@@ -78,6 +100,18 @@ public class AccessGatewayFilter implements GlobalFilter {
         serverWebExchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         DataBuffer buffer = serverWebExchange.getResponse()
                 .bufferFactory().wrap(HttpStatus.UNAUTHORIZED.getReasonPhrase().getBytes());
+        return serverWebExchange.getResponse().writeWith(Flux.just(buffer));
+    }
+
+    /**
+     *
+     * @param serverWebExchange
+     * @return
+     */
+    private Mono<Void> conflict(ServerWebExchange serverWebExchange) {
+        serverWebExchange.getResponse().setStatusCode(HttpStatus.CONFLICT);
+        DataBuffer buffer = serverWebExchange.getResponse()
+                .bufferFactory().wrap(HttpStatus.CONFLICT.getReasonPhrase().getBytes());
         return serverWebExchange.getResponse().writeWith(Flux.just(buffer));
     }
 }

@@ -73,28 +73,33 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean invalidJwtAccessToken(String authentication) {
+    public boolean invalidJwtAccessToken(Jwt jwt) {
         verifier = Optional.ofNullable(verifier).orElse(new RsaVerifier(getRSAPublidKeyBybase64(GatewayConfig.RSA_PUBLIC_KEY)));
-        //是否无效true表示无效
         boolean invalid = Boolean.TRUE;
         try {
-            Jwt jwt = getJwt(authentication);
             jwt.verifySignature(verifier);
             invalid = Boolean.FALSE;
         } catch (InvalidSignatureException | IllegalArgumentException ex) {
-            log.error("user token has expired or signature error,error authentication:" + authentication, ex);
+            log.error("user token has expired or signature error,error authentication:" + jwt.getClaims(), ex);
         } catch (RuntimeException e){
-            log.error("signature error,error authentication:" + authentication, e);
+            log.error("signature error,error authentication:" + jwt.getClaims(), e);
         }
         return invalid;
     }
 
     @Override
-    public boolean hasPermission(String authentication, String url, String method) {
-        //token是否有效
-        if (invalidJwtAccessToken(authentication)) {
-            return Boolean.FALSE;
+    public boolean invalidJwtAccessToken(String authentication) {
+        try{
+            Jwt jwt = getJwt(authentication);
+            return invalidJwtAccessToken(jwt);
+        } catch (Exception e){
+            log.error("invalidJwtAccessToken error:" + authentication, e);
+            return true;
         }
+    }
+
+    @Override
+    public boolean hasPermission(String authentication, String url, String method) {
         //从认证服务获取是否有权限
         return hasPermission(authenticate(authentication, url, method));
     }
