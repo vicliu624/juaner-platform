@@ -6,8 +6,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ARG JAR_FILE=target/upms-1.0-SNAPSHOT.jar
 COPY ${JAR_FILE} /app/app.jar
-COPY target/lib/ /app/
-COPY target/resources /app/
+#COPY target/lib/ /app/
+#COPY target/resources /app/
 
 ARG SERVER_PORT=8080
 ENV SERVER_PORT="${SERVER_PORT}"
@@ -15,7 +15,7 @@ ENV SERVER_PORT="${SERVER_PORT}"
 ARG SPRING_PROFILE=k8s
 ENV SPRING_PROFILE="${SPRING_PROFILE}"
 ENTRYPOINT ["java",\
-                    "-Dloader.path=/app/",\
+                    "-Dloader.path=/app/resources",\
                     "-Djava.security.egd=file:/dev/./urandom",\
                     "-jar","/app/app.jar",\
                     "--server.port=${SERVER_PORT}",\

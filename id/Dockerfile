@@ -6,8 +6,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 ARG JAR_FILE=target/id-1.0-SNAPSHOT.jar
 COPY ${JAR_FILE} /app/app.jar
-COPY target/lib/ /app/
-COPY target/resources /app/
+#COPY target/lib/ /app/
+#COPY target/resources /app/
 
 ARG SERVER_PORT=8080
 ENV SERVER_PORT="${SERVER_PORT}"
@@ -18,7 +18,6 @@ ENV NODE_ID="${NODE_ID}"
 ARG SPRING_PROFILE=k8s
 ENV SPRING_PROFILE="${SPRING_PROFILE}"
 ENTRYPOINT ["java",\
-                    "-Dloader.path=/app/",\
                     "-Djava.security.egd=file:/dev/./urandom",\
                     "-jar","/app/app.jar",\
                     "--node.id=${NODE_ID}",\
