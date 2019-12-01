@@ -2,6 +2,7 @@ package indi.vicliu.juaner.common.core.util;
 
 import com.google.common.collect.Maps;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ import java.util.Optional;
  * @Description:
  */
 public class UserContextHolder {
-    private ThreadLocal<Map<String, String>> threadLocal;
+    private ThreadLocal<Map<String, Object>> threadLocal;
 
     private UserContextHolder() {
         this.threadLocal = new ThreadLocal<>();
@@ -39,7 +40,7 @@ public class UserContextHolder {
      *
      * @param map
      */
-    public void setContext(Map<String, String> map) {
+    public void setContext(Map<String, Object> map) {
         threadLocal.set(map);
     }
 
@@ -48,7 +49,7 @@ public class UserContextHolder {
      *
      * @return
      */
-    public Map<String, String> getContext() {
+    public Map<String, Object> getContext() {
         return threadLocal.get();
     }
 
@@ -58,15 +59,19 @@ public class UserContextHolder {
      * @return
      */
     public String getUsername() {
-        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_name");
+        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_name").toString();
     }
 
     public String getClientId() {
-        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("client_id");
+        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("client_id").toString();
     }
 
-    public String getAuthorities() {
-        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("authorities");
+    public List<String> getAuthorities() {
+        Object authorities = Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("authorities");
+        if (authorities instanceof List) {
+            return (List<String>) authorities;
+        }
+        return null;
     }
 
     /**
