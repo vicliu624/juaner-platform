@@ -170,7 +170,7 @@ public class PermissionServiceImpl implements PermissionService {
         try{
             Example example = new Example(TblPermissionInfo.class);
             example.createCriteria().andLike("permName",permName)
-                    .andLike("permUrl",permUrl).andEqualTo("permType",permType)
+                    .andLike("permUrl",permUrl)
                     .andEqualTo("method",method);
             if(!isExp) {
                 PageHelper.startPage(pageNum, pageSize);
