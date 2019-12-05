@@ -169,7 +169,7 @@ public class PermissionServiceImpl implements PermissionService {
         Boolean isExp = jsonMap.get("isExp") == null ? false : (Boolean) jsonMap.get("isExp");
         try{
             Example example = new Example(TblPermissionInfo.class);
-            example.createCriteria().andLike("permName",permName).andLike("permValue",permValue)
+            example.createCriteria().andLike("permName",permName)
                     .andLike("permUrl",permUrl).andEqualTo("permType",permType)
                     .andEqualTo("method",method);
             if(!isExp) {
