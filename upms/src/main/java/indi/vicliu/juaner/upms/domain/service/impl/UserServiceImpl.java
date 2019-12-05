@@ -218,10 +218,11 @@ public class UserServiceImpl implements UserService {
         }
         //保存用户信息
         TblUserInfo info=new TblUserInfo();
+
+        BeanUtils.copyProperties(userInfo,info);
         if(userInfo.getId()==null){
             info.setId(idProvider.nextId());
         }
-        BeanUtils.copyProperties(userInfo,info);
         info.setCreateTime(new Date());
         int count = userInfoMapper.insertSelective(info);
         return Result.success(info);
