@@ -242,6 +242,7 @@ public class PermissionServiceImpl implements PermissionService {
             }
 
         }catch (Exception e){
+            log.info("保存权限信息异常：{}",e);
             return Result.fail("保存权限信息失败");
         }
     }

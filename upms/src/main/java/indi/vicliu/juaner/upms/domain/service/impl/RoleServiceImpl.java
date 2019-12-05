@@ -156,7 +156,7 @@ public class RoleServiceImpl implements RoleService {
                             TblUserRoleMap rpm = new TblUserRoleMap();
                             rpm.setUserId(id);
                             rpm.setRoleId(Long.parseLong(permId.trim()));
-                            tblUserRoleMapMapper.insert(rpm);
+                            tblUserRoleMapMapper.insertSelective(rpm);
                         }
                     }
 
@@ -217,7 +217,7 @@ public class RoleServiceImpl implements RoleService {
                 ri.setRoleDesc(roleDesc);
                 ri.setRoleName(roleName);
                 ri.setUpdateTime(new Date());
-                roleInfoMapper.updateByPrimaryKey(ri);
+                roleInfoMapper.updateByPrimaryKeySelective(ri);
                 json.put("flag",1);
                 json.put("msg","角色修改成功");
                 return Result.success(json);
@@ -235,13 +235,14 @@ public class RoleServiceImpl implements RoleService {
                 ri.setRoleName(roleName);
                 ri.setCreateTime(new Date());
                 ri.setUpdateTime(ri.getCreateTime());
-                roleInfoMapper.insert(ri);
+                roleInfoMapper.insertSelective(ri);
                 json.put("flag",1);
                 json.put("msg","角色新增成功");
                 return Result.success(json);
             }
 
         }catch (Exception e){
+            log.info("保存角色信息异常：{}",e);
             return Result.fail("保存角色信息失败");
         }
 
