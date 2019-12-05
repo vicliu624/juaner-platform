@@ -30,6 +30,7 @@ import java.util.Objects;
  * @Date: 2019-09-15 13:15
  * @Description:
  */
+@SuppressWarnings("ALL")
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
@@ -122,7 +123,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result updateUserInfo(TblUserInfo user) {
+    public Result updateUserInfo(AddUserInfoVO user) {
 
         if(user.getId()==null){
             return Result.fail("用户id不可以为空");
@@ -131,8 +132,10 @@ public class UserServiceImpl implements UserService {
         if(userInfo==null){
             return Result.fail("用户不存在");
         }
+        TblUserInfo info=new TblUserInfo();
+        BeanUtils.copyProperties(userInfo,info);
         userInfo.setUpdateTime(new Date());
-        userInfoMapper.updateByPrimaryKeySelective(user);
+        userInfoMapper.updateByPrimaryKeySelective(info);
         try {
             updateUserInfoCache(userInfo.getUserName());
         } catch (UserException ex) {
@@ -207,5 +210,47 @@ public class UserServiceImpl implements UserService {
         return userInfo;
     }
 
+    @Transactional
+    @Override
+    public Result createUserInfo(AddUserInfoVO userInfo) {
+        Example example = new Example(TblUserInfo.class);
+        example.createCriteria().andEqualTo("userName",userInfo.getUserName());
+        example.setOrderByClause(" create_time desc limit 1");
+        List<TblUserInfo> userInfoList = this.userInfoMapper.selectByExample(example);
+        if(userInfoList.size()>0){
+            return Result.fail("用户已存在");
+        }
+        //保存用户信息
+        TblUserInfo info=new TblUserInfo();
+        if(userInfo.getId()==null){
+            info.setId(idProvider.nextId());
+        }
+        BeanUtils.copyProperties(userInfo,info);
+        info.setCreateTime(new Date());
+        int count = userInfoMapper.insertSelective(info);
+        return Result.success(info);
+    }
 
+    @Transactional
+    @Override
+    public Result delUserInfo(String ids) {
+        try {
+            String[] idArr = ids.split(",");
+            for (String id : idArr) {
+                if (id != null && ids.trim().length() > 0) {
+                    Example urexample = new Example(TblUserRoleMap.class);
+                    urexample.createCriteria().andEqualTo("userId", Long.parseLong(id.trim()));
+                    //删除用户角色
+                    Integer ur = tblUserRoleMapMapper.deleteByExample(urexample);
+                    //删除用户
+                    Integer ri = userInfoMapper.deleteByPrimaryKey(Long.parseLong(id.trim()));
+                    log.info("删除用户id:" + id + ",删除用户权限关系个数TblUserRoleMap:" + ur);
+                }
+            }
+            return Result.success("删除用户成功");
+        } catch (Exception e) {
+            log.error("删除用户方法removeUserInfo出错", e);
+            return Result.fail("删除用户失败");
+        }
+    }
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: liuweikai
@@ -57,5 +58,45 @@ public class PermissionController {
             log.error(" queryByUri fail ",e);
             return Result.fail("查询权限时出错");
         }
+    }
+
+    /**
+     * 获取权限列表
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/list")
+    public Result list(@RequestBody Map<String,Object> jsonMap){
+        return permissionService.list(jsonMap);
+    }
+
+    /**
+     * 保存权限信息
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/savePermission")
+    public Result savePermission(@RequestBody Map<String,Object> jsonMap){
+        return permissionService.savePermission(jsonMap);
+    }
+
+    /**
+     * 删除权限信息
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/removePermission")
+    public Result removePermission(@RequestBody Map<String,Object> jsonMap){
+        return permissionService.removePermission(jsonMap);
+    }
+
+    /**
+     * 获取用户的权限列表
+     * @param id
+     * @return
+     */
+    @GetMapping("/getUserPermission")
+    public Result getUserPermission(@RequestParam("id") Long id) {
+        return permissionService.getUserPermission(id);
     }
 }

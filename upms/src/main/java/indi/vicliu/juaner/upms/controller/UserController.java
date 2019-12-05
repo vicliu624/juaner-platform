@@ -96,7 +96,7 @@ public class UserController {
      * @return
      */
     @PutMapping("/user/updateUser")
-    public Result updateUserInfo(@RequestBody TblUserInfo info){
+    public Result updateUserInfo(@RequestBody AddUserInfoVO info){
         return userService.updateUserInfo(info);
     }
 
@@ -118,6 +118,26 @@ public class UserController {
     @GetMapping("/user/getByUserId")
     public Result findByUserId(@RequestParam Long userId){
         return userService.findByUserId(userId);
+    }
+
+    /**
+     * 创建用户不录入角色
+     * @param userInfo
+     * @return
+     */
+    @PostMapping("/user/createUserInfo")
+    public Result createUserInfo(@RequestBody AddUserInfoVO userInfo){
+        return userService.createUserInfo(userInfo);
+    }
+
+    /**
+     * 管理端删除用户
+     * @param ids
+     * @return
+     */
+    @GetMapping("/user/delUserInfo")
+    public Result delUserInfo(@RequestParam("ids") String ids){
+        return userService.delUserInfo(ids);
     }
 
 }

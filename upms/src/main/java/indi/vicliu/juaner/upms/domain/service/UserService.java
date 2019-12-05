@@ -17,13 +17,16 @@ public interface UserService {
 
     Result addUserInfo(AddUserInfoVO userInfo) throws UserException;
 
-    Result updateUserInfo(TblUserInfo user);
+    Result updateUserInfo(AddUserInfoVO user);
 
     Result findByUserPhone(String phone);
 
     Result findByUserId(Long userId);
 
-    Result getByUsername(@RequestParam("username") String username) throws UserException;
+    Result getByUsername( String username) throws UserException;
 
     void updateUserInfoCache(String userName) throws UserException;
+
+    Result createUserInfo(AddUserInfoVO userInfo);
+    Result delUserInfo(String ids);
 }
