@@ -129,7 +129,7 @@ public class UserServiceImpl implements UserService {
             return Result.fail("用户不存在");
         }
         TblUserInfo info=new TblUserInfo();
-        BeanUtils.copyProperties(userInfo,info);
+        BeanUtils.copyProperties(user,info);
         userInfo.setUpdateTime(new Date());
         userInfoMapper.updateByPrimaryKeySelective(info);
         try {
