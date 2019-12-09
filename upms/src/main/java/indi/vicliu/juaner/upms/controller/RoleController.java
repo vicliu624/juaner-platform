@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.upms.controller;
 
+import com.sun.org.apache.regexp.internal.RE;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblRoleInfo;
 import indi.vicliu.juaner.upms.domain.service.RoleService;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auther: liuweikai
@@ -79,5 +81,75 @@ public class RoleController {
         } catch (Exception e){
             return Result.fail("更新失败:" + e.getMessage());
         }
+    }
+
+    /**
+     * 管理端获取用户角色
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/findRoleByUser")
+    public Result findRoleByUser(@RequestBody Map<String, Object> jsonMap){
+        return roleService.findRoleByUser(jsonMap);
+    }
+
+    /**
+     * 管理端保存用户信息的角色
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/saveUserRole")
+    public Result saveUserRole(@RequestBody Map<String, Object> jsonMap) {
+        return roleService.saveUserRole(jsonMap);
+    }
+
+    /**
+     *获取角色列表
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/getRoleInfoList")
+    public Result getRoleInfoList(@RequestBody Map<String,Object> jsonMap){
+        return roleService.getRoleInfoList(jsonMap);
+    }
+
+    /**
+     *保存角色信息
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/saveRoleInfo")
+    public Result saveRoleInfo(@RequestBody Map<String,Object> jsonMap){
+        return roleService.saveRoleInfo(jsonMap);
+    }
+
+    /**
+     *删除角色信息
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/removeRoleInfo")
+    public Result removeRoleInfo(@RequestBody Map<String,Object> jsonMap){
+        return roleService.removeRoleInfo(jsonMap);
+    }
+
+    /**
+     *查找角色的权限以及所有权限集合
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/findPermissionByRole")
+    public Result findPermissionByRole(@RequestBody Map<String,Object> jsonMap){
+        return roleService.findPermissionByRole(jsonMap);
+    }
+
+    /**
+     *分配角色的权限
+     * @param jsonMap
+     * @return
+     */
+    @PostMapping("/saveRolePerm")
+    public Result saveRolePerm(@RequestBody Map<String,Object> jsonMap){
+        return roleService.saveRolePerm(jsonMap);
     }
 }
