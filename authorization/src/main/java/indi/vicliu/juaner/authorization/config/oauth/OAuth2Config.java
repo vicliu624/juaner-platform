@@ -3,7 +3,6 @@ package indi.vicliu.juaner.authorization.config.oauth;
 import indi.vicliu.juaner.authorization.config.AuthExceptionEntryPoint;
 import indi.vicliu.juaner.authorization.config.custom.CustomTokenEnhancer;
 import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.ResourceOwnerSmsTokenGranter;
-import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider.SmsCodeAuthenticationProvider;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import indi.vicliu.juaner.authorization.exception.CustomWebResponseExceptionTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,9 +68,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private ClientDetailsService clientDetailsService;
-
-    @Autowired
-    private SmsCodeAuthenticationProvider smsCodeAuthenticationProvider;
 
     /**
      * 定义了token切点的安全限制。
