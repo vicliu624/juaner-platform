@@ -19,7 +19,7 @@ import java.util.List;
  */
 @Slf4j
 @RestController
-@RequestMapping("/database/ndbcluster")
+@RequestMapping("/open/database/ndbcluster")
 public class PerformanceController {
 
     @Autowired
