@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -37,20 +36,6 @@ public class SmsCodeAuthenticationProvider extends AbstractCustomUserDetailsAuth
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, CustomAuthenticationToken authentication) throws AuthenticationException {
-
-    }
-
-    @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        CustomAuthenticationToken authenticationToken = (CustomAuthenticationToken) authentication;
-        //调用自定义的userDetailsService认证
-
-        UserDetails user = customUserDetailsService.loadUserByUsername((String) authenticationToken.getPrincipal());
-
-        if (user == null) {
-            throw new InternalAuthenticationServiceException("无法获取用户信息");
-        }
-
         if (authentication.getCredentials() == null) {
             log.debug("授权失败: 为提供短信验证码");
 
@@ -59,7 +44,7 @@ public class SmsCodeAuthenticationProvider extends AbstractCustomUserDetailsAuth
                     "未提供验证码"));
         }
 
-        if (user.getAuthorities().isEmpty()){
+        if (userDetails.getAuthorities().isEmpty()){
             log.debug("授权失败: 该用户未分配角色");
 
             throw new BadCredentialsException(messages.getMessage(
@@ -87,17 +72,19 @@ public class SmsCodeAuthenticationProvider extends AbstractCustomUserDetailsAuth
                         "短信验证码错误"));
             }
         }
+    }
 
-        CustomAuthenticationToken authenticationResult = new CustomAuthenticationToken(authenticationToken.getPrincipal(), authenticationToken.getCredentials() ,user.getAuthorities());
-
-        authenticationResult.setDetails(authenticationToken.getDetails());
-
+    @Override
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        authentication = super.authenticate(authentication);
+        CustomAuthenticationToken authenticationToken = (CustomAuthenticationToken) authentication;
+        CustomAuthenticationToken authenticationResult = new CustomAuthenticationToken(authenticationToken.getPrincipal(), authenticationToken.getCredentials() ,authentication.getAuthorities());
         return authenticationResult;
     }
 
     @Override
     protected UserDetails retrieveUser(String username, CustomAuthenticationToken authentication) throws AuthenticationException {
-        return null;
+        return customUserDetailsService.loadUserByUsername((String) authentication.getPrincipal());
     }
 
     @Override

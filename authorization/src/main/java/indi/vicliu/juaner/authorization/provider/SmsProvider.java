@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 /**
  * 该client请求一个非本平台模块的接口 应根据实际需求进行替换
+ * 对端去记录username和手机号的对应关系
  */
 @Component
 @FeignClient(name = "ynyt-sms-service", fallback = SmsProviderFallback.class)
