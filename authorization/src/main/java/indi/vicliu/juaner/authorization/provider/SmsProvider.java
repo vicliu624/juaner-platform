@@ -7,10 +7,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+/**
+ * 该client请求一个非本平台模块的接口 应根据实际需求进行替换
+ */
 @Component
 @FeignClient(name = "ynyt-sms-service", fallback = SmsProviderFallback.class)
 public interface SmsProvider {
 	
-    @GetMapping(value = "/sms/verify/{phone}/{code}")
-    Result verify(@PathVariable("phone") String phone, @PathVariable("code") String code);
+    @GetMapping(value = "/sms/verify/username/{username}/{code}")
+    Result verifyByUsername(@PathVariable("username") String phone, @PathVariable("code") String code);
 }

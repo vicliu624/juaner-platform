@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.authorization.config.oauth;
 
-import indi.vicliu.juaner.authorization.config.oauth.sms.SmsCodeAuthenticationProvider;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.AbstractCustomUserDetailsAuthenticationProvider;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider.SmsCodeAuthenticationProvider;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,6 +26,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    private AbstractCustomUserDetailsAuthenticationProvider customUserDetailsAuthenticationProvider;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
@@ -36,11 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().permitAll();
 
-        /*
-        SmsCodeAuthenticationProvider smsCodeAuthenticationProvider = new SmsCodeAuthenticationProvider();
-        smsCodeAuthenticationProvider.setUserDetailsService(customUserDetailsService);
-        http.authenticationProvider(smsCodeAuthenticationProvider);
-         */
+        http.authenticationProvider(customUserDetailsAuthenticationProvider);
+
     }
 
     /**

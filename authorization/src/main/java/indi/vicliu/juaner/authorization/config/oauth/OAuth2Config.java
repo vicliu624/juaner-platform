@@ -2,10 +2,10 @@ package indi.vicliu.juaner.authorization.config.oauth;
 
 import indi.vicliu.juaner.authorization.config.AuthExceptionEntryPoint;
 import indi.vicliu.juaner.authorization.config.custom.CustomTokenEnhancer;
-import indi.vicliu.juaner.authorization.config.oauth.sms.SmsCodeTokenGranter;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.ResourceOwnerSmsTokenGranter;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider.SmsCodeAuthenticationProvider;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import indi.vicliu.juaner.authorization.exception.CustomWebResponseExceptionTranslator;
-import indi.vicliu.juaner.authorization.provider.SmsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -68,10 +68,10 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    private SmsProvider smsProvider;
+    private ClientDetailsService clientDetailsService;
 
     @Autowired
-    private ClientDetailsService clientDetailsService;
+    private SmsCodeAuthenticationProvider smsCodeAuthenticationProvider;
 
     /**
      * 定义了token切点的安全限制。
@@ -107,12 +107,12 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         //配置token的数据源、自定义的tokenServices等信息,配置身份认证器，配置认证方式，TokenStore，TokenGranter，OAuth2RequestFactory
-        endpoints.tokenStore(tokenStore())
+        endpoints.tokenGranter(tokenGranter())
+                .tokenStore(tokenStore())
                 .authorizationCodeServices(authorizationCodeServices())
                 //add
                 //.tokenServices(tokenServices())
                 .approvalStore(approvalStore())
-                //.tokenGranter(tokenGranter())
                 .tokenEnhancer(tokenEnhancerChain())
                 .authenticationManager(authenticationManager)
                 .userDetailsService(customUserDetailsService)
@@ -154,6 +154,8 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     public DefaultTokenServices tokenServices() {
         DefaultTokenServices defaultTokenServices = new DefaultTokenServices();
         defaultTokenServices.setTokenStore(tokenStore());
+        defaultTokenServices.setTokenEnhancer(tokenEnhancerChain());
+        defaultTokenServices.setSupportRefreshToken(true);
         return defaultTokenServices;
     }
 
@@ -214,10 +216,10 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         if (authenticationManager != null) {
             tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager,
                     tokenServices(), clientDetailsService, oAuth2RequestFactory()));
-        }
 
-        tokenGranters.add(new SmsCodeTokenGranter(customUserDetailsService, tokenServices(),
-                clientDetailsService, oAuth2RequestFactory(), smsProvider));
+            tokenGranters.add(new ResourceOwnerSmsTokenGranter(authenticationManager, tokenServices(),
+                    clientDetailsService, oAuth2RequestFactory()));
+        }
         return tokenGranters;
     }
 }

@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 public class SmsProviderFallback implements SmsProvider {
 	
 	@Override
-	public Result verify(String phone, String code) {
+	public Result verifyByUsername(String username, String code) {
 		log.error("verify的熔断被触发");
-        return Result.fail();
+        return Result.fail("确认短信验证码时出错");
 	}
 }

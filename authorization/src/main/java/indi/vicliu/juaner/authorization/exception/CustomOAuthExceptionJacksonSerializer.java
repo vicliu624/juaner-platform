@@ -27,7 +27,7 @@ public class CustomOAuthExceptionJacksonSerializer extends StdSerializer<CustomO
         jsonGenerator.writeObjectField("code", ErrorType.OAUTH_ERROR.getCode());
         jsonGenerator.writeStringField("message", ErrorType.OAUTH_ERROR.getMessage());
         jsonGenerator.writeObjectField("timestamp", ZonedDateTime.now().toInstant().plusMillis(TimeUnit.HOURS.toMillis(8)));
-        jsonGenerator.writeObjectField("data", "用户名或密码错误");
+        jsonGenerator.writeObjectField("data", e.getMessage());
 
         if (e.getAdditionalInformation()!=null) {
             for (Map.Entry<String, String> entry : e.getAdditionalInformation().entrySet()) {
