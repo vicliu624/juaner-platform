@@ -29,4 +29,6 @@ public interface UserService {
 
     Result createUserInfo(AddUserInfoVO userInfo);
     Result delUserInfo(String ids);
+
+    int lockUserByName(String userName) throws UserException;
 }

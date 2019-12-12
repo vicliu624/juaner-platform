@@ -250,4 +250,16 @@ public class UserServiceImpl implements UserService {
             return Result.fail("删除用户失败");
         }
     }
+
+    @Override
+    public int lockUserByName(String userName) throws UserException {
+        TblUserInfo userInfo = findByUserName(userName);
+        userInfo.setAccountNonLocked(Boolean.FALSE);
+        Example example = new Example(TblUserInfo.class);
+        example.createCriteria().andEqualTo("userName",userName);
+        int updateCount = this.userInfoMapper.updateByExample(userInfo,example);
+        String key="upms_user_" + userName;
+        redisStringUtil.delKey(key);
+        return updateCount;
+    }
 }

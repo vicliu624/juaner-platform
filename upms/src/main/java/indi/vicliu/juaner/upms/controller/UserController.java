@@ -140,4 +140,18 @@ public class UserController {
         return userService.delUserInfo(ids);
     }
 
+    @PutMapping("/user/lock")
+    public Result lockUser(@RequestBody String userName){
+        try{
+            int count = userService.lockUserByName(userName);
+            if(count > 0){
+                return Result.success("用户被锁定");
+            } else {
+                return Result.success("用户已锁定");
+            }
+        } catch (Exception e){
+            log.error("锁定用户出错",e);
+            return Result.fail(e.getMessage());
+        }
+    }
 }
