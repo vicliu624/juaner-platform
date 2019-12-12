@@ -69,7 +69,7 @@ public class SmsCodeAuthenticationProvider extends AbstractSmsCodeUserDetailsAut
         log.debug("active profile:{}",activeProfile);
 
         //测试环境开发环境都是固定的短信码
-        if(activeProfile.toLowerCase().startsWith("test") || activeProfile.toLowerCase().startsWith("dev")){
+        if(activeProfile.toLowerCase().startsWith("dev")){
             if(!"111111".equals(presentedSmsCode)){
                 throw new BadCredentialsException(messages.getMessage(
                         "SmsCodeAuthenticationProvider.badCredentials",
@@ -84,6 +84,13 @@ public class SmsCodeAuthenticationProvider extends AbstractSmsCodeUserDetailsAut
                 if(StringUtils.isNumeric(value)){
                     int failCount = Integer.parseInt(value);
                     if(failCount >= 3){
+                        //在这里加上错误次数限制 达到上限后锁定账户
+                        Result ret = upmsProvider.lockUser(userName);
+                        if(ret.isSuccess()){
+                            throw new BadCredentialsException(messages.getMessage(
+                                    "SmsCodeAuthenticationProvider.badCredentials",
+                                    (String) ret.getData()));
+                        }
                         throw new BadCredentialsException(messages.getMessage(
                                 "SmsCodeAuthenticationProvider.badCredentials",
                                 "用户被锁定"));
@@ -110,16 +117,9 @@ public class SmsCodeAuthenticationProvider extends AbstractSmsCodeUserDetailsAut
                 }
                 log.warn("用户{}当前短信验证码错误次数{}",userName,value);
                 redisStringUtil.setKeyExpire(key,value,1, TimeUnit.DAYS);
-                //在这里加上错误次数限制 达到上限后锁定账户
-                Result ret = upmsProvider.lockUser(userName);
-                if(ret.isSuccess()){
-                    throw new BadCredentialsException(messages.getMessage(
-                            "SmsCodeAuthenticationProvider.badCredentials",
-                            (String) ret.getData()));
-                }
                 throw new BadCredentialsException(messages.getMessage(
                         "SmsCodeAuthenticationProvider.badCredentials",
-                        "短信验证码错误"));
+                        "短信验证码错误,剩余尝试次数" + (3 - Integer.parseInt(value))));
             }
         }
     }
