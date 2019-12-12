@@ -120,6 +120,8 @@ public class SmsCodeAuthenticationProvider extends AbstractSmsCodeUserDetailsAut
                 throw new BadCredentialsException(messages.getMessage(
                         "SmsCodeAuthenticationProvider.badCredentials",
                         "短信验证码错误,剩余尝试次数" + (3 - Integer.parseInt(value))));
+            } else {
+                redisStringUtil.delKey(key);
             }
         }
     }
