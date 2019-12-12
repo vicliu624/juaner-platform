@@ -3,6 +3,8 @@ package indi.vicliu.juaner.authorization.config.oauth;
 import indi.vicliu.juaner.authorization.config.AuthExceptionEntryPoint;
 import indi.vicliu.juaner.authorization.config.custom.CustomTokenEnhancer;
 import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.ResourceOwnerSmsTokenGranter;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.wechat.WechatAuthorizationCodeServicesImpl;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.wechat.WeixinCodeTokenGranter;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import indi.vicliu.juaner.authorization.exception.CustomWebResponseExceptionTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -131,6 +133,11 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         return new JdbcAuthorizationCodeServices(dataSource);
     }
 
+    @Bean
+    protected AuthorizationCodeServices wechatAuthorizationCodeServices() {
+        return new WechatAuthorizationCodeServicesImpl();
+    }
+
     /**
      * token的持久化
      * 这个版本的全称是 JSON Web Token（JWT），它可以把令牌相关的数据进行编码（因此对于后端
@@ -202,13 +209,20 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         List<TokenGranter> tokenGranters = new ArrayList<>();
         tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices(),
                 authorizationCodeServices(), clientDetailsService, oAuth2RequestFactory()));
+
         tokenGranters.add(new RefreshTokenGranter(tokenServices(), clientDetailsService,
                 oAuth2RequestFactory()));
+
         ImplicitTokenGranter implicit = new ImplicitTokenGranter(tokenServices(),
                 clientDetailsService, oAuth2RequestFactory());
         tokenGranters.add(implicit);
+
         tokenGranters.add(new ClientCredentialsTokenGranter(tokenServices(), clientDetailsService,
                 oAuth2RequestFactory()));
+
+        tokenGranters.add(new WeixinCodeTokenGranter(tokenServices(),
+                wechatAuthorizationCodeServices(), clientDetailsService, oAuth2RequestFactory()));
+
         if (authenticationManager != null) {
             tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager,
                     tokenServices(), clientDetailsService, oAuth2RequestFactory()));

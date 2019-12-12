@@ -1,6 +1,6 @@
 package indi.vicliu.juaner.authorization.config.oauth;
 
-import indi.vicliu.juaner.authorization.config.oauth.custom.provider.AbstractCustomUserDetailsAuthenticationProvider;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider.AbstractSmsCodeUserDetailsAuthenticationProvider;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +26,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService customUserDetailsService;
 
     @Autowired
-    private AbstractCustomUserDetailsAuthenticationProvider customUserDetailsAuthenticationProvider;
+    private AbstractSmsCodeUserDetailsAuthenticationProvider smsCodeUserDetailsAuthenticationProvider;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -39,8 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().permitAll();
 
-        http.authenticationProvider(customUserDetailsAuthenticationProvider);
-
+        http.authenticationProvider(smsCodeUserDetailsAuthenticationProvider);
     }
 
     /**

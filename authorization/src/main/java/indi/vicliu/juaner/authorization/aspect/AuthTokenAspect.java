@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.authorization.aspect;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.authorization.utils.RedisStringUtil;
 import indi.vicliu.juaner.common.core.CommonConstant;

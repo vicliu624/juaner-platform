@@ -5,6 +5,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
+import java.util.concurrent.TimeUnit;
+
 @Component
 public class RedisStringUtil {
 
@@ -14,5 +16,15 @@ public class RedisStringUtil {
     public void setKey(String key,String value){
         ValueOperations<String, String> ops = template.opsForValue();
         ops.set(key,value);
+    }
+
+    public void setKeyExpire(String key, String value, int time, TimeUnit unit) {
+        ValueOperations<String, String> ops = template.opsForValue();
+        ops.set(key, value,time,unit);
+    }
+
+    public String getValue(String key){
+        ValueOperations<String, String> ops = template.opsForValue();
+        return ops.get(key);
     }
 }

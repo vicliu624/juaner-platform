@@ -1,4 +1,4 @@
-package indi.vicliu.juaner.authorization.config.oauth.custom.provider;
+package indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,18 +10,18 @@ import java.util.Collection;
  * @Date: 2019-12-08 18:18
  * @Description:
  */
-public class CustomAuthenticationToken extends AbstractAuthenticationToken {
+public class SmsCodeAuthenticationToken extends AbstractAuthenticationToken {
     private final Object principal;
     private Object credentials;
 
-    public CustomAuthenticationToken(Object principal, Object credentials) {
+    public SmsCodeAuthenticationToken(Object principal, Object credentials) {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
         setAuthenticated(false);
     }
 
-    public CustomAuthenticationToken(Object principal, Object credentials,
+    public SmsCodeAuthenticationToken(Object principal, Object credentials,
                                                Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;

@@ -5,6 +5,8 @@ import indi.vicliu.juaner.common.core.message.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -24,4 +26,7 @@ public interface UpmsProvider {
 
     @GetMapping("/user/fullInfo/byPhone")
     Result getFullUserInfoByPhone(@RequestParam("phone") String phone);
+
+    @PutMapping("/user/lock")
+    Result lockUser(@RequestBody String userName);
 }

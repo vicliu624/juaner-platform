@@ -1,6 +1,5 @@
 package indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms;
 
-import indi.vicliu.juaner.authorization.config.oauth.custom.provider.CustomAuthenticationToken;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
@@ -41,7 +40,7 @@ public class ResourceOwnerSmsTokenGranter extends AbstractTokenGranter {
         // Protect from downstream leaks of password
         parameters.remove("code");
 
-        Authentication userAuth = new CustomAuthenticationToken(username, code);
+        Authentication userAuth = new SmsCodeAuthenticationToken(username, code);
         ((AbstractAuthenticationToken) userAuth).setDetails(parameters);
         try {
             userAuth = authenticationManager.authenticate(userAuth);

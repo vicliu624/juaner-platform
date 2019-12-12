@@ -1,5 +1,6 @@
-package indi.vicliu.juaner.authorization.config.oauth.custom.provider;
+package indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider;
 
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.SmsCodeAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
@@ -24,19 +25,19 @@ import org.springframework.util.Assert;
  * @Description:
  */
 @Slf4j
-public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
+public abstract class AbstractSmsCodeUserDetailsAuthenticationProvider implements
         AuthenticationProvider, InitializingBean, MessageSourceAware {
 
     protected MessageSourceAccessor messages = SpringSecurityMessageSource.getAccessor();
     private UserCache userCache = new NullUserCache();
     private boolean forcePrincipalAsString = false;
     protected boolean hideUserNotFoundExceptions = true;
-    private UserDetailsChecker preAuthenticationChecks = new AbstractCustomUserDetailsAuthenticationProvider.DefaultPreAuthenticationChecks();
-    private UserDetailsChecker postAuthenticationChecks = new AbstractCustomUserDetailsAuthenticationProvider.DefaultPostAuthenticationChecks();
+    private UserDetailsChecker preAuthenticationChecks = new AbstractSmsCodeUserDetailsAuthenticationProvider.DefaultPreAuthenticationChecks();
+    private UserDetailsChecker postAuthenticationChecks = new AbstractSmsCodeUserDetailsAuthenticationProvider.DefaultPostAuthenticationChecks();
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     protected abstract void additionalAuthenticationChecks(UserDetails userDetails,
-                                                           CustomAuthenticationToken authentication)
+                                                           SmsCodeAuthenticationToken authentication)
             throws AuthenticationException;
 
     public final void afterPropertiesSet() throws Exception {
@@ -47,7 +48,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
 
     public Authentication authenticate(Authentication authentication)
             throws AuthenticationException {
-        Assert.isInstanceOf(CustomAuthenticationToken.class, authentication,
+        Assert.isInstanceOf(SmsCodeAuthenticationToken.class, authentication,
                 () -> messages.getMessage(
                         "AbstractCustomUserDetailsAuthenticationProvider.onlySupports",
                         "Only CustomAuthenticationToken is supported"));
@@ -64,7 +65,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
 
             try {
                 user = retrieveUser(username,
-                        (CustomAuthenticationToken) authentication);
+                        (SmsCodeAuthenticationToken) authentication);
             }
             catch (UsernameNotFoundException notFound) {
                 log.debug("User '" + username + "' not found");
@@ -86,7 +87,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
         try {
             preAuthenticationChecks.check(user);
             additionalAuthenticationChecks(user,
-                    (CustomAuthenticationToken) authentication);
+                    (SmsCodeAuthenticationToken) authentication);
         }
         catch (AuthenticationException exception) {
             if (cacheWasUsed) {
@@ -94,10 +95,10 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
                 // we're using latest data (i.e. not from the cache)
                 cacheWasUsed = false;
                 user = retrieveUser(username,
-                        (CustomAuthenticationToken) authentication);
+                        (SmsCodeAuthenticationToken) authentication);
                 preAuthenticationChecks.check(user);
                 additionalAuthenticationChecks(user,
-                        (CustomAuthenticationToken) authentication);
+                        (SmsCodeAuthenticationToken) authentication);
             }
             else {
                 throw exception;
@@ -125,7 +126,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
         // so subsequent attempts are successful even with encoded passwords.
         // Also ensure we return the original getDetails(), so that future
         // authentication events after cache expiry contain the details
-        CustomAuthenticationToken result = new CustomAuthenticationToken(
+        SmsCodeAuthenticationToken result = new SmsCodeAuthenticationToken(
                 principal, authentication.getCredentials(),
                 authoritiesMapper.mapAuthorities(user.getAuthorities()));
         result.setDetails(authentication.getDetails());
@@ -149,7 +150,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
     }
 
     protected abstract UserDetails retrieveUser(String username,
-                                                CustomAuthenticationToken authentication)
+                                                SmsCodeAuthenticationToken authentication)
             throws AuthenticationException;
 
     public void setForcePrincipalAsString(boolean forcePrincipalAsString) {
@@ -169,7 +170,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
     }
 
     public boolean supports(Class<?> authentication) {
-        return (CustomAuthenticationToken.class
+        return (SmsCodeAuthenticationToken.class
                 .isAssignableFrom(authentication));
     }
 
@@ -200,7 +201,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
 
                 throw new LockedException(messages.getMessage(
                         "AbstractCustomUserDetailsAuthenticationProvider.locked",
-                        "User account is locked"));
+                        "用户已被锁定"));
             }
 
             if (!user.isEnabled()) {
@@ -208,7 +209,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
 
                 throw new DisabledException(messages.getMessage(
                         "AbstractCustomUserDetailsAuthenticationProvider.disabled",
-                        "User is disabled"));
+                        "用户已被禁用"));
             }
 
             if (!user.isAccountNonExpired()) {
@@ -216,7 +217,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
 
                 throw new AccountExpiredException(messages.getMessage(
                         "AbstractCustomUserDetailsAuthenticationProvider.expired",
-                        "User account has expired"));
+                        "该账户已过期"));
             }
         }
     }
@@ -228,7 +229,7 @@ public abstract class AbstractCustomUserDetailsAuthenticationProvider implements
 
                 throw new CredentialsExpiredException(messages.getMessage(
                         "AbstractCustomUserDetailsAuthenticationProvider.credentialsExpired",
-                        "User credentials have expired"));
+                        "用户凭证已过期"));
             }
         }
     }
