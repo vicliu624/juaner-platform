@@ -105,6 +105,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-jar-plugin</artifactId>
+                        <version>3.1.2</version>
                         <configuration>
                             <!--不打包资源文件-->
                             <excludes>
@@ -153,6 +154,7 @@
                     <!--拷贝资源文件 copy-resources-->
                     <plugin>
                         <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.0.2</version>
                         <executions>
                             <execution>
                                 <id>copy-resources</id>
