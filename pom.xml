@@ -18,7 +18,7 @@
         <module>gateway</module>
         <module>id</module>
         <module>admin</module>
-        <module>ndb-cluster-analyze</module>
+        <module>ndbcluster-analyze</module>
     </modules>
 
     <properties>
