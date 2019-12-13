@@ -158,7 +158,7 @@ public class UserController {
     @PutMapping("/user/unlock")
     public Result unlockUser(@RequestBody String userName){
         try{
-            int count = userService.lockUserByName(userName);
+            int count = userService.unlockUserByName(userName);
             if(count > 0){
                 return Result.success("用户解锁成功");
             } else {
