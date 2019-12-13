@@ -39,7 +39,7 @@
         <alibaba-nacos-discovery.version>2.1.1.RELEASE</alibaba-nacos-discovery.version>
         <alibaba-nacos-config.version>2.1.1.RELEASE</alibaba-nacos-config.version>
 
-        <fastjson.version>1.2.56</fastjson.version>
+        <fastjson.version>1.2.58</fastjson.version>
 
         <lombok.version>1.16.20</lombok.version>
 
@@ -54,14 +54,14 @@
         <openfeign.version>2.1.3.RELEASE</openfeign.version>
 
         <springfox.version>2.9.2</springfox.version>
-        <swagger-annotations.version>1.5.21</swagger-annotations.version>
+        <swagger-annotations.version>1.6.0</swagger-annotations.version>
 
         <spring-security-jwt.version>1.0.10.RELEASE</spring-security-jwt.version>
 
         <docker.url>http://127.0.0.1:4243</docker.url>
         <registry.url>127.0.0.1:5010</registry.url>
 
-        <sentinel.version>1.6.3</sentinel.version>
+        <sentinel.version>1.7.0</sentinel.version>
 
         <github.global.server>github</github.global.server>
     </properties>
