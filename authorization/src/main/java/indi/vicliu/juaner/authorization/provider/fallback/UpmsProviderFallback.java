@@ -38,5 +38,10 @@ public class UpmsProviderFallback implements UpmsProvider {
         return Result.fail("锁定用户失败,请稍后再试.");
     }
 
+    @Override
+    public Result unlockUser(String userName) {
+        log.error("UpmsProviderFallback unlockUser 熔断被触发");
+        return Result.fail("用户已解锁.");
+    }
 
 }

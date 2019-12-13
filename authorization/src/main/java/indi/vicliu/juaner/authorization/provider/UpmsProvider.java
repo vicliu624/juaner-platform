@@ -29,4 +29,7 @@ public interface UpmsProvider {
 
     @PutMapping("/user/lock")
     Result lockUser(@RequestBody String userName);
+
+    @PutMapping("/user/unlock")
+    Result unlockUser(@RequestBody String userName);
 }

@@ -73,7 +73,7 @@ public class WeixinCodeTokenGranter extends AbstractTokenGranter {
         // in the pendingAuthorizationRequest. We do want to check that a secret is provided
         // in the token request, but that happens elsewhere.
 
-        Map<String, String> combinedParameters = new HashMap<String, String>(pendingOAuth2Request
+        Map<String, String> combinedParameters = new HashMap<>(pendingOAuth2Request
                 .getRequestParameters());
         // Combine the parameters adding the new ones last so they override if there are any clashes
         combinedParameters.putAll(parameters);

@@ -15,15 +15,13 @@ import org.springframework.security.oauth2.provider.code.AuthorizationCodeServic
 @Slf4j
 public class WechatAuthorizationCodeServicesImpl implements AuthorizationCodeServices {
 
-
-    @Override
     public String createAuthorizationCode(OAuth2Authentication authentication) {
         log.info("wechat createAuthorizationCode");
         return null;
     }
 
-    @Override
-    public OAuth2Authentication consumeAuthorizationCode(String code) throws InvalidGrantException {
+    public OAuth2Authentication consumeAuthorizationCode(String code)
+            throws InvalidGrantException {
         log.info("wechat consumeAuthorizationCode");
         OAuth2Request storedRequest = null;
         Authentication userAuthentication = null;

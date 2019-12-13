@@ -27,4 +27,8 @@ public class RedisStringUtil {
         ValueOperations<String, String> ops = template.opsForValue();
         return ops.get(key);
     }
+
+    public void delKey(String key){
+        template.delete(key);
+    }
 }
