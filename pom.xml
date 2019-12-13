@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>indi.vicliu.juaner</groupId>
     <artifactId>juaner-platform</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.1</version>
     <name>juaner-platform</name>
     <packaging>pom</packaging>
     <description>卷耳-微服务框架</description>
@@ -29,17 +29,16 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot.version>2.1.3.RELEASE</spring-boot.version>
-        <spring-cloud.version>Greenwich.SR2</spring-cloud.version>
-        <springframework.version>5.1.5.RELEASE</springframework.version>
+        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
+        <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
+        <springframework.version>5.2.2.RELEASE</springframework.version>
 
-        <spring-boot-admin.version>2.1.3</spring-boot-admin.version>
+        <spring-boot-admin.version>2.2.0</spring-boot-admin.version>
 
         <nacos-client.version>1.1.4</nacos-client.version>
-        <alibaba-nacos-discovery.version>2.1.1.RELEASE</alibaba-nacos-discovery.version>
-        <alibaba-nacos-config.version>2.1.1.RELEASE</alibaba-nacos-config.version>
+        <alibaba-nacos.version>2.1.1.RELEASE</alibaba-nacos.version>
 
-        <fastjson.version>1.2.58</fastjson.version>
+        <fastjson.version>1.2.62</fastjson.version>
 
         <lombok.version>1.16.20</lombok.version>
 
@@ -51,7 +50,7 @@
         <tk.mybatis.version>4.0.2</tk.mybatis.version>
         <mybatis-generator-maven-plugin.version>1.3.7</mybatis-generator-maven-plugin.version>
 
-        <openfeign.version>2.1.3.RELEASE</openfeign.version>
+        <openfeign.version>2.2.0.RELEASE</openfeign.version>
 
         <springfox.version>2.9.2</springfox.version>
         <swagger-annotations.version>1.6.0</swagger-annotations.version>
@@ -155,13 +154,13 @@
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-            <version>${alibaba-nacos-discovery.version}</version>
+            <version>${alibaba-nacos.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
-            <version>${alibaba-nacos-config.version}</version>
+            <version>${alibaba-nacos.version}</version>
         </dependency>
 
         <dependency>
