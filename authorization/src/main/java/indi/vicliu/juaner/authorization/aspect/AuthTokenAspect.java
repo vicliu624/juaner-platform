@@ -1,6 +1,5 @@
 package indi.vicliu.juaner.authorization.aspect;
 
-import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.authorization.utils.RedisStringUtil;
 import indi.vicliu.juaner.common.core.CommonConstant;
@@ -66,7 +65,7 @@ public class AuthTokenAspect {
             if (responseEntity.getStatusCode().is2xxSuccessful()){
                 OAuth2AccessToken body = responseEntity.getBody();
                 String strAccessToken = JSONObject.toJSONString(body);
-                log.info("strAccessToken:{}",strAccessToken);
+                log.debug("strAccessToken:{}",strAccessToken);
                 if(body == null){
                     result = Result.fail("token出错");
                     return ResponseEntity.status(200).body(result);

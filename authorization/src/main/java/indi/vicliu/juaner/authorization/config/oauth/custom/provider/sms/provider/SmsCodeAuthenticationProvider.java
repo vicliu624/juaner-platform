@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider;
 
+import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.authorization.Constant;
 import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.SmsCodeAuthenticationToken;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
@@ -104,6 +105,7 @@ public class SmsCodeAuthenticationProvider extends AbstractSmsCodeUserDetailsAut
 
             Result result = smsProvider.verifyByUsername(userName,presentedSmsCode);
             if(result.isFail()){
+                log.warn("smsProvider.verifyByUsername 应答:{}", JSONObject.toJSONString(result));
                 if(StringUtils.isEmpty(value)){
                     value = "1";
                 } else {
@@ -115,7 +117,7 @@ public class SmsCodeAuthenticationProvider extends AbstractSmsCodeUserDetailsAut
                         value = "1";
                     }
                 }
-                log.warn("用户{}当前短信验证码错误次数{}",userName,value);
+                log.warn("smsProvider应答用户{}当前短信验证码错误次数{}",userName,value);
                 redisStringUtil.setKeyExpire(key,value,1, TimeUnit.DAYS);
                 throw new BadCredentialsException(messages.getMessage(
                         "SmsCodeAuthenticationProvider.badCredentials",

@@ -3,7 +3,9 @@ package indi.vicliu.juaner.authorization.domain.service.impl;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSONObject;
+import indi.vicliu.juaner.authorization.Constant;
 import indi.vicliu.juaner.authorization.provider.UpmsProvider;
+import indi.vicliu.juaner.authorization.utils.RedisStringUtil;
 import indi.vicliu.juaner.authorization.vo.RoleInfo;
 import indi.vicliu.juaner.authorization.vo.UserInfo;
 import indi.vicliu.juaner.common.core.message.Result;
@@ -33,6 +35,9 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Autowired
     private UpmsProvider upmsProvider;
 
+    @Autowired
+    private RedisStringUtil redisStringUtil;
+
     @SentinelResource(value = "loadUserByUsername" , blockHandler = "exceptionHandler" ,fallback = "fallbackHandler")
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -41,6 +46,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         if(StringUtils.isEmpty(username)){
             log.error("用户名不能为空");
             throw new UsernameNotFoundException("用户名不能为空");
+        }
+
+        //如果redis内没有锁信息 就将用户更新到解锁状态再取用户信息
+        String key = Constant.LOCK_KEY + username;
+        if(StringUtils.isEmpty(redisStringUtil.getValue(key))){
+            //upmsProvider.unlockUser(username);
         }
 
         Result ret = upmsProvider.getFullUserInfo(username);
