@@ -31,4 +31,6 @@ public interface UserService {
     Result delUserInfo(String ids);
 
     int lockUserByName(String userName) throws UserException;
+
+    int unlockUserByName(String userName) throws UserException;
 }

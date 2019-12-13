@@ -154,4 +154,19 @@ public class UserController {
             return Result.fail(e.getMessage());
         }
     }
+
+    @PutMapping("/user/unlock")
+    public Result unlockUser(@RequestBody String userName){
+        try{
+            int count = userService.lockUserByName(userName);
+            if(count > 0){
+                return Result.success("用户解锁成功");
+            } else {
+                return Result.success("用户已解锁");
+            }
+        } catch (Exception e){
+            log.error("锁定用户出错",e);
+            return Result.fail(e.getMessage());
+        }
+    }
 }

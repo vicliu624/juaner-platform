@@ -262,4 +262,16 @@ public class UserServiceImpl implements UserService {
         redisStringUtil.delKey(key);
         return updateCount;
     }
+
+    @Override
+    public int unlockUserByName(String userName) throws UserException {
+        TblUserInfo userInfo = findByUserName(userName);
+        userInfo.setAccountNonLocked(Boolean.TRUE);
+        Example example = new Example(TblUserInfo.class);
+        example.createCriteria().andEqualTo("userName",userName);
+        int updateCount = this.userInfoMapper.updateByExample(userInfo,example);
+        String key="upms_user_" + userName;
+        redisStringUtil.delKey(key);
+        return updateCount;
+    }
 }
