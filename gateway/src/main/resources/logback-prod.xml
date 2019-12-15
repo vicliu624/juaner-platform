@@ -3,17 +3,15 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
 
-    <springProperty scope="context" name="springAppName"
-                    source="spring.application.name" />
+    <springProperty scope="context" name="springAppName" source="spring.application.name" />
 
     <!-- 日志在工程中的输出位置 -->
-    <property name="LOG_FILE_INFO" value="../${BUILD_FOLDER:-build}/${springAppName}-%d-info.log" />
-    <property name="LOG_FILE_ERROR" value="../${BUILD_FOLDER:-build}/${springAppName}-%d-error.log" />
+    <property name="LOG_FILE_INFO" value="../${BUILD_FOLDER:-logs}/${springAppName:-app}-%d-info.log" />
+    <property name="LOG_FILE_ERROR" value="../${BUILD_FOLDER:-logs}/${springAppName:-app}-%d-error.log" />
     <!--保留多少天的日志-->
     <property name="LOG_HIS_MAX" value="7" />
     <!-- 控制台的日志输出样式 -->
-    <property name="CONSOLE_LOG_PATTERN"
-              value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}" />
+    <property name="CONSOLE_LOG_PATTERN" value="%d{HH:mm:ss.SSS} %-5level[%X{X-B3-TraceId:-},%X{X-B3-SpanId:-}] %logger{15}[L:%L] - %msg%n" />
 
     <!--添加本地的info日志存储-->
     <appender name="fileInLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
@@ -62,12 +60,10 @@
     </appender>
 
     <!-- 为logstash输出的JSON格式的Appender -->
-    <appender name="logstash"
-              class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>127.0.0.1:5044</destination>
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>logstash01:5044</destination>
         <!-- 日志输出编码 -->
-        <encoder
-                class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
             <providers>
                 <timestamp>
                     <timeZone>UTC</timeZone>
