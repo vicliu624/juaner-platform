@@ -59,11 +59,19 @@ public class UserContextHolder {
      * @return
      */
     public String getUsername() {
-        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_name").toString();
+        Object username = Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_name");
+        if (null == username) {
+            return null;
+        }
+        return username.toString();
     }
 
     public String getClientId() {
-        return Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("client_id").toString();
+        Object clientId = Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("client_id");
+        if (null == clientId) {
+            return null;
+        }
+        return clientId.toString();
     }
 
     public List<String> getAuthorities() {
