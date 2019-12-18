@@ -52,7 +52,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         //如果redis内没有锁信息 就将用户更新到解锁状态再取用户信息
         String key = Constant.LOCK_KEY + username;
         if(StringUtils.isEmpty(redisStringUtil.getValue(key))){
-            //upmsProvider.unlockUser(username);
+            Result ret = upmsProvider.unlockUser(username);
+            if(ret.isFail()){
+                log.warn("锁住用户{}失败",username);
+            }
         }
 
         Result ret = upmsProvider.getFullUserInfo(username);
