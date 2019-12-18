@@ -70,7 +70,7 @@ public class AuthTokenAspect {
                     result = Result.fail("token出错");
                     return ResponseEntity.status(200).body(result);
                 }
-                redisStringUtil.setKey(CommonConstant.USER_TOKEN_KEY + body.getAdditionalInformation().get("user"),(String)body.getAdditionalInformation().get("jti"));
+                redisStringUtil.setKey(CommonConstant.USER_TOKEN_KEY + body.getAdditionalInformation().get("user_id"),(String)body.getAdditionalInformation().get("jti"));
                 result = Result.success(body);
             } else {
                 log.error("error:{}", responseEntity.getStatusCode().toString());
