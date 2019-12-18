@@ -13,6 +13,7 @@ import indi.vicliu.juaner.upms.domain.entity.TblRolePermMap;
 import indi.vicliu.juaner.upms.domain.service.PermissionService;
 import indi.vicliu.juaner.upms.utils.RedisStringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -249,6 +250,9 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public Result removePermission( Map<String,Object> jsonMap){
         String ids = jsonMap.get("ids") == null ? null : jsonMap.get("ids").toString();
+        if(StringUtils.isEmpty(ids)){
+            return Result.fail("删除权限失败");
+        }
         try{
             String[] idArr = ids.split(",");
             for(String id : idArr){

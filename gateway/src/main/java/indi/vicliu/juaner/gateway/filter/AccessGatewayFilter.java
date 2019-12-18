@@ -19,6 +19,8 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
+
 /**
  * @Auther: liuweikai
  * @Date: 2019-03-22 12:56
@@ -99,7 +101,7 @@ public class AccessGatewayFilter implements GlobalFilter {
     private Mono<Void> unauthorized(ServerWebExchange serverWebExchange) {
         serverWebExchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         DataBuffer buffer = serverWebExchange.getResponse()
-                .bufferFactory().wrap(HttpStatus.UNAUTHORIZED.getReasonPhrase().getBytes());
+                .bufferFactory().wrap(HttpStatus.UNAUTHORIZED.getReasonPhrase().getBytes(StandardCharsets.UTF_8));
         return serverWebExchange.getResponse().writeWith(Flux.just(buffer));
     }
 
@@ -111,7 +113,7 @@ public class AccessGatewayFilter implements GlobalFilter {
     private Mono<Void> conflict(ServerWebExchange serverWebExchange) {
         serverWebExchange.getResponse().setStatusCode(HttpStatus.CONFLICT);
         DataBuffer buffer = serverWebExchange.getResponse()
-                .bufferFactory().wrap(HttpStatus.CONFLICT.getReasonPhrase().getBytes());
+                .bufferFactory().wrap(HttpStatus.CONFLICT.getReasonPhrase().getBytes(StandardCharsets.UTF_8));
         return serverWebExchange.getResponse().writeWith(Flux.just(buffer));
     }
 }

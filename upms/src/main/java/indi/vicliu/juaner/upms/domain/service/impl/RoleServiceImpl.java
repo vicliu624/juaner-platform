@@ -251,6 +251,9 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public Result removeRoleInfo(Map<String,Object> jsonMap){
         String ids = jsonMap.get("ids") == null ? null : jsonMap.get("ids").toString();
+        if(StringUtils.isEmpty(ids)){
+            return Result.fail("删除权限失败");
+        }
         try{
             String[] idArr = ids.split(",");
             for(String id : idArr){
