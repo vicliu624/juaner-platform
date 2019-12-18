@@ -24,12 +24,9 @@ public interface UpmsProvider {
     @GetMapping(value = "/upms/roles")
     Result getRolesByUserId(@RequestParam("userId") Long userId);
 
-    @GetMapping("/user/fullInfo/byPhone")
-    Result getFullUserInfoByPhone(@RequestParam("phone") String phone);
-
-    @PutMapping("/user/lock")
+    @PutMapping("/upms/user/lock")
     Result lockUser(@RequestBody String userName);
 
-    @PutMapping("/user/unlock")
+    @PutMapping("/upms/user/unlock")
     Result unlockUser(@RequestBody String userName);
 }
