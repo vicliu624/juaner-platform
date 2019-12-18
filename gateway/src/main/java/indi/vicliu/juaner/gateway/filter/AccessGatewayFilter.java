@@ -80,6 +80,7 @@ public class AccessGatewayFilter implements GlobalFilter {
         String jti = (String) jsonObject.get("jti");
         String redisJti = redisStringUtil.getValue(CommonConstant.USER_TOKEN_KEY + userName);
         if(redisJti != null && !jti.equals(redisJti)){
+            log.debug(" key:[{}],value:[{}],jti:[{}] ",CommonConstant.USER_TOKEN_KEY + userName,redisJti,jti);
             return conflict(exchange);
         }
 
