@@ -7,7 +7,6 @@ import indi.vicliu.juaner.authorization.config.oauth.custom.provider.wechat.Wech
 import indi.vicliu.juaner.authorization.config.oauth.custom.provider.wechat.WeixinCodeTokenGranter;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import indi.vicliu.juaner.authorization.exception.CustomWebResponseExceptionTranslator;
-import indi.vicliu.juaner.authorization.provider.UpmsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -71,9 +70,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private ClientDetailsService clientDetailsService;
-
-    @Autowired
-    private UpmsProvider upmsProvider;
 
     /**
      * 定义了token切点的安全限制。
@@ -179,7 +175,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Bean
     public TokenEnhancerChain tokenEnhancerChain() {
         TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(new CustomTokenEnhancer(upmsProvider), accessTokenConverter()));
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(new CustomTokenEnhancer(), accessTokenConverter()));
         return tokenEnhancerChain;
     }
 

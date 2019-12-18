@@ -4,6 +4,8 @@ import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.authorization.Constant;
+import indi.vicliu.juaner.authorization.security.core.userdetails.CustomUser;
+import indi.vicliu.juaner.authorization.security.core.userdetails.CustomUserDetails;
 import indi.vicliu.juaner.authorization.provider.UpmsProvider;
 import indi.vicliu.juaner.authorization.utils.RedisStringUtil;
 import indi.vicliu.juaner.authorization.vo.RoleInfo;
@@ -13,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @SentinelResource(value = "loadUserByUsername" , blockHandler = "exceptionHandler" ,fallback = "fallbackHandler")
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         log.info("用户{}尝试登录",username);
         if(StringUtils.isEmpty(username)){
@@ -66,8 +67,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("用户名不存在");
         }
 
-        return new org.springframework.security.core.userdetails.User(
+        return new CustomUser(
                 username,
+                userInfo.getId(),
                 userInfo.getPassword(),
                 userInfo.getEnabled(),
                 userInfo.getAccountNonExpired(),
