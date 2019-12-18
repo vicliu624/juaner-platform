@@ -66,7 +66,7 @@ public class AuthTokenAspect {
                 OAuth2AccessToken body = responseEntity.getBody();
                 String strAccessToken = JSONObject.toJSONString(body);
                 log.debug("strAccessToken:{}",strAccessToken);
-                if(body == null){
+                if (body == null) {
                     result = Result.fail("token出错");
                     return ResponseEntity.status(200).body(result);
                 }

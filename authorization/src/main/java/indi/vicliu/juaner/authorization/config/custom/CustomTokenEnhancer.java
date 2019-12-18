@@ -24,6 +24,8 @@ public class CustomTokenEnhancer implements TokenEnhancer {
         //自定义token内容
         CustomUser customUser = (CustomUser) authentication.getPrincipal();
         additionalInfo.put("user_id",customUser.getUserId());
+        //为了在单点登录判断的时候不用解析token这里这样put一个user
+        additionalInfo.put("user",customUser.getUsername());
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
         return accessToken;
     }
