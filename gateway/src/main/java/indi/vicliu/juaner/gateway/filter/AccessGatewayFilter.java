@@ -76,8 +76,7 @@ public class AccessGatewayFilter implements GlobalFilter {
         log.debug("get jwt by authentication:{} claims:{}",authentication,claims);
 
         JSONObject jsonObject = JSONObject.parseObject(claims);
-        String userName = (String) jsonObject.get("user_name");
-        String userId = (String) jsonObject.get("user_id");
+        String userId = jsonObject.get("user_id").toString();
         String jti = (String) jsonObject.get("jti");
         String redisJti = redisStringUtil.getValue(CommonConstant.USER_TOKEN_KEY + userId);
         if(redisJti != null && !jti.equals(redisJti)){
