@@ -33,7 +33,7 @@ import java.util.List;
  * @create: 2019-12-23 18:12
  **/
 @Slf4j
-@Configuration
+//@Configuration
 public class WebSockerFilter extends WebsocketRoutingFilter {
     public WebSockerFilter(WebSocketClient webSocketClient, WebSocketService webSocketService, ObjectProvider<List<HttpHeadersFilter>> headersFiltersProvider) {
         super(webSocketClient, webSocketService, headersFiltersProvider);
