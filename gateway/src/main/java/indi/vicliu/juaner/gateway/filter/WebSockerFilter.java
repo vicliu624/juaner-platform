@@ -1,10 +1,12 @@
 package indi.vicliu.juaner.gateway.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.google.common.base.Strings;
 import indi.vicliu.juaner.common.core.CommonConstant;
 import indi.vicliu.juaner.gateway.client.service.AuthService;
 import indi.vicliu.juaner.gateway.utils.RedisStringUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -47,22 +49,16 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
-        final List<String> strings = request.getHeaders().get("Sec-WebSocket-Protocol");
-
-        String authentication = null;
-        if (strings != null && strings.size() > 0) {
-            authentication = strings.get(0);
-        }
+        String authentication = request.getHeaders().getFirst("Sec-WebSocket-Protocol");
         log.info("websoket 传入的 Token {}" ,authentication);
-
-        if (authentication == null) { //如果token为空则直接报权限异常
+        if (Strings.isNullOrEmpty(authentication)) { //如果token为空则直接报权限异常
             return unauthorized(exchange);
         }else {
             authentication = "bearer " + authentication;
         }
         String method = request.getMethodValue();
         String url = request.getPath().value();
-        log.info("url:{},method:{},headers:{}", url, method, request.getHeaders());
+        log.debug("url:{},method:{},headers:{}", url, method, request.getHeaders());
         Jwt jwt = authService.getJwt(authentication);
         //校验jwt
         //token是否有效
@@ -82,9 +78,10 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
             log.debug(" key:[{}],value:[{}],jti:[{}] ",CommonConstant.USER_TOKEN_KEY + userId,redisJti,jti);
             return conflict(exchange);
         }
-
+        log.info("进行权限判断");
         //调用签权服务看用户是否有权限，若有权限进入下一个filter
         if (authService.hasPermission(authentication, url, method)) {
+            log.info("该WebSocket有访问权限");
             ServerHttpRequest.Builder builder = request.mutate();
             //TODO 转发的请求都加上服务间认证token
             builder.header(CommonConstant.X_CLIENT_TOKEN_USER, claims);
