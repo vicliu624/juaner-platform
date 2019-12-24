@@ -62,7 +62,7 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         }
         String method = request.getMethodValue();
         String url = request.getPath().value();
-        log.debug("url:{},method:{},headers:{}", url, method, request.getHeaders());
+        log.info("url:{},method:{},headers:{}", url, method, request.getHeaders());
         Jwt jwt = authService.getJwt(authentication);
         //校验jwt
         //token是否有效
@@ -88,7 +88,9 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
             ServerHttpRequest.Builder builder = request.mutate();
             //TODO 转发的请求都加上服务间认证token
             builder.header(CommonConstant.X_CLIENT_TOKEN_USER, claims);
-            return super.filter(exchange.mutate().request(builder.build()).build(),chain);
+            return chain.filter(exchange.mutate().request(builder.build()).build());
+        }else {
+            log.info("该WebSocket无访问权限");
         }
 
         return unauthorized(exchange);
