@@ -58,8 +58,12 @@ public class AccessGatewayFilter implements GlobalFilter {
         if (authService.ignoreAuthentication(url)) {
             return chain.filter(exchange);
         }
+        String protocol = request.getHeaders().getFirst("Sec-WebSocket-Protocol");
 
-        if(StringUtils.isEmpty(authentication)){
+        if (!StringUtils.isEmpty(protocol)) {
+            log.info("this is websocket " + protocol) ;
+            authentication = "bearer " + protocol;
+        }else if(StringUtils.isEmpty(authentication)){
             return unauthorized(exchange);
         }
 
