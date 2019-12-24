@@ -39,8 +39,7 @@ public class AccessGatewayFilter implements GlobalFilter {
     @Autowired
     private RedisStringUtil redisStringUtil;
 
-    @Autowired
-    private WebSockerFilter webSockerFilter;
+
 
     private static String WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
     /**
