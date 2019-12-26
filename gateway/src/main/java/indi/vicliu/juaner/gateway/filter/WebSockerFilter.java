@@ -77,6 +77,8 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         //token是否有效
         if (authService.invalidJwtAccessToken(jwt)) {
             return unauthorized(exchange);
+        }else {
+            log.info("token无效");
         }
 
         //token是否是当前生效的token
