@@ -23,8 +23,12 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.isAlreadyRouted;
 
 /**
  * @program: juaner-platform
@@ -33,7 +37,7 @@ import java.util.List;
  * @create: 2019-12-23 18:12
  **/
 @Slf4j
-//@Configuration
+@Configuration
 public class WebSockerFilter extends WebsocketRoutingFilter {
     public WebSockerFilter(WebSocketClient webSocketClient, WebSocketService webSocketService, ObjectProvider<List<HttpHeadersFilter>> headersFiltersProvider) {
         super(webSocketClient, webSocketService, headersFiltersProvider);
@@ -45,9 +49,18 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
     @Autowired
     private RedisStringUtil redisStringUtil;
 
+    @Autowired
+    private AccessGatewayFilter gatewayFilter;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
+        String scheme = requestUrl.getScheme();
+        log.info("当前访问路径为 {}",requestUrl.toString());
+        if (isAlreadyRouted(exchange)
+                || (!"ws".equals(scheme) && !"wss".equals(scheme))) {
+            return gatewayFilter.filter(exchange,chain);
+        }
         ServerHttpRequest request = exchange.getRequest();
         String authentication = request.getHeaders().getFirst("Sec-WebSocket-Protocol");
         log.info("websoket 传入的 Token {}" ,authentication);

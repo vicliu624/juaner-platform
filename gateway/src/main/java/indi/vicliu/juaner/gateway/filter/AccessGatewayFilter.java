@@ -19,7 +19,11 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.nio.charset.StandardCharsets;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.isAlreadyRouted;
 
 /**
  * @Auther: liuweikai
@@ -40,6 +44,8 @@ public class AccessGatewayFilter implements GlobalFilter {
     private RedisStringUtil redisStringUtil;
 
 
+    @Autowired
+    WebSockerFilter webSockerFilter;
 
     private static String WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
     /**
@@ -57,6 +63,13 @@ public class AccessGatewayFilter implements GlobalFilter {
         String method = request.getMethodValue();
         String url = request.getPath().value();
         log.debug("url:{},method:{},headers:{}", url, method, request.getHeaders());
+        URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
+        log.info("当前访问路径为 {}",requestUrl.toString());
+        String scheme = requestUrl.getScheme();
+        if (isAlreadyRouted(exchange)
+                || ("ws".equals(scheme) && "wss".equals(scheme))) {
+            return webSockerFilter.filter(exchange,chain);
+        }
         /*if (StringUtils.isNotEmpty(request.getHeaders().getFirst(WEBSOCKET_PROTOCOL))) {
             log.info("WebSocket In AccessGatewayFilter ");
             return webSockerFilter.filter(exchange,chain);
