@@ -63,7 +63,7 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         }
         ServerHttpRequest request = exchange.getRequest();
         String authentication = request.getHeaders().getFirst("Sec-WebSocket-Protocol");
-        log.info("websoket 传入的 Token {}" ,authentication);
+        log.debug("websoket 传入的 Token {}" ,authentication);
         if (Strings.isNullOrEmpty(authentication)) { //如果token为空则直接报权限异常
             return unauthorized(exchange);
         }else {
@@ -78,7 +78,7 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         if (authService.invalidJwtAccessToken(jwt)) {
             return unauthorized(exchange);
         }else {
-            log.info("token无效");
+            log.debug("token无效");
         }
 
         //token是否是当前生效的token
@@ -90,19 +90,19 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         String jti = (String) jsonObject.get("jti");
         String redisJti = redisStringUtil.getValue(CommonConstant.USER_TOKEN_KEY + userId);
         if(redisJti != null && !jti.equals(redisJti)){
-            log.info(" key:[{}],value:[{}],jti:[{}] ",CommonConstant.USER_TOKEN_KEY + userId,redisJti,jti);
+            log.debug(" key:[{}],value:[{}],jti:[{}] ",CommonConstant.USER_TOKEN_KEY + userId,redisJti,jti);
             return conflict(exchange);
         }
         log.info("进行权限判断");
         //调用签权服务看用户是否有权限，若有权限进入下一个filter
         if (authService.hasPermission(authentication, url, method)) {
-            log.info("该WebSocket有访问权限");
+            log.debug("该WebSocket有访问权限");
             ServerHttpRequest.Builder builder = request.mutate();
             //TODO 转发的请求都加上服务间认证token
             builder.header(CommonConstant.X_CLIENT_TOKEN_USER, claims);
             return super.filter(exchange.mutate().request(builder.build()).build(),chain);
         }else {
-            log.info("该WebSocket无访问权限");
+            log.debug("该WebSocket无访问权限");
         }
 
         return unauthorized(exchange);
