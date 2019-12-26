@@ -90,7 +90,7 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         String jti = (String) jsonObject.get("jti");
         String redisJti = redisStringUtil.getValue(CommonConstant.USER_TOKEN_KEY + userId);
         if(redisJti != null && !jti.equals(redisJti)){
-            log.debug(" key:[{}],value:[{}],jti:[{}] ",CommonConstant.USER_TOKEN_KEY + userId,redisJti,jti);
+            log.info(" key:[{}],value:[{}],jti:[{}] ",CommonConstant.USER_TOKEN_KEY + userId,redisJti,jti);
             return conflict(exchange);
         }
         log.info("进行权限判断");
