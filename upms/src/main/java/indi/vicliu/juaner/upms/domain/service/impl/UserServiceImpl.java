@@ -72,14 +72,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     @Override
     public Result addUserInfo(AddUserInfoVO userInfo) throws UserException {
-
-        Example example = new Example(TblUserInfo.class);
-        example.createCriteria().andEqualTo("phone",userInfo.getPhone());
-        example.setOrderByClause(" create_time desc limit 1");
-        List<TblUserInfo> userInfoList = this.userInfoMapper.selectByExample(example);
-        if(userInfoList.size()>0){
-            return Result.success("用户已存在");
-        }
         //保存用户信息
         TblUserInfo info=new TblUserInfo();
         BeanUtils.copyProperties(userInfo,info);
