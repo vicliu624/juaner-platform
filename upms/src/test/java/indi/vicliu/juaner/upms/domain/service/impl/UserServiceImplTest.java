@@ -29,7 +29,7 @@ public class UserServiceImplTest {
     @Test
     public void findByUserName() {
         try{
-            TblUserInfo userInfo = userService.findByUserName("superadmin");
+            TblUserInfo userInfo = userService.getByUsername("superadmin");
             log.info("取到用户-> {}",userInfo.toString());
         } catch (Exception e){
             log.error("测试findByUserName出错",e);

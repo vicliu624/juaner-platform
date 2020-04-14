@@ -1,10 +1,8 @@
 package indi.vicliu.juaner.upms.domain.service;
 
-import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @Auther: liuweikai
@@ -12,23 +10,24 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @Description:
  */
 public interface UserService {
-    TblUserInfo findByUserName(String userName) throws UserException;
     TblUserInfo findByPhone(String phone) throws UserException;
 
-    Result addUserInfo(AddUserInfoVO userInfo) throws UserException;
+    TblUserInfo addUserInfo(AddUserInfoVO userInfo) throws UserException;
 
-    Result updateUserInfo(AddUserInfoVO user);
+    TblUserInfo updateUserInfo(AddUserInfoVO user) throws UserException;
 
-    Result findByUserPhone(String phone);
+    int updateUserInfo(TblUserInfo user);
 
-    Result findByUserId(Long userId);
+    TblUserInfo findByUserPhone(String phone);
 
-    Result getByUsername( String username) throws UserException;
+    TblUserInfo findByUserId(Long userId);
 
-    void updateUserInfoCache(String userName) throws UserException;
+    TblUserInfo getByUsername( String username) throws UserException;
 
-    Result createUserInfo(AddUserInfoVO userInfo);
-    Result delUserInfo(String ids);
+    TblUserInfo updateUserInfoCache(String userName) throws UserException;
+
+    TblUserInfo createUserInfo(AddUserInfoVO userInfo) throws UserException;
+    void delUserInfo(String ids);
 
     int lockUserByName(String userName) throws UserException;
 

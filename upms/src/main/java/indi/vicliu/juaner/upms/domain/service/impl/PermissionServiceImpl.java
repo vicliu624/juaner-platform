@@ -1,9 +1,6 @@
 package indi.vicliu.juaner.upms.domain.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.data.mapper.TblPermissionInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblRolePermMapMapper;
@@ -13,14 +10,12 @@ import indi.vicliu.juaner.upms.domain.entity.TblRolePermMap;
 import indi.vicliu.juaner.upms.domain.service.PermissionService;
 import indi.vicliu.juaner.upms.utils.RedisStringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -159,7 +154,7 @@ public class PermissionServiceImpl implements PermissionService {
         }
     }
     @Override
-    public Result list(Map<String,Object> jsonMap){
+    public List<TblPermissionInfo> list(Map<String,Object> jsonMap){
         String permName = jsonMap.get("permName")==null?null:jsonMap.get("permName").toString();
         String permValue = jsonMap.get("permValue")==null?null:jsonMap.get("permValue").toString();
         String method = jsonMap.get("method")==null?null:jsonMap.get("method").toString().trim();
@@ -168,27 +163,14 @@ public class PermissionServiceImpl implements PermissionService {
         Integer pageNum = jsonMap.get("pageNum") == null ? 1 : (Integer) jsonMap.get("pageNum");
         Integer pageSize = jsonMap.get("pageSize") == null ? 10 : (Integer) jsonMap.get("pageSize");
         Boolean isExp = jsonMap.get("isExp") == null ? false : (Boolean) jsonMap.get("isExp");
-        try{
-            Example example = new Example(TblPermissionInfo.class);
-            example.createCriteria().andLike("permName",permName)
-                    .andLike("permUrl",permUrl)
-                    .andEqualTo("method",method);
-            if(!isExp) {
-                PageHelper.startPage(pageNum, pageSize);
-                List<TblPermissionInfo> list = permissionInfoMapper.selectByExample(example);
-                PageInfo<TblPermissionInfo> pageInfo = new PageInfo<TblPermissionInfo>(list);
-                return Result.success(pageInfo);
-            }else{
-                List<TblPermissionInfo> list = permissionInfoMapper.selectByExample(example);
-                return Result.success(list);
-            }
-        }catch (Exception e){
-            log.error("调用获取权限列表的方法list出错",e);
-            return Result.fail("查询权限失败");
-        }
+        Example example = new Example(TblPermissionInfo.class);
+        example.createCriteria().andLike("permName",permName)
+                .andLike("permUrl",permUrl)
+                .andEqualTo("method",method);
+        return permissionInfoMapper.selectByExample(example);
     }
     @Override
-    public Result savePermission(Map<String,Object> jsonMap){
+    public JSONObject savePermission(Map<String,Object> jsonMap){
         String permName = jsonMap.get("permName") == null ? null : jsonMap.get("permName").toString().trim();
         String permValue = jsonMap.get("permValue")==null?null:jsonMap.get("permValue").toString().trim();
         String method = jsonMap.get("method")==null?null:jsonMap.get("method").toString().trim();
@@ -197,83 +179,68 @@ public class PermissionServiceImpl implements PermissionService {
         Long id = jsonMap.get("id") == null ? null : Long.parseLong(jsonMap.get("id").toString());
         Integer permType = jsonMap.get("permType") == null ? null : Integer.parseInt(jsonMap.get("permType").toString());
         JSONObject json = new JSONObject();
-        try {
-            if(id != null){//编辑权限信息
-                TblPermissionInfo ri = permissionInfoMapper.selectByPrimaryKey(id);
-                Example example2 = new Example(TblPermissionInfo.class);
-                example2.createCriteria().andEqualTo("permUrl",permUrl).andNotEqualTo("id",id)
-                        .andEqualTo("method", method);
-                List<TblPermissionInfo> list2 = permissionInfoMapper.selectByExample(example2);
-                if(list2 != null && list2.size()>0){
-                    json.put("flag",0);
-                    json.put("msg","该权限对应URL已经存在"+method+"提交，请重新填写");
-                    return Result.success(json);
-                }
-                ri.setPermUrl(permUrl);
-                ri.setPermName(permName);
-                ri.setUpdateTime(new Date());
-                ri.setMethod(method);
-                ri.setDescription(description);
-                permissionInfoMapper.updateByPrimaryKey(ri);
-                updateUrlPermissionCache(ri);
-                json.put("flag",1);
-                json.put("msg","权限修改成功");
-                return Result.success(json);
-            }else{//新增权限信息
-                TblPermissionInfo ri = new TblPermissionInfo();
-                Example example2 = new Example(TblPermissionInfo.class);
-                example2.createCriteria().andEqualTo("permUrl",permUrl).andEqualTo("method", method);
-                List<TblPermissionInfo> list2 = permissionInfoMapper.selectByExample(example2);
-                if(list2 != null && list2.size()>0){
-                    json.put("flag",0);
-                    json.put("msg","该权限对应URL已经存在"+method+"提交，请重新填写");
-                    return Result.success(json);
-                }
-                ri.setPermUrl(permUrl);
-                ri.setPermName(permName);
-                ri.setMethod(method);
-                ri.setDescription(description);
-                ri.setCreateTime(new Date());
-                ri.setUpdateTime(ri.getCreateTime());
-                permissionInfoMapper.insertSelective(ri);
-                updateUrlPermissionCache(ri);
-                json.put("flag",1);
-                json.put("msg","权限新增成功");
-                return Result.success(json);
+        if(id != null){//编辑权限信息
+            TblPermissionInfo ri = permissionInfoMapper.selectByPrimaryKey(id);
+            Example example2 = new Example(TblPermissionInfo.class);
+            example2.createCriteria().andEqualTo("permUrl",permUrl).andNotEqualTo("id",id)
+                    .andEqualTo("method", method);
+            List<TblPermissionInfo> list2 = permissionInfoMapper.selectByExample(example2);
+            if(list2 != null && list2.size()>0){
+                json.put("flag",0);
+                json.put("msg","该权限对应URL已经存在"+method+"提交，请重新填写");
+                return json;
             }
-
-        }catch (Exception e){
-            log.info("保存权限信息异常：{}",e);
-            return Result.fail("保存权限信息失败");
+            ri.setPermUrl(permUrl);
+            ri.setPermName(permName);
+            ri.setUpdateTime(new Date());
+            ri.setMethod(method);
+            ri.setDescription(description);
+            permissionInfoMapper.updateByPrimaryKey(ri);
+            updateUrlPermissionCache(ri);
+            json.put("flag",1);
+            json.put("msg","权限修改成功");
+            return json;
+        }else{//新增权限信息
+            TblPermissionInfo ri = new TblPermissionInfo();
+            Example example2 = new Example(TblPermissionInfo.class);
+            example2.createCriteria().andEqualTo("permUrl",permUrl).andEqualTo("method", method);
+            List<TblPermissionInfo> list2 = permissionInfoMapper.selectByExample(example2);
+            if(list2 != null && list2.size()>0){
+                json.put("flag",0);
+                json.put("msg","该权限对应URL已经存在"+method+"提交，请重新填写");
+                return json;
+            }
+            ri.setPermUrl(permUrl);
+            ri.setPermName(permName);
+            ri.setMethod(method);
+            ri.setDescription(description);
+            ri.setCreateTime(new Date());
+            ri.setUpdateTime(ri.getCreateTime());
+            permissionInfoMapper.insertSelective(ri);
+            updateUrlPermissionCache(ri);
+            json.put("flag",1);
+            json.put("msg","权限新增成功");
+            return json;
         }
     }
+
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result removePermission( Map<String,Object> jsonMap){
-        String ids = jsonMap.get("ids") == null ? null : jsonMap.get("ids").toString();
-        if(StringUtils.isEmpty(ids)){
-            return Result.fail("删除权限失败");
-        }
-        try{
-            String[] idArr = ids.split(",");
-            for(String id : idArr){
-                if(id != null && ids.trim().length()>0){
-                    Example rpexample = new Example(TblRolePermMap.class);
-                    rpexample.createCriteria().andEqualTo("permId",Long.parseLong(id.trim()));
-                    Integer rp = tblRolePermMapMapper.deleteByExample(rpexample);
-                    Integer ri = permissionInfoMapper.deleteByPrimaryKey(Long.parseLong(id.trim()));
-                    log.info("删除权限id:"+id+",角色相关表删除个数TblRolePermMap:"+rp+",TblRoleInfo:"+ri);
-                }
+    public void removePermission( String ids){
+        String[] idArr = ids.split(",");
+        for(String id : idArr){
+            if(id != null && ids.trim().length()>0){
+                Example rpexample = new Example(TblRolePermMap.class);
+                rpexample.createCriteria().andEqualTo("permId",Long.parseLong(id.trim()));
+                Integer rp = tblRolePermMapMapper.deleteByExample(rpexample);
+                Integer ri = permissionInfoMapper.deleteByPrimaryKey(Long.parseLong(id.trim()));
+                log.info("删除权限id:{},角色相关表删除个数TblRolePermMap:{},TblRoleInfo:{}",id,rp,ri);
             }
-            return Result.success("删权限成功");
-        }catch (Exception e){
-            log.error("删除权限方法removePermission出错",e);
-            return Result.fail("删除权限失败");
         }
     }
 
     @Override
-    public Result getUserPermission(Long id) {
-        List<Long> userPermission = permissionInfoMapper.getUserPermission(id);
-        return Result.success(userPermission);
+    public List<Long> getUserPermission(Long id) {
+        return permissionInfoMapper.getUserPermission(id);
     }
 }
