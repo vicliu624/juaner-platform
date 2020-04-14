@@ -49,10 +49,6 @@ public class ResourceOwnerSmsTokenGranter extends AbstractTokenGranter {
             //covers expired, locked, disabled cases (mentioned in section 5.2, draft 31)
             throw new InvalidGrantException(ase.getMessage());
         }
-        catch (BadCredentialsException e) {
-            // If the username/password are wrong the spec says we should send 400/invalid grant
-            throw new InvalidGrantException(e.getMessage());
-        }
         if (userAuth == null || !userAuth.isAuthenticated()) {
             throw new InvalidGrantException("Could not authenticate user: " + username);
         }
