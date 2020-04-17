@@ -17,4 +17,7 @@ public interface SmsProvider {
 	
     @GetMapping(value = "/sms/verify/username/{username}/{code}")
     Result verifyByUsername(@PathVariable("username") String phone, @PathVariable("code") String code);
+
+    @GetMapping(value = "/sms/verifyV2/username/{username}/{code}")
+    Result verifyV2ByUsername(@PathVariable("username") String phone, @PathVariable("code") String code);
 }
