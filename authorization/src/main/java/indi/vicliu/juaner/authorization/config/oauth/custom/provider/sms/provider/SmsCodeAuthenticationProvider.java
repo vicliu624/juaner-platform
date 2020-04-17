@@ -103,7 +103,7 @@ public class SmsCodeAuthenticationProvider extends AbstractSmsCodeUserDetailsAut
                 }
             }
 
-            Result result = smsProvider.verifyByUsername(userName,presentedSmsCode);
+            Result result = smsProvider.verifyV2ByUsername(userName,presentedSmsCode);
             if(result.isFail()){
                 log.warn("smsProvider.verifyByUsername 应答:{}", JSONObject.toJSONString(result));
                 if(StringUtils.isEmpty(value)){
