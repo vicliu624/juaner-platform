@@ -29,6 +29,8 @@ public class CustomOAuthExceptionJacksonSerializer extends StdSerializer<CustomO
         jsonGenerator.writeObjectField("timestamp", ZonedDateTime.now().toInstant().plusMillis(TimeUnit.HOURS.toMillis(8)));
         jsonGenerator.writeObjectField("data", e.getMessage());
 
+        log.info("json before -> :{}",JSONObject.toJSONString(jsonGenerator.getCurrentValue()));
+
         if (e.getAdditionalInformation()!=null) {
             for (Map.Entry<String, String> entry : e.getAdditionalInformation().entrySet()) {
                 String key = entry.getKey();
@@ -36,6 +38,7 @@ public class CustomOAuthExceptionJacksonSerializer extends StdSerializer<CustomO
                 jsonGenerator.writeStringField(key, add);
             }
         }
+        log.info("json after -> :{}",JSONObject.toJSONString(jsonGenerator.getCurrentValue()));
         jsonGenerator.writeEndObject();
     }
 }
