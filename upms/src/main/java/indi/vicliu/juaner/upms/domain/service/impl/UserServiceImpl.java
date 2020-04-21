@@ -228,8 +228,10 @@ public class UserServiceImpl implements UserService {
         Example example = new Example(TblUserInfo.class);
         example.createCriteria().andEqualTo("userName",userName);
         int updateCount = this.userInfoMapper.updateByExample(userInfo,example);
-        String key="upms_user_" + userName;
-        redisStringUtil.delKey(key);
+        String key1 = "lock_count_user_" + userName;
+        redisStringUtil.delKey(key1);
+        String key2 ="upms_user_" + userName;
+        redisStringUtil.delKey(key2);
         return updateCount;
     }
 }
