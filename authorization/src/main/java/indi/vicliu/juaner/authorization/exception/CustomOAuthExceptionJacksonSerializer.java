@@ -38,7 +38,7 @@ public class CustomOAuthExceptionJacksonSerializer extends StdSerializer<CustomO
                 jsonGenerator.writeStringField(key, add);
             }
         }
-        log.info("json after -> :{}",JSONObject.toJSONString(jsonGenerator.getCurrentValue()));
         jsonGenerator.writeEndObject();
+        log.info("json after -> :{}",JSONObject.toJSONString(jsonGenerator.getCurrentValue()));
     }
 }
