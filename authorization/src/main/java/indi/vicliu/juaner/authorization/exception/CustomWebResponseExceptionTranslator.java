@@ -38,17 +38,8 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
         // 异常栈获取 OAuth2Exception 异常
         Exception ase = (OAuth2Exception) throwableAnalyzer.getFirstThrowableOfType(
                 OAuth2Exception.class, causeChain);
-
-        // 异常栈中有OAuth2Exception
         if (ase != null) {
-            log.info("ase != null");
-            return handleOAuth2Exception((OAuth2Exception) ase);
-        }
-
-        ase = (CustomOAuth2Exception) throwableAnalyzer.getFirstThrowableOfType(CustomOAuth2Exception.class,
-                causeChain);
-        if (ase != null) {
-            log.info("CustomOAuth2Exception");
+            log.info("--------OAuth2Exception----------");
             return handleOAuth2Exception(new CustomOAuthException(e.getMessage(), e));
         }
 
@@ -150,7 +141,7 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
             super(msg, t);
         }
         public String getOAuth2ErrorCode() {
-            return "tips";
+            return "authorization_error";
         }
         public int getHttpErrorCode() {
             return 200;
