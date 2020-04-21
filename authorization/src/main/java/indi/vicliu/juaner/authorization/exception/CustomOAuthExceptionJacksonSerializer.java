@@ -35,6 +35,7 @@ public class CustomOAuthExceptionJacksonSerializer extends StdSerializer<CustomO
             for (Map.Entry<String, String> entry : e.getAdditionalInformation().entrySet()) {
                 String key = entry.getKey();
                 String add = entry.getValue();
+                log.info("json before -> key:{},value:{}",key,add);
                 jsonGenerator.writeStringField(key, add);
             }
         }
