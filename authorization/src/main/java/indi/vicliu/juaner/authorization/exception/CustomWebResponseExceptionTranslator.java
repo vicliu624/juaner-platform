@@ -41,38 +41,38 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
 
         // 异常栈中有OAuth2Exception
         if (ase != null) {
-            log.debug("ase != null");
+            log.info("ase != null");
             return handleOAuth2Exception((OAuth2Exception) ase);
         }
 
         ase = (CustomOAuth2Exception) throwableAnalyzer.getFirstThrowableOfType(CustomOAuth2Exception.class,
                 causeChain);
         if (ase != null) {
-            log.debug("CustomOAuth2Exception");
+            log.info("CustomOAuth2Exception");
             return handleOAuth2Exception(new CustomOAuthException(e.getMessage(), e));
         }
 
         ase = (AuthenticationException) throwableAnalyzer.getFirstThrowableOfType(AuthenticationException.class,
                 causeChain);
         if (ase != null) {
-            log.debug("AuthenticationException");
+            log.info("AuthenticationException");
             return handleOAuth2Exception(new UnauthorizedException(e.getMessage(), e));
         }
 
         ase = (AccessDeniedException) throwableAnalyzer
                 .getFirstThrowableOfType(AccessDeniedException.class, causeChain);
         if (ase != null) {
-            log.debug("AccessDeniedException");
+            log.info("AccessDeniedException");
             return handleOAuth2Exception(new ForbiddenException(ase.getMessage(), ase));
         }
 
         ase = (HttpRequestMethodNotSupportedException) throwableAnalyzer
                 .getFirstThrowableOfType(HttpRequestMethodNotSupportedException.class, causeChain);
         if (ase != null) {
-            log.debug("HttpRequestMethodNotSupportedException");
+            log.info("HttpRequestMethodNotSupportedException");
             return handleOAuth2Exception(new MethodNotAllowed(ase.getMessage(), ase));
         }
-        log.debug("ServerErrorException");
+        log.info("ServerErrorException");
         // 不包含上述异常则服务器内部错误
         return handleOAuth2Exception(new ServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), e));
     }
