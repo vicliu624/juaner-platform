@@ -77,6 +77,7 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
 
         CustomOAuth2Exception exception = new CustomOAuth2Exception(e.getMessage(),e);
 
+        log.error("捕获到异常:" + exception.getMessage(),exception);
         return new ResponseEntity<>(exception, headers,
                 HttpStatus.valueOf(status));
 
