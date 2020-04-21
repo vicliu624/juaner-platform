@@ -21,7 +21,7 @@ public class CustomOAuthExceptionJacksonSerializer extends StdSerializer<CustomO
 
     @Override
     public void serialize(CustomOAuth2Exception e, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
-        log.debug(" customOAuth2Exception info {}", JSONObject.toJSONString(e));
+        log.debug(" customOAuth2Exception message {} info {}" , e.getMessage(), JSONObject.toJSONString(e));
         jsonGenerator.writeStartObject();
         //jsonGenerator.writeObjectField("status", e.getHttpErrorCode());
         jsonGenerator.writeObjectField("code", ErrorType.OAUTH_ERROR.getCode());
