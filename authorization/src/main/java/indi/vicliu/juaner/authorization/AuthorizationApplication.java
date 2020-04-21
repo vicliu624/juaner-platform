@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.authorization;
 
+import indi.vicliu.juaner.authorization.annotation.EnableArgExceptionHandler;
 import indi.vicliu.juaner.common.annotation.EnableSentinelAspect;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 @EnableDiscoveryClient
 @MapperScan("indi.vicliu.juaner.authorization.data.mapper")
 @SpringBootApplication
+@EnableArgExceptionHandler
 @Slf4j
 public class AuthorizationApplication {
 
