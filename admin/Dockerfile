@@ -4,7 +4,7 @@ FROM adoptopenjdk:8-hotspot
 ENV TZ=Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-ARG JAR_FILE=target/admin-1.0-SNAPSHOT.jar
+ARG JAR_FILE=target/admin-*.jar
 COPY ${JAR_FILE} /app/app.jar
 #COPY target/lib/ /app/
 #COPY target/resources /app/

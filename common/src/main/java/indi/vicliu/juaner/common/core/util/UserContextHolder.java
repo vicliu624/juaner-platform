@@ -66,6 +66,10 @@ public class UserContextHolder {
         return username.toString();
     }
 
+    public Long getUserId() {
+        return Long.parseLong(Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("user_id").toString());
+    }
+
     public String getClientId() {
         Object clientId = Optional.ofNullable(threadLocal.get()).orElse(Maps.newHashMap()).get("client_id");
         if (null == clientId) {

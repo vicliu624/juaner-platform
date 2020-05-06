@@ -14,4 +14,10 @@ public class SmsProviderFallback implements SmsProvider {
 		log.error("verify的熔断被触发");
         return Result.fail("确认短信验证码时出错");
 	}
+
+	@Override
+	public Result verifyV2ByUsername(String phone, String code) {
+		log.error("verify的熔断被触发");
+		return Result.fail("确认短信验证码时出错");
+	}
 }

@@ -73,7 +73,7 @@ public abstract class AbstractSmsCodeUserDetailsAuthenticationProvider implement
                 if (hideUserNotFoundExceptions) {
                     throw new BadCredentialsException(messages.getMessage(
                             "AbstractCustomUserDetailsAuthenticationProvider.badCredentials",
-                            "Bad credentials"));
+                            "找不到用户"));
                 }
                 else {
                     throw notFound;

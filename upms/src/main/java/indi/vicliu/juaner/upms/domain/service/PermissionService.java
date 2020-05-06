@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.upms.domain.service;
 
+import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblPermissionInfo;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,11 +22,11 @@ public interface PermissionService {
     void updateRolePermissionCache(String role);
     void updateUrlPermissionCache(TblPermissionInfo permissionInfo);
 
-    Result list(Map<String,Object> jsonMap);
+    List<TblPermissionInfo> list(Map<String,Object> jsonMap);
 
-    Result savePermission(Map<String,Object> jsonMap);
+    JSONObject savePermission(Map<String,Object> jsonMap);
 
-    Result removePermission( Map<String,Object> jsonMap);
+    void removePermission( String ids);
 
-    Result getUserPermission(Long id);
+    List<Long> getUserPermission(Long id);
 }

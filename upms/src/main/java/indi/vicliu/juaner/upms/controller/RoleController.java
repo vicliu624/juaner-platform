@@ -1,13 +1,19 @@
 package indi.vicliu.juaner.upms.controller;
 
-import com.sun.org.apache.regexp.internal.RE;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblRoleInfo;
+import indi.vicliu.juaner.upms.domain.entity.TblRolePermMap;
+import indi.vicliu.juaner.upms.domain.entity.TblUserRoleMap;
 import indi.vicliu.juaner.upms.domain.service.RoleService;
 import indi.vicliu.juaner.upms.exception.RoleException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.List;
 import java.util.Map;
@@ -90,7 +96,11 @@ public class RoleController {
      */
     @PostMapping("/findRoleByUser")
     public Result findRoleByUser(@RequestBody Map<String, Object> jsonMap){
-        return roleService.findRoleByUser(jsonMap);
+        try{
+            return Result.success(roleService.findRoleByUser(jsonMap));
+        } catch (Exception e){
+            return Result.fail("查询角色时出错");
+        }
     }
 
     /**
@@ -100,7 +110,13 @@ public class RoleController {
      */
     @PostMapping("/saveUserRole")
     public Result saveUserRole(@RequestBody Map<String, Object> jsonMap) {
-        return roleService.saveUserRole(jsonMap);
+        try {
+            roleService.saveUserRole(jsonMap);
+            return Result.success("用户角色分配成功");
+        } catch (Exception e) {
+            log.error("分配用户的角色方法saveUserRole出错", e);
+            return Result.fail("分配用户角色失败");
+        }
     }
 
     /**
@@ -110,7 +126,23 @@ public class RoleController {
      */
     @PostMapping("/getRoleInfoList")
     public Result getRoleInfoList(@RequestBody Map<String,Object> jsonMap){
-        return roleService.getRoleInfoList(jsonMap);
+        log.info("sysManage getRoleInfoList:{}",jsonMap.toString());
+        Integer pageNum = jsonMap.get("pageNum") == null ? 1 : (Integer) jsonMap.get("pageNum");
+        Integer pageSize = jsonMap.get("pageSize") == null ? 10 : (Integer) jsonMap.get("pageSize");
+        Boolean isExp = jsonMap.get("isExp") == null ? false : (Boolean) jsonMap.get("isExp");
+        List<TblRoleInfo> list = roleService.getRoleInfoList(jsonMap);
+        try{
+            if(!isExp) {
+                PageHelper.startPage(pageNum, pageSize);
+                PageInfo<TblRoleInfo> pageInfo = new PageInfo<>(list);
+                return Result.success(pageInfo);
+            }else{
+                return Result.success(list);
+            }
+        }catch (Exception e){
+            log.error("调用获取角色列表的方法getRoleInfoList出错",e);
+            return Result.fail("查询角色失败");
+        }
     }
 
     /**
@@ -120,7 +152,13 @@ public class RoleController {
      */
     @PostMapping("/saveRoleInfo")
     public Result saveRoleInfo(@RequestBody Map<String,Object> jsonMap){
-        return roleService.saveRoleInfo(jsonMap);
+        try {
+            JSONObject jsonObject = roleService.saveRoleInfo(jsonMap);
+            return Result.success(jsonObject);
+        }catch (Exception e){
+            log.info("保存角色信息异常",e);
+            return Result.fail("保存角色信息失败");
+        }
     }
 
     /**
@@ -130,7 +168,17 @@ public class RoleController {
      */
     @PostMapping("/removeRoleInfo")
     public Result removeRoleInfo(@RequestBody Map<String,Object> jsonMap){
-        return roleService.removeRoleInfo(jsonMap);
+        String ids = jsonMap.get("ids") == null ? null : jsonMap.get("ids").toString();
+        if(StringUtils.isEmpty(ids)){
+            return Result.fail("删除权限失败");
+        }
+        try{
+            roleService.removeRoleInfo(ids);
+            return Result.success("删除角色成功");
+        }catch (Exception e){
+            log.error("删除角色方法removeRoleInfo出错",e);
+            return Result.fail("删除角色失败");
+        }
     }
 
     /**
@@ -140,7 +188,12 @@ public class RoleController {
      */
     @PostMapping("/findPermissionByRole")
     public Result findPermissionByRole(@RequestBody Map<String,Object> jsonMap){
-        return roleService.findPermissionByRole(jsonMap);
+        try{
+            return Result.success(roleService.findPermissionByRole(jsonMap));
+        } catch (Exception e){
+            log.error("查u想你权限出错",e);
+            return Result.fail(e.getMessage());
+        }
     }
 
     /**
@@ -150,6 +203,12 @@ public class RoleController {
      */
     @PostMapping("/saveRolePerm")
     public Result saveRolePerm(@RequestBody Map<String,Object> jsonMap){
-        return roleService.saveRolePerm(jsonMap);
+        try{
+            roleService.saveRolePerm(jsonMap);
+            return Result.success("角色权限分配成功");
+        }catch (Exception e){
+            log.error("分配角色的权限方法saveRolePerm出错",e);
+            return Result.fail("分配角色权限失败");
+        }
     }
 }

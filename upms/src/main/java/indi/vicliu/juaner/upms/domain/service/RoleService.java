@@ -1,6 +1,6 @@
 package indi.vicliu.juaner.upms.domain.service;
 
-import indi.vicliu.juaner.common.core.message.Result;
+import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.upms.domain.entity.TblRoleInfo;
 import indi.vicliu.juaner.upms.exception.RoleException;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,17 +21,17 @@ public interface RoleService {
 
     TblRoleInfo getRoleByName(String roleName) throws Exception;
 
-    Result findRoleByUser(Map<String, Object> jsonMap);
+    JSONObject findRoleByUser(Map<String, Object> jsonMap);
 
-    Result saveUserRole(Map<String, Object> jsonMap);
+    void saveUserRole(Map<String, Object> jsonMap);
 
-    Result getRoleInfoList(Map<String,Object> jsonMap);
+    List<TblRoleInfo> getRoleInfoList(Map<String,Object> jsonMap);
 
-    Result saveRoleInfo(Map<String,Object> jsonMap);
+    JSONObject saveRoleInfo(Map<String,Object> jsonMap);
 
-    Result removeRoleInfo( Map<String,Object> jsonMap);
+    void removeRoleInfo(String ids) throws RoleException;
 
-    Result findPermissionByRole( Map<String,Object> jsonMap);
+    JSONObject findPermissionByRole( Map<String,Object> jsonMap);
 
-    Result saveRolePerm(@RequestBody Map<String,Object> jsonMap);
+    void saveRolePerm(@RequestBody Map<String,Object> jsonMap) throws RoleException;
 }

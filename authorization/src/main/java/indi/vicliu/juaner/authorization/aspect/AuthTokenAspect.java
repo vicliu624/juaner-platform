@@ -66,14 +66,14 @@ public class AuthTokenAspect {
                 OAuth2AccessToken body = responseEntity.getBody();
                 String strAccessToken = JSONObject.toJSONString(body);
                 log.debug("strAccessToken:{}",strAccessToken);
-                if(body == null){
+                if (body == null) {
                     result = Result.fail("token出错");
                     return ResponseEntity.status(200).body(result);
                 }
-                redisStringUtil.setKey(CommonConstant.USER_TOKEN_KEY + body.getAdditionalInformation().get("user"),(String)body.getAdditionalInformation().get("jti"));
+                redisStringUtil.setKey(CommonConstant.USER_TOKEN_KEY + body.getAdditionalInformation().get("user_id"),(String)body.getAdditionalInformation().get("jti"));
                 result = Result.success(body);
             } else {
-                log.error("error:{}", responseEntity.getStatusCode().toString());
+                log.error(" AuthTokenAspect handleControllerMethod error:{}", responseEntity.getStatusCode().toString());
                 result = Result.fail(ErrorType.OAUTH_ERROR);
             }
         }

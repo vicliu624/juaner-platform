@@ -2,6 +2,7 @@ package indi.vicliu.juaner.upms.controller;
 
 import indi.vicliu.juaner.common.core.exception.ErrorType;
 import indi.vicliu.juaner.common.core.message.Result;
+import indi.vicliu.juaner.common.core.util.UserContextHolder;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.domain.service.UserService;
 import indi.vicliu.juaner.upms.exception.UserException;
@@ -27,7 +28,7 @@ public class UserController {
     @GetMapping("/user/fullInfo")
     public Result getFullUserInfoByUserName(@RequestParam String userName){
         try{
-            TblUserInfo userInfo = this.userService.findByUserName(userName);
+            TblUserInfo userInfo = this.userService.getByUsername(userName);
             return Result.success(userInfo);
         } catch (Exception e){
             log.error(" getFullUserInfoByUserName fail ",e);
@@ -42,8 +43,9 @@ public class UserController {
     @GetMapping("/user/getByUsername")
     public Result getByUsername(@RequestParam("username") String username){
         try {
-            Result result = userService.getByUsername(username);
-            return result;
+            TblUserInfo userInfo = userService.getByUsername(username);
+            userInfo.setPassword(null);
+            return Result.success(userInfo);
         }catch (Exception e){
             log.error(" getByUsername fail ",e);
             if(e instanceof UserException){
@@ -77,16 +79,14 @@ public class UserController {
     @PostMapping("/user/addUser")
     public Result addUserInfo(@RequestBody @Validated AddUserInfoVO userInfo){
         try {
-            return userService.addUserInfo(userInfo);
+            return Result.success(userService.addUserInfo(userInfo));
         } catch (Exception e) {
             log.info("创建用户异常：{}",e);
             if(e instanceof UserException){
-
                 return Result.fail(e.getMessage());
             }else {
                 return Result.fail(ErrorType.SYSTEM_ERROR,"创建用户角色失败");
             }
-
         }
     }
 
@@ -97,7 +97,13 @@ public class UserController {
      */
     @PutMapping("/user/updateUser")
     public Result updateUserInfo(@RequestBody AddUserInfoVO info){
-        return userService.updateUserInfo(info);
+        try{
+            userService.updateUserInfo(info);
+            return Result.success();
+        } catch (Exception e){
+            log.error("更新用户信息出错",e);
+            return Result.fail(e.getMessage());
+        }
     }
 
     /**
@@ -107,7 +113,12 @@ public class UserController {
      */
     @GetMapping("/user/findByUserPhone")
     public Result findByUserPhone(@RequestParam String phone){
-        return userService.findByUserPhone(phone);
+        TblUserInfo userInfo = userService.findByUserPhone(phone);
+        if(userInfo != null){
+            return Result.success(userInfo);
+        } else {
+            return Result.success("手机号未绑定过任何用户");
+        }
     }
 
     /**
@@ -117,7 +128,12 @@ public class UserController {
      */
     @GetMapping("/user/getByUserId")
     public Result findByUserId(@RequestParam Long userId){
-        return userService.findByUserId(userId);
+        TblUserInfo userInfo = userService.findByUserId(userId);
+        if(userInfo != null){
+            return Result.success(userInfo);
+        } else {
+            return Result.success("查询不到用户");
+        }
     }
 
     /**
@@ -127,7 +143,13 @@ public class UserController {
      */
     @PostMapping("/user/createUserInfo")
     public Result createUserInfo(@RequestBody AddUserInfoVO userInfo){
-        return userService.createUserInfo(userInfo);
+        try{
+            TblUserInfo userInfo1 = userService.createUserInfo(userInfo);
+            return Result.success(userInfo1);
+        } catch (Exception e){
+            log.error("创建用户失败",e);
+            return Result.fail(e.getMessage());
+        }
     }
 
     /**
@@ -137,7 +159,13 @@ public class UserController {
      */
     @GetMapping("/user/delUserInfo")
     public Result delUserInfo(@RequestParam("ids") String ids){
-        return userService.delUserInfo(ids);
+        try {
+            userService.delUserInfo(ids);
+            return Result.success("删除用户成功");
+        } catch (Exception e) {
+            log.error("删除用户方法removeUserInfo出错", e);
+            return Result.fail("删除用户失败");
+        }
     }
 
     @PutMapping("/user/lock")
@@ -168,5 +196,21 @@ public class UserController {
             log.error("锁定用户出错",e);
             return Result.fail(e.getMessage());
         }
+    }
+
+    @PutMapping("/user/bindPhone")
+    public Result bindPhone(@RequestBody String phone) {
+        String userName = UserContextHolder.getInstance().getUsername();
+        TblUserInfo userInfo = null;
+        try{
+            userInfo = this.userService.getByUsername(userName);
+        } catch (UserException e){
+            log.error("绑定手机号出错",e);
+            return Result.fail(e.getMessage());
+        }
+
+        userInfo.setPhone(phone);
+        this.userService.updateUserInfo(userInfo);
+        return Result.success();
     }
 }

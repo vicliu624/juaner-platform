@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.authorization.config.custom;
 
 import com.google.common.collect.Maps;
+import indi.vicliu.juaner.authorization.security.core.userdetails.CustomUser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -21,7 +22,8 @@ public class CustomTokenEnhancer implements TokenEnhancer {
         log.info( "authentication name:{} ",authentication.getName());
         Map<String, Object> additionalInfo = Maps.newHashMap();
         //自定义token内容
-        additionalInfo.put("user", authentication.getName());
+        CustomUser customUser = (CustomUser) authentication.getPrincipal();
+        additionalInfo.put("user_id",customUser.getUserId());
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
         return accessToken;
     }

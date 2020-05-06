@@ -19,6 +19,12 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.isAlreadyRouted;
+
 /**
  * @Auther: liuweikai
  * @Date: 2019-03-22 12:56
@@ -37,6 +43,11 @@ public class AccessGatewayFilter implements GlobalFilter {
     @Autowired
     private RedisStringUtil redisStringUtil;
 
+
+    @Autowired
+    WebSockerFilter webSockerFilter;
+
+    private static String WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
     /**
      * 1.首先网关检查token是否有效，无效直接返回401，不调用签权服务
      * 2.调用签权服务器看是否对该请求有权限，有权限进入下一个filter，没有权限返回401
@@ -52,6 +63,17 @@ public class AccessGatewayFilter implements GlobalFilter {
         String method = request.getMethodValue();
         String url = request.getPath().value();
         log.debug("url:{},method:{},headers:{}", url, method, request.getHeaders());
+        URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
+        log.info("当前访问路径为 {}",requestUrl.toString());
+        String scheme = requestUrl.getScheme();
+        if (isAlreadyRouted(exchange)
+                || ("ws".equals(scheme) && "wss".equals(scheme))) {
+            return webSockerFilter.filter(exchange,chain);
+        }
+        /*if (StringUtils.isNotEmpty(request.getHeaders().getFirst(WEBSOCKET_PROTOCOL))) {
+            log.info("WebSocket In AccessGatewayFilter ");
+            return webSockerFilter.filter(exchange,chain);
+        }*/
         //不需要网关签权的url
         if (authService.ignoreAuthentication(url)) {
             return chain.filter(exchange);
@@ -74,10 +96,11 @@ public class AccessGatewayFilter implements GlobalFilter {
         log.debug("get jwt by authentication:{} claims:{}",authentication,claims);
 
         JSONObject jsonObject = JSONObject.parseObject(claims);
-        String userName = (String) jsonObject.get("user_name");
+        String userId = jsonObject.get("user_id").toString();
         String jti = (String) jsonObject.get("jti");
-        String redisJti = redisStringUtil.getValue(CommonConstant.USER_TOKEN_KEY + userName);
+        String redisJti = redisStringUtil.getValue(CommonConstant.USER_TOKEN_KEY + userId);
         if(redisJti != null && !jti.equals(redisJti)){
+            log.debug(" key:[{}],value:[{}],jti:[{}] ",CommonConstant.USER_TOKEN_KEY + userId,redisJti,jti);
             return conflict(exchange);
         }
 
@@ -99,7 +122,7 @@ public class AccessGatewayFilter implements GlobalFilter {
     private Mono<Void> unauthorized(ServerWebExchange serverWebExchange) {
         serverWebExchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
         DataBuffer buffer = serverWebExchange.getResponse()
-                .bufferFactory().wrap(HttpStatus.UNAUTHORIZED.getReasonPhrase().getBytes());
+                .bufferFactory().wrap(HttpStatus.UNAUTHORIZED.getReasonPhrase().getBytes(StandardCharsets.UTF_8));
         return serverWebExchange.getResponse().writeWith(Flux.just(buffer));
     }
 
@@ -111,7 +134,7 @@ public class AccessGatewayFilter implements GlobalFilter {
     private Mono<Void> conflict(ServerWebExchange serverWebExchange) {
         serverWebExchange.getResponse().setStatusCode(HttpStatus.CONFLICT);
         DataBuffer buffer = serverWebExchange.getResponse()
-                .bufferFactory().wrap(HttpStatus.CONFLICT.getReasonPhrase().getBytes());
+                .bufferFactory().wrap(HttpStatus.CONFLICT.getReasonPhrase().getBytes(StandardCharsets.UTF_8));
         return serverWebExchange.getResponse().writeWith(Flux.just(buffer));
     }
 }

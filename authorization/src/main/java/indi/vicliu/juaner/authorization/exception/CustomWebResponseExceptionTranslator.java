@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.authorization.exception;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -37,30 +38,32 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
         // 异常栈获取 OAuth2Exception 异常
         Exception ase = (OAuth2Exception) throwableAnalyzer.getFirstThrowableOfType(
                 OAuth2Exception.class, causeChain);
-
-        // 异常栈中有OAuth2Exception
         if (ase != null) {
-            return handleOAuth2Exception((OAuth2Exception) ase);
+            log.info("--------OAuth2Exception----------");
+            return handleOAuth2Exception(new CustomOAuthException(e.getMessage(), e));
         }
 
         ase = (AuthenticationException) throwableAnalyzer.getFirstThrowableOfType(AuthenticationException.class,
                 causeChain);
         if (ase != null) {
+            log.info("AuthenticationException");
             return handleOAuth2Exception(new UnauthorizedException(e.getMessage(), e));
         }
 
         ase = (AccessDeniedException) throwableAnalyzer
                 .getFirstThrowableOfType(AccessDeniedException.class, causeChain);
         if (ase != null) {
+            log.info("AccessDeniedException");
             return handleOAuth2Exception(new ForbiddenException(ase.getMessage(), ase));
         }
 
         ase = (HttpRequestMethodNotSupportedException) throwableAnalyzer
                 .getFirstThrowableOfType(HttpRequestMethodNotSupportedException.class, causeChain);
         if (ase != null) {
+            log.info("HttpRequestMethodNotSupportedException");
             return handleOAuth2Exception(new MethodNotAllowed(ase.getMessage(), ase));
         }
-
+        log.info("ServerErrorException");
         // 不包含上述异常则服务器内部错误
         return handleOAuth2Exception(new ServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), e));
     }
@@ -77,8 +80,11 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
 
         CustomOAuth2Exception exception = new CustomOAuth2Exception(e.getMessage(),e);
 
-        return new ResponseEntity<>(exception, headers,
+        log.error("捕获到异常:" + exception.getMessage(),exception);
+        ResponseEntity entity = new ResponseEntity<>(exception, headers,
                 HttpStatus.valueOf(status));
+        log.debug("返回:{}", JSONObject.toJSONString(entity));
+        return entity;
 
     }
 
@@ -127,6 +133,18 @@ public class CustomWebResponseExceptionTranslator implements WebResponseExceptio
         }
         public int getHttpErrorCode() {
             return 405;
+        }
+    }
+
+    private static class CustomOAuthException extends OAuth2Exception {
+        CustomOAuthException(String msg, Throwable t) {
+            super(msg, t);
+        }
+        public String getOAuth2ErrorCode() {
+            return "authorization_error";
+        }
+        public int getHttpErrorCode() {
+            return 200;
         }
     }
 }
