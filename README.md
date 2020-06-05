@@ -1,5 +1,8 @@
 # 卷耳 微服务框架
 
+## 码云地址
+- 'https://gitee.com/vicliu624/juaner-platform'
+
 接入nacos 1.1.4
 
 ## 发布到maven仓库
