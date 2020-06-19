@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>indi.vicliu.juaner</groupId>
     <artifactId>juaner-platform</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <name>juaner-platform</name>
     <packaging>pom</packaging>
     <description>卷耳-微服务框架</description>
@@ -18,7 +18,6 @@
         <module>gateway</module>
         <module>id</module>
         <module>admin</module>
-        <module>ndbcluster-analyze</module>
     </modules>
 
     <properties>
@@ -29,8 +28,8 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot.version>2.2.2.RELEASE</spring-boot.version>
-        <spring-cloud.version>Hoxton.RELEASE</spring-cloud.version>
+        <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
+        <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
         <springframework.version>5.2.2.RELEASE</springframework.version>
 
         <spring-boot-admin.version>2.2.0</spring-boot-admin.version>
@@ -270,7 +269,7 @@
                     <message >Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
                     <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory><!--本地jar地址-->
-                    <branch>refs/heads/1.0.1</branch><!--分支的名称-->
+                    <branch>refs/heads/1.0.2</branch><!--分支的名称-->
                     <merge>true</merge>
                     <includes>
                         <include>**/*</include>
