@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.authorization.config.oauth;
 
-import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider.AbstractSmsCodeUserDetailsAuthenticationProvider;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.AbstractSmsCodeUserDetailsAuthenticationProvider;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.wechat.AbstractWeChatCodeUserDetailsAuthenticationProvider;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AbstractSmsCodeUserDetailsAuthenticationProvider smsCodeUserDetailsAuthenticationProvider;
 
+    @Autowired
+    private AbstractWeChatCodeUserDetailsAuthenticationProvider weChatCodeUserDetailsAuthenticationProvider;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
@@ -40,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().permitAll();
 
         http.authenticationProvider(smsCodeUserDetailsAuthenticationProvider);
+        http.authenticationProvider(weChatCodeUserDetailsAuthenticationProvider);
     }
 
     /**

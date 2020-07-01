@@ -38,4 +38,10 @@ public class UpmsProviderFallback implements UpmsProvider {
         return Result.fail("用户已解锁.");
     }
 
+    @Override
+    public Result bindUserFromWeChat(String unionId) {
+        log.error("UpmsProviderFallback bindUserFromWeChat 熔断被触发");
+        return Result.fail("绑定微信账号失败.");
+    }
+
 }

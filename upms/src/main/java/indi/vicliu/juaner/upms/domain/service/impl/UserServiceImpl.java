@@ -234,4 +234,34 @@ public class UserServiceImpl implements UserService {
         redisStringUtil.delKey(key2);
         return updateCount;
     }
+
+    @Override
+    public TblUserInfo queryByWeChatUnionId(String unionId) {
+        Example example = new Example(TblUserInfo.class);
+        example.createCriteria().andEqualTo("wxUnionId",unionId);
+        List<TblUserInfo> userInfos = this.userInfoMapper.selectByExample(example);
+        if(!userInfos.isEmpty()){
+            return userInfos.get(0);
+        } else {
+            TblUserInfo userInfo = new TblUserInfo();
+            userInfo.setId(idProvider.nextId());
+            userInfo.setUserName("User" + userInfo.getId());
+            userInfo.setAccountNonExpired(true);
+            userInfo.setAccountNonLocked(true);
+            userInfo.setCreateBy(0L);
+            userInfo.setCreateTime(new Date());
+            userInfo.setCredentialsNonExpired(true);
+            userInfo.setEnabled(true);
+            userInfo.setNickName(userInfo.getUserName());
+            userInfo.setWxUnionId(unionId);
+            this.userInfoMapper.insertSelective(userInfo);
+
+            TblUserRoleMap userRole=new TblUserRoleMap();
+            userRole.setCreateTime(new Date());
+            userRole.setRoleId(0L);
+            userRole.setUserId(userInfo.getId());
+            tblUserRoleMapMapper.insertSelective(userRole);
+            return userInfo;
+        }
+    }
 }

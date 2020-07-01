@@ -3,10 +3,11 @@ package indi.vicliu.juaner.authorization.config.oauth;
 import indi.vicliu.juaner.authorization.config.AuthExceptionEntryPoint;
 import indi.vicliu.juaner.authorization.config.custom.CustomTokenEnhancer;
 import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.ResourceOwnerSmsTokenGranter;
-import indi.vicliu.juaner.authorization.config.oauth.custom.provider.wechat.WechatAuthorizationCodeServicesImpl;
-import indi.vicliu.juaner.authorization.config.oauth.custom.provider.wechat.WeixinCodeTokenGranter;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.wechat.ResourceOwnerWeChatTokenGranter;
+import indi.vicliu.juaner.authorization.data.mapper.TblWeixinAppConfigMapper;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import indi.vicliu.juaner.authorization.exception.CustomWebResponseExceptionTranslator;
+import indi.vicliu.juaner.authorization.provider.UpmsProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +41,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -70,6 +72,15 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Autowired
     private ClientDetailsService clientDetailsService;
+
+    @Autowired
+    private TblWeixinAppConfigMapper weixinAppConfigMapper;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Autowired
+    private UpmsProvider upmsProvider;
 
     /**
      * 定义了token切点的安全限制。
@@ -131,11 +142,6 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     protected AuthorizationCodeServices authorizationCodeServices() {
         //授权码存储等处理方式类，使用jdbc，操作oauth_code表
         return new JdbcAuthorizationCodeServices(dataSource);
-    }
-
-    @Bean
-    protected AuthorizationCodeServices wechatAuthorizationCodeServices() {
-        return new WechatAuthorizationCodeServicesImpl();
     }
 
     /**
@@ -220,15 +226,15 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
         tokenGranters.add(new ClientCredentialsTokenGranter(tokenServices(), clientDetailsService,
                 oAuth2RequestFactory()));
 
-        tokenGranters.add(new WeixinCodeTokenGranter(tokenServices(),
-                wechatAuthorizationCodeServices(), clientDetailsService, oAuth2RequestFactory()));
-
         if (authenticationManager != null) {
             tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager,
                     tokenServices(), clientDetailsService, oAuth2RequestFactory()));
 
             tokenGranters.add(new ResourceOwnerSmsTokenGranter(authenticationManager, tokenServices(),
                     clientDetailsService, oAuth2RequestFactory()));
+
+            tokenGranters.add(new ResourceOwnerWeChatTokenGranter(authenticationManager, tokenServices(),
+                    clientDetailsService, oAuth2RequestFactory(),weixinAppConfigMapper,restTemplate,upmsProvider));
         }
         return tokenGranters;
     }

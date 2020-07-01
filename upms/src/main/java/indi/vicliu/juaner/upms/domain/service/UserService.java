@@ -32,4 +32,6 @@ public interface UserService {
     int lockUserByName(String userName) throws UserException;
 
     int unlockUserByName(String userName) throws UserException;
+
+    TblUserInfo queryByWeChatUnionId(String unionId);
 }

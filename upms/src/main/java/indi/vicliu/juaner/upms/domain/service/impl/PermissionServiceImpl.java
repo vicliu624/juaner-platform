@@ -67,6 +67,7 @@ public class PermissionServiceImpl implements PermissionService {
         for (String role:roles){
             String key = "rolesPermission_"+role;
             String data=redisStringUtil.getValue(key);
+            log.debug("queryByRoles:{}",data);
             if(Objects.nonNull(data) && Objects.nonNull(JSONObject.parseArray(data, TblPermissionInfo.class))){
                 List<TblPermissionInfo> permissionInfos = JSONObject.parseArray(data, TblPermissionInfo.class);
                 tblPermissionInfoList.addAll(permissionInfos);
@@ -88,6 +89,7 @@ public class PermissionServiceImpl implements PermissionService {
     public TblPermissionInfo findByURI(String uri, String method) {
         String key="urlPermission_"+uri+method;
         String data=redisStringUtil.getValue(key);
+        log.debug("findByURI:{}",data);
         if(Objects.nonNull(data)){
             TblPermissionInfo tblPermissionInfo = JSONObject.parseObject(data, TblPermissionInfo.class);
             if(Objects.nonNull(tblPermissionInfo)){
@@ -140,6 +142,7 @@ public class PermissionServiceImpl implements PermissionService {
     @Override
     public void updateUrlPermissionCache(TblPermissionInfo permissionInfo) {
         String key="urlPermission_"+permissionInfo.getPermUrl()+permissionInfo.getMethod();
+        log.debug("updateUrlPermissionCache:{}",key);
         if (Objects.nonNull(permissionInfo)) {
            // redisStringUtil.setKeyExpire(key,JSONObject.toJSONString(permissionInfo),EXPIRE, TimeUnit.MINUTES);
             redisStringUtil.setKey(key,JSONObject.toJSONString(permissionInfo));

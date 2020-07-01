@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Example;
+
+import java.util.List;
 
 /**
  * @Auther: liuweikai
@@ -212,5 +215,15 @@ public class UserController {
         userInfo.setPhone(phone);
         this.userService.updateUserInfo(userInfo);
         return Result.success();
+    }
+
+    @PostMapping("/user/bindWeChat")
+    public Result bindUserFromWeChat(@RequestBody String unionId){
+        try{
+            return Result.success(this.userService.queryByWeChatUnionId(unionId));
+        } catch (Exception e){
+            log.error("绑定微信账号出错",e);
+            return Result.fail("绑定微信账号出错" + e.getMessage());
+        }
     }
 }

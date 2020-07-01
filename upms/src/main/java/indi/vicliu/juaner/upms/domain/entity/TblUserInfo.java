@@ -83,5 +83,11 @@ public class TblUserInfo implements Serializable {
      */
     private Boolean enabled;
 
+    /**
+     * 微信union_id
+     */
+    @Column(name = "wx_union_id")
+    private String wxUnionId;
+
     private static final long serialVersionUID = 1L;
 }

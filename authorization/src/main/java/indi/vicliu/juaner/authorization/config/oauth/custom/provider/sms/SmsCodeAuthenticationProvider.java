@@ -1,7 +1,8 @@
-package indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider;
+package indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms;
 
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.authorization.Constant;
+import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.AbstractSmsCodeUserDetailsAuthenticationProvider;
 import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.SmsCodeAuthenticationToken;
 import indi.vicliu.juaner.authorization.domain.service.impl.CustomUserDetailsService;
 import indi.vicliu.juaner.authorization.provider.SmsProvider;
@@ -49,7 +50,7 @@ public class SmsCodeAuthenticationProvider extends AbstractSmsCodeUserDetailsAut
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, SmsCodeAuthenticationToken authentication) throws AuthenticationException {
         if (authentication.getCredentials() == null) {
-            log.debug("授权失败: 为提供短信验证码");
+            log.debug("授权失败: 未提供短信验证码");
 
             throw new BadCredentialsException(messages.getMessage(
                     "SmsCodeAuthenticationProvider.badCredentials",

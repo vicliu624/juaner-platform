@@ -1,6 +1,5 @@
-package indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.provider;
+package indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms;
 
-import indi.vicliu.juaner.authorization.config.oauth.custom.provider.sms.SmsCodeAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;

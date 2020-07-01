@@ -4,10 +4,7 @@ import indi.vicliu.juaner.authorization.provider.fallback.UpmsProviderFallback;
 import indi.vicliu.juaner.common.core.message.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @Auther: liuweikai
@@ -29,4 +26,7 @@ public interface UpmsProvider {
 
     @PutMapping("/upms/user/unlock")
     Result unlockUser(@RequestBody String userName);
+
+    @PostMapping("/user/bindWeChat")
+    public Result bindUserFromWeChat(@RequestBody String unionId);
 }

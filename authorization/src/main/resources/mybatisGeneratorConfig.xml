@@ -106,10 +106,10 @@
            enableSelectByExample="false" enableSelectByPrimaryKey="false">
     </table>
 
-    <table tableName="tbl_weixin_mini_program_client_config"
-           enableInsert="true"
+    <table tableName="tbl_weixin_app_config"
+           enableInsert="false"
            enableCountByExample="true"
-           enableUpdateByExample="true" enableUpdateByPrimaryKey="true"
+           enableUpdateByExample="false" enableUpdateByPrimaryKey="false"
            enableSelectByExample="true" enableSelectByPrimaryKey="true">
     </table>
 
