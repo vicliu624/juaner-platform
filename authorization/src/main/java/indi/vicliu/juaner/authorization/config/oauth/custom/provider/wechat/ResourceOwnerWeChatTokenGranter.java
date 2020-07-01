@@ -77,6 +77,7 @@ public class ResourceOwnerWeChatTokenGranter extends AbstractTokenGranter {
         AccessTokenResp accessTokenResp = convertAndCheck(stringResponseEntity, AccessTokenResp.class);
         log.info("微信返回:{}", JSONObject.toJSONString(accessTokenResp));
 
+        //取unionId接口文档 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html#%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80
         String unionId = accessTokenResp.getUnionid();
         String openId = accessTokenResp.getOpenid();
 
