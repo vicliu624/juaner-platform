@@ -19,7 +19,6 @@ import org.springframework.security.oauth2.common.exceptions.InvalidGrantExcepti
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.AbstractTokenGranter;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Slf4j
-@Component
 public class ResourceOwnerWeChatTokenGranter extends AbstractTokenGranter {
     private static final String GRANT_TYPE = "wx_code";
 
@@ -62,7 +60,7 @@ public class ResourceOwnerWeChatTokenGranter extends AbstractTokenGranter {
     protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
 
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
-
+        log.debug("parameters:{}",JSON.toJSONString(parameters));
         String code = parameters.get("code");
         // Protect from downstream leaks of password
         parameters.remove("code");
