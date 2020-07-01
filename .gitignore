@@ -16,6 +16,7 @@ settings.gradle
 *.jar
 *.war
 *.ear
+*.zip
 hs_err_pid*
 
 #maven ignore
