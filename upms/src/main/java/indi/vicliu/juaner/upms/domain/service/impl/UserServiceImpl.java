@@ -13,6 +13,7 @@ import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.utils.RedisStringUtil;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -236,32 +237,73 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public TblUserInfo queryByWeChatUnionId(String unionId) {
-        Example example = new Example(TblUserInfo.class);
-        example.createCriteria().andEqualTo("wxUnionId",unionId);
-        List<TblUserInfo> userInfos = this.userInfoMapper.selectByExample(example);
-        if(!userInfos.isEmpty()){
-            return userInfos.get(0);
-        } else {
-            TblUserInfo userInfo = new TblUserInfo();
-            userInfo.setId(idProvider.nextId());
-            userInfo.setUserName("User" + userInfo.getId());
-            userInfo.setAccountNonExpired(true);
-            userInfo.setAccountNonLocked(true);
-            userInfo.setCreateBy(0L);
-            userInfo.setCreateTime(new Date());
-            userInfo.setCredentialsNonExpired(true);
-            userInfo.setEnabled(true);
-            userInfo.setNickName(userInfo.getUserName());
-            userInfo.setWxUnionId(unionId);
-            this.userInfoMapper.insertSelective(userInfo);
+    public TblUserInfo queryByWeChatUnionId(String unionId,String openId) {
+        if(StringUtils.isEmpty(unionId)){
+            Example example1 = new Example(TblUserInfo.class);
+            example1.createCriteria().andEqualTo("wxUnionId",openId);
+            List<TblUserInfo> userInfos1 = this.userInfoMapper.selectByExample(example1);
+            if (!userInfos1.isEmpty()) {
+                return userInfos1.get(0);
+            } else {
+                TblUserInfo userInfo = new TblUserInfo();
+                userInfo.setId(idProvider.nextId());
+                userInfo.setUserName("User" + userInfo.getId());
+                userInfo.setAccountNonExpired(true);
+                userInfo.setAccountNonLocked(true);
+                userInfo.setCreateBy(0L);
+                userInfo.setCreateTime(new Date());
+                userInfo.setCredentialsNonExpired(true);
+                userInfo.setEnabled(true);
+                userInfo.setNickName(userInfo.getUserName());
+                userInfo.setWxUnionId(openId);
+                userInfo.setPassword("");
+                this.userInfoMapper.insertSelective(userInfo);
 
-            TblUserRoleMap userRole=new TblUserRoleMap();
-            userRole.setCreateTime(new Date());
-            userRole.setRoleId(0L);
-            userRole.setUserId(userInfo.getId());
-            tblUserRoleMapMapper.insertSelective(userRole);
-            return userInfo;
+                TblUserRoleMap userRole=new TblUserRoleMap();
+                userRole.setCreateTime(new Date());
+                userRole.setRoleId(0L);
+                userRole.setUserId(userInfo.getId());
+                tblUserRoleMapMapper.insertSelective(userRole);
+                return userInfo;
+            }
+        } else {
+            Example example = new Example(TblUserInfo.class);
+            example.createCriteria().andEqualTo("wxUnionId",unionId);
+            List<TblUserInfo> userInfos = this.userInfoMapper.selectByExample(example);
+            if(!userInfos.isEmpty()){
+                return userInfos.get(0);
+            } else {
+                Example example1 = new Example(TblUserInfo.class);
+                example1.createCriteria().andEqualTo("wxUnionId",openId);
+                List<TblUserInfo> userInfos1 = this.userInfoMapper.selectByExample(example1);
+                if (!userInfos1.isEmpty()) {
+                    TblUserInfo userInfo = userInfos1.get(0);
+                    userInfo.setWxUnionId(unionId);
+                    this.userInfoMapper.updateByPrimaryKeySelective(userInfo);
+                    return userInfo;
+                } else {
+                    TblUserInfo userInfo = new TblUserInfo();
+                    userInfo.setId(idProvider.nextId());
+                    userInfo.setUserName("User" + userInfo.getId());
+                    userInfo.setAccountNonExpired(true);
+                    userInfo.setAccountNonLocked(true);
+                    userInfo.setCreateBy(0L);
+                    userInfo.setCreateTime(new Date());
+                    userInfo.setCredentialsNonExpired(true);
+                    userInfo.setEnabled(true);
+                    userInfo.setNickName(userInfo.getUserName());
+                    userInfo.setWxUnionId(unionId);
+                    userInfo.setPassword("");
+                    this.userInfoMapper.insertSelective(userInfo);
+
+                    TblUserRoleMap userRole=new TblUserRoleMap();
+                    userRole.setCreateTime(new Date());
+                    userRole.setRoleId(0L);
+                    userRole.setUserId(userInfo.getId());
+                    tblUserRoleMapMapper.insertSelective(userRole);
+                    return userInfo;
+                }
+            }
         }
     }
 }

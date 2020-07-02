@@ -9,6 +9,7 @@ import indi.vicliu.juaner.authorization.vo.AccessTokenResp;
 import indi.vicliu.juaner.authorization.vo.BaseResp;
 import indi.vicliu.juaner.common.core.message.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
@@ -78,15 +79,12 @@ public class ResourceOwnerWeChatTokenGranter extends AbstractTokenGranter {
         log.info("微信返回:{}", JSONObject.toJSONString(accessTokenResp));
 
         //取unionId接口文档 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html#%E8%AF%B7%E6%B1%82%E5%9C%B0%E5%9D%80
-        String unionId = accessTokenResp.getUnionid();
-        String openId = accessTokenResp.getOpenid();
-
-        Result result = upmsProvider.bindUserFromWeChat(unionId);
-        if(result.isFail()){
-            throw new InvalidGrantException(result.getData().toString());
+        Result resultUserInfo = upmsProvider.bindUserFromWeChat(accessTokenResp);
+        if(resultUserInfo.isFail()){
+            throw new InvalidGrantException(resultUserInfo.getData().toString());
         }
 
-        Map<String,Object> map = (HashMap<String,Object>)result.getData();
+        Map<String,Object> map = (HashMap<String,Object>)resultUserInfo.getData();
         String username = (String)map.get("userName");
         parameters.put("username",username);
 

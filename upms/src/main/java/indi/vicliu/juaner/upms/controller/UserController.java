@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.upms.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.common.core.exception.ErrorType;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.common.core.util.UserContextHolder;
@@ -7,6 +8,7 @@ import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.domain.service.UserService;
 import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
+import indi.vicliu.juaner.upms.vo.BindWeChatVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -218,9 +220,10 @@ public class UserController {
     }
 
     @PostMapping("/user/bindWeChat")
-    public Result bindUserFromWeChat(@RequestBody String unionId){
+    public Result bindUserFromWeChat(@RequestBody BindWeChatVo weChatVo){
         try{
-            return Result.success(this.userService.queryByWeChatUnionId(unionId));
+            log.info("request data:{}", JSONObject.toJSONString(weChatVo));
+            return Result.success(this.userService.queryByWeChatUnionId(weChatVo.getUnionid(),weChatVo.getOpenid()));
         } catch (Exception e){
             log.error("绑定微信账号出错",e);
             return Result.fail("绑定微信账号出错" + e.getMessage());

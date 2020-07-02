@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.authorization.provider.fallback;
 
 import indi.vicliu.juaner.authorization.provider.UpmsProvider;
+import indi.vicliu.juaner.authorization.vo.AccessTokenResp;
 import indi.vicliu.juaner.common.core.message.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,7 @@ public class UpmsProviderFallback implements UpmsProvider {
     }
 
     @Override
-    public Result bindUserFromWeChat(String unionId) {
+    public Result bindUserFromWeChat(AccessTokenResp resp) {
         log.error("UpmsProviderFallback bindUserFromWeChat 熔断被触发");
         return Result.fail("绑定微信账号失败.");
     }

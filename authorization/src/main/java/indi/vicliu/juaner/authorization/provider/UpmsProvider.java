@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.authorization.provider;
 
 import indi.vicliu.juaner.authorization.provider.fallback.UpmsProviderFallback;
+import indi.vicliu.juaner.authorization.vo.AccessTokenResp;
 import indi.vicliu.juaner.common.core.message.Result;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,6 @@ public interface UpmsProvider {
     @PutMapping("/upms/user/unlock")
     Result unlockUser(@RequestBody String userName);
 
-    @PostMapping("/user/bindWeChat")
-    public Result bindUserFromWeChat(@RequestBody String unionId);
+    @PostMapping("/upms/user/bindWeChat")
+    Result bindUserFromWeChat(@RequestBody AccessTokenResp resp);
 }
