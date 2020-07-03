@@ -34,4 +34,6 @@ public interface RoleService {
     JSONObject findPermissionByRole( Map<String,Object> jsonMap);
 
     void saveRolePerm(@RequestBody Map<String,Object> jsonMap) throws RoleException;
+
+    List<TblRoleInfo> allRoles();
 }

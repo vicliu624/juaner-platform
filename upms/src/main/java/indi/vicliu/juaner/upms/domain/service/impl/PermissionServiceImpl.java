@@ -59,6 +59,8 @@ public class PermissionServiceImpl implements PermissionService {
         return tblPermissionInfos;
     }
 
+
+
     @Override
     public List<TblPermissionInfo> queryByRoles(String[] roles) {
        // String key = "rolesPermission"+Arrays.stream(roles).reduce("", String::concat);

@@ -312,4 +312,9 @@ public class RoleServiceImpl implements RoleService {
             }
         }
     }
+
+    @Override
+    public List<TblRoleInfo> allRoles() {
+        return this.roleInfoMapper.selectAll();
+    }
 }
