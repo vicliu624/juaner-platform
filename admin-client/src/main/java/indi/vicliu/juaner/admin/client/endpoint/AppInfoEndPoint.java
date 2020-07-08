@@ -1,7 +1,7 @@
 package indi.vicliu.juaner.admin.client.endpoint;
 
 import indi.vicliu.juaner.admin.client.utils.Analyzer;
-import indi.vicliu.juaner.common.vo.admin.client.JarDependencies;
+import indi.vicliu.juaner.admin.client.model.JarDependencies;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.web.annotation.RestControllerEndpoint;

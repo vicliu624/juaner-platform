@@ -1,16 +1,19 @@
 package indi.vicliu.juaner.admin.client.utils;
 
 import com.google.common.collect.Lists;
-import com.sun.tools.classfile.Dependency;
-import indi.vicliu.juaner.admin.client.vo.JarDependencies;
-import indi.vicliu.juaner.admin.client.vo.PomDependency;
-import indi.vicliu.juaner.admin.client.vo.PomInfo;
+import indi.vicliu.juaner.admin.client.enums.SpringCloudVersionEnum;
+import indi.vicliu.juaner.admin.client.model.JarDependencies;
+import indi.vicliu.juaner.admin.client.model.PomDependency;
+import indi.vicliu.juaner.admin.client.model.PomInfo;
 import lombok.extern.slf4j.Slf4j;
 import net.logstash.logback.encoder.org.apache.commons.lang3.StringUtils;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.IOUtil;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.springframework.boot.SpringBootVersion;
 import org.springframework.core.io.ClassPathResource;
-
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -30,8 +33,8 @@ public class Analyzer {
         jarDependencies.setPomInfos(pomInfos);
         jarDependencies.setSpringBootVersion(SpringBootVersion.getVersion());
         Optional<PomInfo> optionalPomInfo = pomInfos.stream().filter( //
-                x -> (StringUtils.isNotEmpty(x.groupId) && x.groupId.equals("org.springframework.cloud")
-                        &&x.artifactId.equals("spring-cloud-commons")))
+                x -> (StringUtils.isNotEmpty(x.getGroupId()) && x.getGroupId().equals("org.springframework.cloud")
+                        &&x.getArtifactId().equals("spring-cloud-commons")))
                 .findFirst();
         setSpringCloudDeps(optionalPomInfo, jarDependencies);
 
@@ -101,7 +104,7 @@ public class Analyzer {
         }
     }
 
-    private static PomInfo readPom(InputStream is) throws SAXException, IOException, ParserConfigurationException {
+    private static PomInfo readPom(InputStream is) throws IOException {
         if (null != is) {
             MavenXpp3Reader reader = new MavenXpp3Reader();
             try {
@@ -124,7 +127,7 @@ public class Analyzer {
                     PomDependency pomDependency = new PomDependency();
                     String groupId = dependency.getGroupId();
                     if (StringUtils.isNotEmpty(groupId) && (groupId.equals("${project.groupId}"))) {
-                        groupId = pomInfo.groupId;
+                        groupId = pomInfo.getGroupId();
                     }
                     pomDependency.setGroupId(groupId);
                     pomDependency.setArtifactId(dependency.getArtifactId());
@@ -150,7 +153,7 @@ public class Analyzer {
                                            JarDependencies jarDependencies) throws Exception {
         if (optionalPomInfo.isPresent()) {
             PomInfo pomInfo = optionalPomInfo.get();
-            String sccommonsVersion = pomInfo.version;
+            String sccommonsVersion = pomInfo.getVersion();
             if (StringUtils.isNotEmpty(sccommonsVersion)) {
                 String scVersion= SpringCloudVersionEnum.getScVersionByCommonVersion(sccommonsVersion);
                 jarDependencies.setSpringCloudVersion(scVersion);

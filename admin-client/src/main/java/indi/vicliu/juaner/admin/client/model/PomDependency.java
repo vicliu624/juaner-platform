@@ -1,4 +1,4 @@
-package indi.vicliu.juaner.admin.client.vo;
+package indi.vicliu.juaner.admin.client.model;
 
 import lombok.Data;
 

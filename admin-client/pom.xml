@@ -12,13 +12,6 @@
     <artifactId>admin-client</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>indi.vicliu.juaner</groupId>
-            <artifactId>common</artifactId>
-            <version>1.0.2</version>
-            <scope>compile</scope>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.apache.maven/maven-model -->
         <dependency>
             <groupId>org.apache.maven</groupId>

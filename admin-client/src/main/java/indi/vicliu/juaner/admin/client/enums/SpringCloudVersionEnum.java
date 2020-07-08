@@ -1,7 +1,5 @@
 package indi.vicliu.juaner.admin.client.enums;
 
-import java.util.ArrayList;
-import java.util.List;
 
 public enum SpringCloudVersionEnum {
 
@@ -20,8 +18,8 @@ public enum SpringCloudVersionEnum {
         this.springcloudVersion = springcloudVersion;
         this.desc = desc;
     }
+
     public  static String getScVersionByCommonVersion(String springCloudommonVersion){
-        List list=new ArrayList<>();
         for (SpringCloudVersionEnum scVersionEnum : SpringCloudVersionEnum.values()) {
             if (scVersionEnum.springCommonVersion.equalsIgnoreCase(springCloudommonVersion)){
                return scVersionEnum.springcloudVersion;
