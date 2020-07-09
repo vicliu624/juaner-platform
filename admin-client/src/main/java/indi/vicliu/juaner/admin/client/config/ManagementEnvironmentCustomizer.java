@@ -22,7 +22,7 @@ public class ManagementEnvironmentCustomizer implements EnvironmentCustomizer<Co
 
     private static final String SPRINGBOOT_MANAGEMENT_PORT_KEY = "management.server.port";
 
-    private static final String DEFAULT_PROPERTY = "META-INF/moss-client/bootstrap.properties";
+    private static final String DEFAULT_PROPERTY = "META-INF/admin-client/bootstrap.properties";
 
     @Override
     public void customize(ConfigurableEnvironment env) {
@@ -38,7 +38,7 @@ public class ManagementEnvironmentCustomizer implements EnvironmentCustomizer<Co
     }
 
     private int getManagementPort(ConfigurableEnvironment env) {
-        if (!"prod".equalsIgnoreCase(env.getProperty("spring.profiles.active"))) {
+        if (env.getProperty("spring.profiles.active") != null && !env.getProperty("spring.profiles.active").startsWith("prod")) {
             try {
                 //不是生产环境，使用Socket去连接如果能连接上表示端口被占用
                 InetAddress Address = InetAddress.getByName("127.0.0.1");

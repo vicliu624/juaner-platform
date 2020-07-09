@@ -1,50 +1,18 @@
 package indi.vicliu.juaner.admin.client.endpoint;
 
+import indi.vicliu.juaner.admin.client.model.LogFile;
 import lombok.Data;
-import org.springframework.beans.factory.InitializingBean;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.util.StringUtils;
-
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import org.springframework.stereotype.Component;
 import java.util.List;
 
+@Slf4j
+@Data
+@Component
 @ConfigurationProperties("logging.registry")
-public class LogFileRegistry implements InitializingBean  {
+public class LogFileRegistry {
 
-    private List<LogFile> files = new ArrayList<>();
-    private HashMap<String/* name */, String/* path */> fileMap;
+    private List<LogFile> files;
 
-    public List<LogFile> getFiles() { return files;
-    }
-
-    public void setFiles(List<LogFile> files) {
-        this.files = files;
-    }
-
-    public Resource getFile(String name) throws FileNotFoundException {
-        String path = fileMap.get(name);
-        if (StringUtils.isEmpty(path)) {
-            throw new FileNotFoundException(name);
-        }
-        return new FileSystemResource(path);
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        fileMap = new HashMap<>();
-        for (LogFile file : files) {
-            fileMap.put(file.name, file.path);
-        }
-    }
-
-    @Data
-    public static class LogFile {
-        private String name;
-        private String description;
-        private String path;
-    }
 }

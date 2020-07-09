@@ -45,6 +45,11 @@
             <version>${logstash-logback.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>indi.vicliu.juaner</groupId>
+            <artifactId>admin-client</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -58,6 +63,21 @@
                     </resource>
                 </resources>
                 <plugins>
+                    <plugin>
+                        <groupId>pl.project13.maven</groupId>
+                        <artifactId>git-commit-id-plugin</artifactId>
+                        <version>4.0.0</version>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>revision</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+                        </configuration>
+                    </plugin>
                     <!--打包jar-->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
