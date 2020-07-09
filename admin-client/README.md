@@ -23,7 +23,7 @@ mvn clean deploy
     <dependencies>
             <dependency>
                 <groupId>indi.vicliu.juaner</groupId>
-                <artifactId>common</artifactId>
+                <artifactId>admin-client</artifactId>
                 <version>1.0.2</version>
             </dependency>
         </dependencies>
