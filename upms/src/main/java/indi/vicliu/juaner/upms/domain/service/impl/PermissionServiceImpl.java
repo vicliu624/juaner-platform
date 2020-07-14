@@ -71,6 +71,7 @@ public class PermissionServiceImpl implements PermissionService {
             String data=redisStringUtil.getValue(key);
             log.debug("queryByRoles:{}",data);
             if(Objects.nonNull(data) && Objects.nonNull(JSONObject.parseArray(data, TblPermissionInfo.class))){
+                log.info("缓存未命中:key{}",key);
                 List<TblPermissionInfo> permissionInfos = JSONObject.parseArray(data, TblPermissionInfo.class);
                 tblPermissionInfoList.addAll(permissionInfos);
             }else {
@@ -133,7 +134,9 @@ public class PermissionServiceImpl implements PermissionService {
         String key = "rolesPermission_"+role;
         List<TblPermissionInfo> infos = permissionInfoMapper.queryByRoleCode(role);
         if(!infos.isEmpty()){
-            redisStringUtil.setKey(key,JSONObject.toJSONString(infos));
+            String value = JSONObject.toJSONString(infos);
+            log.info("更新redis:{} -> {}",key,value);
+            redisStringUtil.setKey(key,value);
         }
     }
 
