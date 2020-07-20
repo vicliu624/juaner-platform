@@ -3,6 +3,7 @@ package indi.vicliu.juaner.admin.controller;
 import de.codecentric.boot.admin.server.domain.entities.Application;
 import de.codecentric.boot.admin.server.domain.entities.Instance;
 import de.codecentric.boot.admin.server.domain.events.InstanceEvent;
+import de.codecentric.boot.admin.server.domain.values.Endpoint;
 import de.codecentric.boot.admin.server.domain.values.InstanceId;
 import de.codecentric.boot.admin.server.domain.values.Registration;
 import de.codecentric.boot.admin.server.eventstore.InstanceEventStore;
@@ -12,18 +13,18 @@ import indi.vicliu.juaner.common.core.message.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -38,6 +39,9 @@ public class SpringBootAdminController {
 
     @Autowired
     private InstanceEventStore eventStore;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
     @GetMapping(value = "/applications",produces = MediaType.APPLICATION_JSON_VALUE)
     public Result applications(){
@@ -135,6 +139,45 @@ public class SpringBootAdminController {
             log.error("注册实例失败,",e);
             return Result.fail("注册实例失败:" + e.getMessage());
         }
+    }
 
+    @GetMapping(path = "/queryActuatorByInstanceId")
+    public Result getInstanceActuator(@RequestParam("id") String id){
+        List<Instance> instances = new ArrayList<>();
+        Mono<Instance> instanceFlux = instanceRegistry.getInstance(InstanceId.of(id)).filter(Instance::isRegistered);
+        instanceFlux.subscribe(instances::add);
+        log.info("size:{}",instances.size());
+        if(instances.isEmpty()){
+            return Result.fail("查询不到节点");
+        }
+        List<String> ids = instances.get(0).getEndpoints().stream().map(Endpoint::getId).collect(Collectors.toList());
+        return Result.success(ids);
+    }
+
+    @GetMapping(path = "/executeActuator")
+    public Result execActuator(@RequestParam("instanceId") String id,@RequestParam("actuator") String actuator){
+        List<Instance> instances = new ArrayList<>();
+        Mono<Instance> instanceFlux = instanceRegistry.getInstance(InstanceId.of(id)).filter(Instance::isRegistered);
+        instanceFlux.subscribe(instances::add);
+        log.info("size:{}",instances.size());
+        if(instances.isEmpty()){
+            return Result.fail("查询不到节点");
+        }
+        Optional<Endpoint> endpointOptional = instances.get(0).getEndpoints().stream().filter(x -> x.getId().equalsIgnoreCase(actuator)).findFirst();
+        if(endpointOptional.isPresent()){
+            Endpoint endpoint = endpointOptional.get();
+            String url = endpoint.getUrl();
+            if(!url.contains("logfile")){
+                ResponseEntity<String> responseEntity = restTemplate.getForEntity(url,String.class);
+                if(responseEntity.getStatusCode() != HttpStatus.OK){
+                    return Result.fail("请求该实例失败 http status:"+responseEntity.getStatusCode().value());
+                }
+                return Result.success(responseEntity.getBody());
+            } else {
+                return Result.fail("该接口不支持日志下载");
+            }
+        } else {
+            return Result.fail("查询不到actuator");
+        }
     }
 }
