@@ -1,4 +1,4 @@
-package indi.vicliu.juaner.admin.controller;
+package indi.vicliu.juaner.admin.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
