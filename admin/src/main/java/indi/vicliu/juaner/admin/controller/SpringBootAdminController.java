@@ -180,4 +180,16 @@ public class SpringBootAdminController {
             return Result.fail("查询不到actuator");
         }
     }
+
+    @GetMapping(path = "/logFile")
+    public Result logfile(@RequestParam("instanceId") String id){
+        List<Instance> instances = new ArrayList<>();
+        Mono<Instance> instanceFlux = instanceRegistry.getInstance(InstanceId.of(id)).filter(Instance::isRegistered);
+        instanceFlux.subscribe(instances::add);
+        log.info("size:{}",instances.size());
+        if(instances.isEmpty()){
+            return Result.fail("查询不到节点");
+        }
+        return Result.fail("暂未实现");
+    }
 }

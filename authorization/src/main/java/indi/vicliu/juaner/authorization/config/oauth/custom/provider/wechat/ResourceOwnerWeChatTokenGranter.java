@@ -33,6 +33,9 @@ public class ResourceOwnerWeChatTokenGranter extends AbstractTokenGranter {
     private final static String ACHIEVE_ACCESS_TOKEN = "https://api.weixin.qq.com/sns/jscode2session?appid=%s&secret=%s&js_code=%s&grant_type"
             + "=authorization_code";
 
+    private final static String WX_SCAN_ACHIEVE_ACCESS_TOKEN = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=%s&secret=%s&js_code=%s&grant_type"
+            + "=authorization_code";
+
     private TblWeixinAppConfigMapper weixinAppConfigMapper;
 
     private RestTemplate restTemplate;
@@ -72,9 +75,16 @@ public class ResourceOwnerWeChatTokenGranter extends AbstractTokenGranter {
             throw new InvalidGrantException("查询不到微信开发配置");
         }
 
-        String s = buildAccessTokenUrl(ACHIEVE_ACCESS_TOKEN, weixinAppConfig.getAppId(),
-                weixinAppConfig.getAppSecret(), code);
-        ResponseEntity<String> stringResponseEntity = restTemplate.getForEntity(s, String.class);
+        String url = "";
+        if(parameters.containsKey("code_type") && "scan".equalsIgnoreCase(parameters.get("code_type"))){
+            url = buildAccessTokenUrl(WX_SCAN_ACHIEVE_ACCESS_TOKEN, weixinAppConfig.getAppId(),
+                    weixinAppConfig.getAppSecret(), code);
+            parameters.remove("code_type");
+        } else {
+            url = buildAccessTokenUrl(ACHIEVE_ACCESS_TOKEN, weixinAppConfig.getAppId(),
+                    weixinAppConfig.getAppSecret(), code);
+        }
+        ResponseEntity<String> stringResponseEntity = restTemplate.getForEntity(url, String.class);
         AccessTokenResp accessTokenResp = convertAndCheck(stringResponseEntity, AccessTokenResp.class);
         log.info("微信返回:{}", JSONObject.toJSONString(accessTokenResp));
 
