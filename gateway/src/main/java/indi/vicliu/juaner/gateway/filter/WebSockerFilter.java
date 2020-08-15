@@ -57,13 +57,12 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
         String scheme = requestUrl.getScheme();
         log.info("当前访问路径为 {}",requestUrl.toString());
-        if (isAlreadyRouted(exchange)
-                || (!"ws".equals(scheme) && !"wss".equals(scheme))) {
-            return gatewayFilter.filter(exchange,chain);
+        if (requestUrl.toString().indexOf("ws/endpoint") == -1) {
+            return gatewayFilter.filter(exchange, chain);
         }
         ServerHttpRequest request = exchange.getRequest();
         String authentication = request.getHeaders().getFirst("Sec-WebSocket-Protocol");
-        log.debug("websoket 传入的 Token {}" ,authentication);
+        log.info("websoket 传入的 Token {}" ,authentication);
         if (Strings.isNullOrEmpty(authentication)) { //如果token为空则直接报权限异常
             return unauthorized(exchange);
         }else {
@@ -71,14 +70,14 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         }
         String method = request.getMethodValue();
         String url = request.getPath().value();
-        log.debug("url:{},method:{},headers:{}", url, method, request.getHeaders());
+        log.info("url:{},method:{},headers:{}", url, method, request.getHeaders());
         Jwt jwt = authService.getJwt(authentication);
         //校验jwt
         //token是否有效
         if (authService.invalidJwtAccessToken(jwt)) {
             return unauthorized(exchange);
         }else {
-            log.debug("token无效");
+            log.info("token无效");
         }
 
         //token是否是当前生效的token
@@ -102,7 +101,7 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
             builder.header(CommonConstant.X_CLIENT_TOKEN_USER, claims);
             return super.filter(exchange.mutate().request(builder.build()).build(),chain);
         }else {
-            log.debug("该WebSocket无访问权限");
+            log.info("该WebSocket无访问权限");
         }
 
         return unauthorized(exchange);
