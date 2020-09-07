@@ -36,6 +36,7 @@ public class LogFileEndPoint {
     private List<String> collectNames(LogFileRegistry registry) throws IOException {
         List<File> logFiles = new ArrayList<>();
         registry.getFiles().forEach( path -> {
+            log.debug("log file:{}",path.getPath());
             File file = new File(path.getPath());
             if(file.exists() && file.isDirectory()){
                 File[] subFiles = file.listFiles();

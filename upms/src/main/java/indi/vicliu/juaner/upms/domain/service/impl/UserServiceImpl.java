@@ -3,9 +3,11 @@ package indi.vicliu.juaner.upms.domain.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.upms.client.IdProvider;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
+import indi.vicliu.juaner.upms.data.mapper.TblUserIdMapMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserRoleMapMapper;
 import indi.vicliu.juaner.upms.domain.entity.TblRoleInfo;
+import indi.vicliu.juaner.upms.domain.entity.TblUserIdMap;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.domain.entity.TblUserRoleMap;
 import indi.vicliu.juaner.upms.domain.service.UserService;
@@ -42,6 +44,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private TblUserRoleMapMapper tblUserRoleMapMapper;
+
+    @Autowired
+    private TblUserIdMapMapper userIdMapMapper;
 
     @Autowired
     private IdProvider idProvider;
@@ -243,6 +248,16 @@ public class UserServiceImpl implements UserService {
             example1.createCriteria().andEqualTo("wxUnionId",openId);
             List<TblUserInfo> userInfos1 = this.userInfoMapper.selectByExample(example1);
             if (!userInfos1.isEmpty()) {
+                TblUserIdMap userIdMap = this.userIdMapMapper.selectByPrimaryKey(userInfos1.get(0).getId());
+                if(userIdMap == null){
+                    userIdMap = new TblUserIdMap();
+                    userIdMap.setUserId(userInfos1.get(0).getId());
+                    userIdMap.setWechatOpenId(openId);
+                    this.userIdMapMapper.insertSelective(userIdMap);
+                } else {
+                    userIdMap.setWechatOpenId(openId);
+                    this.userIdMapMapper.updateByPrimaryKeySelective(userIdMap);
+                }
                 return userInfos1.get(0);
             } else {
                 TblUserInfo userInfo = new TblUserInfo();
@@ -264,6 +279,17 @@ public class UserServiceImpl implements UserService {
                 userRole.setRoleId(0L);
                 userRole.setUserId(userInfo.getId());
                 tblUserRoleMapMapper.insertSelective(userRole);
+
+                TblUserIdMap userIdMap = this.userIdMapMapper.selectByPrimaryKey(userInfo.getId());
+                if(userIdMap == null){
+                    userIdMap = new TblUserIdMap();
+                    userIdMap.setUserId(userInfo.getId());
+                    userIdMap.setWechatOpenId(openId);
+                    this.userIdMapMapper.insertSelective(userIdMap);
+                } else {
+                    userIdMap.setWechatOpenId(openId);
+                    this.userIdMapMapper.updateByPrimaryKeySelective(userIdMap);
+                }
                 return userInfo;
             }
         } else {
@@ -271,6 +297,18 @@ public class UserServiceImpl implements UserService {
             example.createCriteria().andEqualTo("wxUnionId",unionId);
             List<TblUserInfo> userInfos = this.userInfoMapper.selectByExample(example);
             if(!userInfos.isEmpty()){
+                TblUserIdMap userIdMap = this.userIdMapMapper.selectByPrimaryKey(userInfos.get(0).getId());
+                if(userIdMap == null){
+                    userIdMap = new TblUserIdMap();
+                    userIdMap.setUserId(userInfos.get(0).getId());
+                    userIdMap.setWechatUnionId(unionId);
+                    userIdMap.setWechatOpenId(openId);
+                    this.userIdMapMapper.insertSelective(userIdMap);
+                } else {
+                    userIdMap.setWechatUnionId(unionId);
+                    userIdMap.setWechatOpenId(openId);
+                    this.userIdMapMapper.updateByPrimaryKeySelective(userIdMap);
+                }
                 return userInfos.get(0);
             } else {
                 Example example1 = new Example(TblUserInfo.class);
@@ -280,6 +318,18 @@ public class UserServiceImpl implements UserService {
                     TblUserInfo userInfo = userInfos1.get(0);
                     userInfo.setWxUnionId(unionId);
                     this.userInfoMapper.updateByPrimaryKeySelective(userInfo);
+                    TblUserIdMap userIdMap = this.userIdMapMapper.selectByPrimaryKey(userInfos1.get(0).getId());
+                    if(userIdMap == null){
+                        userIdMap = new TblUserIdMap();
+                        userIdMap.setUserId(userInfos1.get(0).getId());
+                        userIdMap.setWechatUnionId(unionId);
+                        userIdMap.setWechatOpenId(openId);
+                        this.userIdMapMapper.insertSelective(userIdMap);
+                    } else {
+                        userIdMap.setWechatUnionId(unionId);
+                        userIdMap.setWechatOpenId(openId);
+                        this.userIdMapMapper.updateByPrimaryKeySelective(userIdMap);
+                    }
                     return userInfo;
                 } else {
                     TblUserInfo userInfo = new TblUserInfo();
@@ -301,6 +351,20 @@ public class UserServiceImpl implements UserService {
                     userRole.setRoleId(0L);
                     userRole.setUserId(userInfo.getId());
                     tblUserRoleMapMapper.insertSelective(userRole);
+
+                    TblUserIdMap userIdMap = this.userIdMapMapper.selectByPrimaryKey(userInfo.getId());
+                    if(userIdMap == null){
+                        userIdMap = new TblUserIdMap();
+                        userIdMap.setUserId(userInfo.getId());
+                        userIdMap.setWechatUnionId(unionId);
+                        userIdMap.setWechatOpenId(openId);
+                        this.userIdMapMapper.insertSelective(userIdMap);
+                    } else {
+                        userIdMap.setWechatUnionId(unionId);
+                        userIdMap.setWechatOpenId(openId);
+                        this.userIdMapMapper.updateByPrimaryKeySelective(userIdMap);
+                    }
+
                     return userInfo;
                 }
             }

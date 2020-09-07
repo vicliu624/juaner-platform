@@ -97,9 +97,16 @@
            enableCountByExample="true"
            enableUpdateByExample="true" enableUpdateByPrimaryKey="true"
            enableSelectByExample="true" enableSelectByPrimaryKey="true">
-    </table>-->
+    </table>
 
     <table tableName="tbl_user_ministry_map"
+           enableInsert="true"
+           enableCountByExample="true"
+           enableUpdateByExample="true" enableUpdateByPrimaryKey="true"
+           enableSelectByExample="true" enableSelectByPrimaryKey="true">
+    </table>
+    -->
+    <table tableName="tbl_user_id_map"
            enableInsert="true"
            enableCountByExample="true"
            enableUpdateByExample="true" enableUpdateByPrimaryKey="true"

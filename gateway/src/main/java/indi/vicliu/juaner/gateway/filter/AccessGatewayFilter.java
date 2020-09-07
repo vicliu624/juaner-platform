@@ -62,12 +62,11 @@ public class AccessGatewayFilter implements GlobalFilter {
         String authentication = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String method = request.getMethodValue();
         String url = request.getPath().value();
-        log.debug("url:{},method:{},headers:{}", url, method, request.getHeaders());
+        log.info("url:{},method:{},headers:{}", url, method, request.getHeaders());
         URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
         log.info("当前访问路径为 {}",requestUrl.toString());
         String scheme = requestUrl.getScheme();
-        if (isAlreadyRouted(exchange)
-                || ("ws".equals(scheme) && "wss".equals(scheme))) {
+        if (requestUrl.toString().indexOf("ws/endpoint") != -1) {
             return webSockerFilter.filter(exchange,chain);
         }
         /*if (StringUtils.isNotEmpty(request.getHeaders().getFirst(WEBSOCKET_PROTOCOL))) {
