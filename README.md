@@ -1,4 +1,5 @@
 # 卷耳 微服务框架
+version 1.0.3
 
 ## 码云地址
 - https://gitee.com/vicliu624/juaner-platform
