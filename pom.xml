@@ -29,9 +29,9 @@
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
+        <spring-boot.version>2.3.4.RELEASE</spring-boot.version>
         <spring-cloud.version>Hoxton.SR4</spring-cloud.version>
-        <springframework.version>5.2.5.RELEASE</springframework.version>
+        <springframework.version>5.2.9.RELEASE</springframework.version>
 
         <spring-boot-admin.version>2.2.3</spring-boot-admin.version>
 
