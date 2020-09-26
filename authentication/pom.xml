@@ -5,7 +5,7 @@
     <parent>
         <artifactId>juaner-platform</artifactId>
         <groupId>indi.vicliu.juaner</groupId>
-        <version>1.0.2</version>
+        <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <description>鉴权微服务</description>
@@ -126,6 +126,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-dependency-plugin</artifactId>
+                        <version>${maven-dependency-plugin.version}</version>
                         <executions>
                             <execution>
                                 <id>copy-dependencies</id>
@@ -145,7 +146,7 @@
                     <!--拷贝资源文件 copy-resources-->
                     <plugin>
                         <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.1.0</version>
+                        <version>${maven-resources-plugin.version}</version>
                         <configuration>
                             <nonFilteredFileExtensions>
                                 <!--这里是文件后缀-->
