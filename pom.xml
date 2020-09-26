@@ -256,7 +256,7 @@
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
-                <version>2.2.5</version>
+                <version>4.0.0</version>
             </plugin>
 
             <plugin>
@@ -277,7 +277,7 @@
                     <message >Maven artifacts for ${project.version}</message>
                     <noJekyll>true</noJekyll>
                     <outputDirectory>${project.build.directory}/mvn-repo</outputDirectory><!--本地jar地址-->
-                    <branch>refs/heads/1.0.2</branch><!--分支的名称-->
+                    <branch>refs/heads/1.1.0</branch><!--分支的名称-->
                     <merge>true</merge>
                     <includes>
                         <include>**/*</include>
