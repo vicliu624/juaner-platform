@@ -59,7 +59,7 @@
         <docker.url>http://127.0.0.1:4243</docker.url>
         <registry.url>127.0.0.1:5010</registry.url>
 
-        <sentinel.version>1.7.0</sentinel.version>
+        <sentinel.version>1.8.0</sentinel.version>
 
         <github.global.server>github</github.global.server>
         <maven-dependency-plugin.version>2.8</maven-dependency-plugin.version>
