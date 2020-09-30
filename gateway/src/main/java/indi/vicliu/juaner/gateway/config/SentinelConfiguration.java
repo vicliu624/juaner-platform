@@ -32,7 +32,7 @@ public class SentinelConfiguration {
     private final ServerCodecConfigurer serverCodecConfigurer;
 
     public SentinelConfiguration(ObjectProvider<List<ViewResolver>> viewResolversProvider,
-                                 ServerCodecConfigurer serverCodecConfigurer) {
+                                ServerCodecConfigurer serverCodecConfigurer) {
         this.viewResolvers = viewResolversProvider.getIfAvailable(Collections::emptyList);
         this.serverCodecConfigurer = serverCodecConfigurer;
     }
@@ -45,24 +45,8 @@ public class SentinelConfiguration {
     }
 
     @Bean
-    @Order(-1)
+    @Order(Ordered.HIGHEST_PRECEDENCE)
     public GlobalFilter sentinelGatewayFilter() {
         return new SentinelGatewayFilter();
-    }
-
-    @PostConstruct
-    public void doInit() {
-        initCustomizedApis();
-        initGatewayRules();
-    }
-
-    private void initCustomizedApis() {
-        Set<ApiDefinition> definitions = new HashSet<>();
-        GatewayApiDefinitionManager.loadApiDefinitions(definitions);
-    }
-
-    private void initGatewayRules() {
-        Set<GatewayFlowRule> rules = new HashSet<>();
-        GatewayRuleManager.loadRules(rules);
     }
 }
