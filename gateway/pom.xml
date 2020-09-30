@@ -80,12 +80,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>indi.vicliu.juaner</groupId>
-            <artifactId>admin-client</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-
 
     </dependencies>
 
