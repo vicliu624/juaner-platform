@@ -11,14 +11,15 @@
     <description>卷耳-微服务框架</description>
 
     <modules>
-        <module>authorization</module>
         <module>common</module>
+        <module>admin-client</module>
+        <module>authorization</module>
         <module>upms</module>
         <module>authentication</module>
         <module>gateway</module>
         <module>id</module>
         <module>admin</module>
-        <module>admin-client</module>
+
     </modules>
 
     <properties>
