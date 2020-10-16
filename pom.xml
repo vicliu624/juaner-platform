@@ -67,6 +67,17 @@
         <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>mvn-repo</id>
+            <url>https://raw.github.com/vicliu624/mvn-repo/1.1.0</url>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <dependency>
