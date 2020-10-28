@@ -21,9 +21,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import tk.mybatis.mapper.entity.Example;
-
-import javax.xml.bind.ValidationException;
 import java.util.*;
+
+import javax.validation.ValidationException;
 
 /**
  * @Auther: liuweikai
