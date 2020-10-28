@@ -50,3 +50,6 @@ gradle-app.setting
 Icon?
 ehthumbs.db
 Thumbs.db
+
+##vs code files
+.factorypath
