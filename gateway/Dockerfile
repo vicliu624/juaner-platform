@@ -12,7 +12,7 @@ COPY ${JAR_FILE} /app/app.jar
 ARG SERVER_PORT=8080
 ENV SERVER_PORT="${SERVER_PORT}"
 
-ARG SPRING_PROFILE=k8s
+ARG SPRING_PROFILE=test
 ENV SPRING_PROFILE="${SPRING_PROFILE}"
 ENTRYPOINT ["java",\
                     "-Dloader.path=/app/resources",\
