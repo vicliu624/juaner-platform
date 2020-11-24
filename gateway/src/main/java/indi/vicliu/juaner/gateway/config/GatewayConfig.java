@@ -28,12 +28,12 @@ public class GatewayConfig {
         RSA_PUBLIC_KEY = rsaPublicKey;
     }
 
-    @Value("${spring.cloud.nacos.discovery.server-addr}")
+    @Value("${spring.cloud.nacos.config.server-addr}")
     public void setNacosServerAddr(String nacosServerAddr){
         NACOS_SERVER_ADDR = nacosServerAddr;
     }
 
-    @Value("${spring.cloud.nacos.discovery.namespace}")
+    @Value("${spring.cloud.nacos.config.namespace}")
     public void setNacosNamespace(String nacosNamespace){
         NACOS_NAMESPACE = nacosNamespace;
     }
