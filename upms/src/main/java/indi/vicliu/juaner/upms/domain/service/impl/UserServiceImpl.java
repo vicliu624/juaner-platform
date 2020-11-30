@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.upms.domain.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.client.IdProvider;
 import indi.vicliu.juaner.upms.data.mapper.TblRoleInfoMapper;
 import indi.vicliu.juaner.upms.data.mapper.TblUserIdMapMapper;
@@ -368,6 +369,18 @@ public class UserServiceImpl implements UserService {
                     return userInfo;
                 }
             }
+        }
+    }
+
+    @Override
+    public Result unRegister(Long userId) {
+        TblUserInfo userInfo =  userInfoMapper.selectByPrimaryKey(userId);
+        if (userInfo!=null){
+            userInfo.setEnabled(false);
+            userInfoMapper.updateByPrimaryKeySelective(userInfo);
+            return Result.success("注销成功");
+        }else{
+            return Result.fail("未查询到该账户");
         }
     }
 }

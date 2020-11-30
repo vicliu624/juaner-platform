@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.upms.domain.service;
 
+import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.upms.domain.entity.TblUserInfo;
 import indi.vicliu.juaner.upms.exception.UserException;
 import indi.vicliu.juaner.upms.vo.AddUserInfoVO;
@@ -34,4 +35,6 @@ public interface UserService {
     int unlockUserByName(String userName) throws UserException;
 
     TblUserInfo queryByWeChatUnionId(String unionId,String openId);
+
+    Result unRegister(Long userId);
 }

@@ -48,11 +48,40 @@
         </rollingPolicy>
     </appender>
 
+    <!-- 为logstash输出的JSON格式的Appender -->
+    <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>logstash03:5044</destination>
+        <!-- 日志输出编码 -->
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+            <providers>
+                <timestamp>
+                    <timeZone>UTC</timeZone>
+                </timestamp>
+                <pattern>
+                    <pattern>
+                        {
+                        "severity": "%level",
+                        "service": "${springAppName:-}",
+                        "trace": "%X{X-B3-TraceId:-}",
+                        "span": "%X{X-B3-SpanId:-}",
+                        "exportable": "%X{X-Span-Export:-}",
+                        "pid": "${PID:-}",
+                        "thread": "%thread",
+                        "class": "%logger{40}",
+                        "rest": "%message"
+                        }
+                    </pattern>
+                </pattern>
+            </providers>
+        </encoder>
+    </appender>
+
     <!--指明配置项用在哪-->
     <root level="INFO">
         <!--引用日志存储器-->
         <appender-ref ref="consoleLog"/>
         <appender-ref ref="fileInLog"/>
         <appender-ref ref="fileErrorLog"/>
+        <appender-ref ref="logstash" />
     </root>
 </configuration>

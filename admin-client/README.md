@@ -12,7 +12,7 @@ mvn clean deploy
     <repositories>
         <repository>
             <id>mvn-repo</id>
-            <url>https://raw.github.com/vicliu624/mvn-repo/1.0.2</url>
+            <url>https://raw.github.com/vicliu624/mvn-repo/1.1.0</url>
             <snapshots>
                 <enabled>true</enabled>
                 <updatePolicy>always</updatePolicy>
