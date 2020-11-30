@@ -236,8 +236,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/user/unRegister")
-    public Result unRegister(@RequestBody Long userId) {
+    @GetMapping("/user/unRegister")
+    public Result unRegister(@RequestParam Long userId) {
         try {
             log.info("request data:{}", userId);
             return userService.unRegister(userId);
