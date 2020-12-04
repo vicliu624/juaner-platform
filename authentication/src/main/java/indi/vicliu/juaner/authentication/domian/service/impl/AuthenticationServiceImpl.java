@@ -89,9 +89,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.resourceConfigAttributes.forEach((requestMatcher, configAttribute) -> log.debug("----{}",requestMatcher.toString()));
         ConfigAttribute attribute = this.resourceConfigAttributes.keySet().stream()
                 .filter(requestMatcher -> {
-                    log.debug("requestMatcher {} ",requestMatcher.toString());
                     boolean isMatch = requestMatcher.matches(authRequest);
-                    log.debug(" authRequest isMatch:{},uri:{},method:{}",isMatch,authRequest.getServletPath(),authRequest.getMethod());
+                    log.debug(" authRequest isMatch:{},uri:{},method:{},requestMatcher:{}",isMatch,authRequest.getServletPath(),authRequest.getMethod(),requestMatcher.toString());
                     return isMatch;
                 })
                 .map(requestMatcher -> this.resourceConfigAttributes.get(requestMatcher))
