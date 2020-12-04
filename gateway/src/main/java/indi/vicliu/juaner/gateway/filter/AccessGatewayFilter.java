@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.isAlreadyRouted;
@@ -46,6 +48,9 @@ public class AccessGatewayFilter implements GlobalFilter {
 
     @Autowired
     WebSockerFilter webSockerFilter;
+
+    @Autowired
+    private  Environment environment;
 
     private static String WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
     /**
@@ -73,10 +78,18 @@ public class AccessGatewayFilter implements GlobalFilter {
             log.info("WebSocket In AccessGatewayFilter ");
             return webSockerFilter.filter(exchange,chain);
         }*/
+
         //不需要网关签权的url
         if (authService.ignoreAuthentication(url)) {
             return chain.filter(exchange);
         }
+        if (Arrays.asList(environment.getActiveProfiles()).contains("test")) {
+            return chain.filter(exchange);
+        }
+       /* ServerHttpRequest.Builder builder = request.mutate();
+        //TODO 转发的请求都加上服务间认证token
+        builder.header(CommonConstant.X_CLIENT_TOKEN_USER, claims);
+        return chain.filter(exchange.mutate().request(builder.build()).build());*/
 
         if(StringUtils.isEmpty(authentication)){
             return unauthorized(exchange);
