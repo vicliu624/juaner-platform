@@ -378,6 +378,8 @@ public class UserServiceImpl implements UserService {
         if (userInfo!=null){
             userInfo.setEnabled(false);
             userInfoMapper.updateByPrimaryKeySelective(userInfo);
+            String key="upms_user_" + userInfo.getUserName();
+            redisStringUtil.delKey(key);
             return Result.success("注销成功");
         }else{
             return Result.fail("未查询到该账户");
