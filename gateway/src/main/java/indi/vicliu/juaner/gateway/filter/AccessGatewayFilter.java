@@ -83,14 +83,6 @@ public class AccessGatewayFilter implements GlobalFilter {
         if (authService.ignoreAuthentication(url)) {
             return chain.filter(exchange);
         }
-        if (Arrays.asList(environment.getActiveProfiles()).contains("test")) {
-            return chain.filter(exchange);
-        }
-       /* ServerHttpRequest.Builder builder = request.mutate();
-        //TODO 转发的请求都加上服务间认证token
-        builder.header(CommonConstant.X_CLIENT_TOKEN_USER, claims);
-        return chain.filter(exchange.mutate().request(builder.build()).build());*/
-
         if(StringUtils.isEmpty(authentication)){
             return unauthorized(exchange);
         }
