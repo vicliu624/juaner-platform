@@ -20,6 +20,8 @@ settings.gradle
 hs_err_pid*
 
 #maven ignore
+build/
+test-build/
 target/
 src/main/webapp/WEB-INF/classes/
 pom.xml.tag
