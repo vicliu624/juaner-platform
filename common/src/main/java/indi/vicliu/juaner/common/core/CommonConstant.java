@@ -17,4 +17,6 @@ public class CommonConstant {
     public static final int BEARER_BEGIN_INDEX = 7;
 
     public static final String USER_TOKEN_KEY = "user_token_";
+
+    public final static String X_RPC_DEEP = "rpc-deep";
 }

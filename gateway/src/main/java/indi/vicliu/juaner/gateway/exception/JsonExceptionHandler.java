@@ -74,7 +74,13 @@ public class JsonExceptionHandler extends DefaultErrorWebExceptionHandler {
     @Override
     protected int getHttpStatus(Map<String, Object> errorAttributes) {
         log.info("getHttpStatus in param {}",JSONObject.toJSONString(errorAttributes));
-        int statusCode = (int) errorAttributes.get("code");
+        int statusCode = -1;
+        if(errorAttributes.containsKey("code")){
+            statusCode = (int) errorAttributes.get("code");
+        } else {
+            statusCode = (int) errorAttributes.get("status");
+        }
+
         return statusCode;
     }
 

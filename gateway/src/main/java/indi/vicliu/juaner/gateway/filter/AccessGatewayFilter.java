@@ -113,6 +113,7 @@ public class AccessGatewayFilter implements GlobalFilter {
             ServerHttpRequest.Builder builder = request.mutate();
             //TODO 转发的请求都加上服务间认证token
             builder.header(CommonConstant.X_CLIENT_TOKEN_USER, claims);
+            builder.header(CommonConstant.X_RPC_DEEP,"0");
             return chain.filter(exchange.mutate().request(builder.build()).build());
         }
         return unauthorized(exchange);

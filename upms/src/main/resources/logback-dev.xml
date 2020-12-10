@@ -6,8 +6,8 @@
                     source="spring.application.name" />
 
     <!-- 日志在工程中的输出位置 -->
-    <property name="LOG_FILE_INFO" value="test-${BUILD_FOLDER:-build}/${springAppName}-%d-info.log" />
-    <property name="LOG_FILE_ERROR" value="test-${BUILD_FOLDER:-build}/${springAppName}-%d-error.log" />
+    <property name="LOG_FILE_INFO" value="${BUILD_FOLDER:-build}/${springAppName}-%d-info.log" />
+    <property name="LOG_FILE_ERROR" value="${BUILD_FOLDER:-build}/${springAppName}-%d-error.log" />
 
     <!-- 控制台的日志输出样式 -->
     <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level[%thread] %logger{15}[L:%L] - %msg%n" />
