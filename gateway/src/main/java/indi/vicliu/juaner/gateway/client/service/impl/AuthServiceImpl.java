@@ -88,6 +88,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean invalidJwtAccessToken(String authentication) {
         try{
+            if(StringUtils.isEmpty(authentication)){
+                log.warn("Authorization is null");
+                return true;
+            }
             Jwt jwt = getJwt(authentication);
             return invalidJwtAccessToken(jwt);
         } catch (Exception e){
