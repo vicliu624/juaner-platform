@@ -74,6 +74,21 @@ public class AccessGatewayFilter implements GlobalFilter {
         if (requestUrl.toString().indexOf("ws/endpoint") != -1) {
             return webSockerFilter.filter(exchange,chain);
         }
+
+        final String referer = request.getHeaders().getFirst(HttpHeaders.REFERER);
+        try {
+            URI refererUrl = new URI(referer);
+            final String refererUrlHost = refererUrl.getHost();
+            log.info("当前访问路径为 {},refererHost {}",requestUrl.toString(),refererUrlHost);
+            if(!refererUrlHost.equalsIgnoreCase("yns-etc")){
+                log.error("referer错误拦截,当前访问路径为 {},refererHost {}",requestUrl.toString(),refererUrlHost);
+                return unauthorized(exchange);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         /*if (StringUtils.isNotEmpty(request.getHeaders().getFirst(WEBSOCKET_PROTOCOL))) {
             log.info("WebSocket In AccessGatewayFilter ");
             return webSockerFilter.filter(exchange,chain);
