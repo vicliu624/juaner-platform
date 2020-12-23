@@ -104,6 +104,17 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>tk.mybatis</groupId>
+            <artifactId>mapper-spring-boot-starter</artifactId>
+            <version>${tk.mybatis.spring-boot.version}</version>
+        </dependency>
 
     </dependencies>
 
@@ -271,6 +282,48 @@
                             <outputDirectory>${basedir}/war</outputDirectory>
                             <warName>${project.name}</warName>
                         </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.mybatis.generator</groupId>
+                        <artifactId>mybatis-generator-maven-plugin</artifactId>
+                        <version>${mybatis-generator-maven-plugin.version}</version>
+                        <configuration>
+                            <configurationFile>${basedir}/src/main/resources/mybatisGeneratorConfig.xml</configurationFile>
+                            <!-- 是否覆盖 -->
+                            <overwrite>true</overwrite>
+                            <verbose>true</verbose>
+                            <!--第一次设置为 false-->
+                            <skip>false</skip>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>mysql</groupId>
+                                <artifactId>mysql-connector-java</artifactId>
+                                <version>${mysql.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>tk.mybatis</groupId>
+                                <artifactId>mapper</artifactId>
+                                <version>${tk.mybatis.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>indi.vicliu.juaner</groupId>
+                                <artifactId>common</artifactId>
+                                <version>${project.parent.version}</version>
+                            </dependency>
+                            <!--spring web相关包-->
+                            <dependency>
+                                <groupId>org.springframework</groupId>
+                                <artifactId>spring-web</artifactId>
+                                <version>${springframework.version}</version>
+                            </dependency>
+                            <dependency>
+                                <groupId>org.springframework</groupId>
+                                <artifactId>spring-webmvc</artifactId>
+                                <version>${springframework.version}</version>
+                            </dependency>
+                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
