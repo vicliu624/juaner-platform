@@ -81,7 +81,7 @@ public class AccessGatewayFilter implements GlobalFilter {
             URI refererUrl = new URI(referer);
             final String refererUrlHost = refererUrl.getHost();
             log.info("当前访问路径为 {},refererHost {}",requestUrl.toString(),refererUrlHost);
-            if(!refererUrlHost.equalsIgnoreCase("yns-etc")){
+            if(!refererUrlHost.equalsIgnoreCase("www.yns-etc.com")){
                 log.error("referer错误拦截,当前访问路径为 {},refererHost {}",requestUrl.toString(),refererUrlHost);
                 return unauthorized(exchange);
             }
