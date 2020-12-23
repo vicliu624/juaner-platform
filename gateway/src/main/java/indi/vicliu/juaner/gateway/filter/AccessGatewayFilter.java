@@ -22,11 +22,8 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.isAlreadyRouted;
-
 /**
  * @Auther: liuweikai
  * @Date: 2019-03-22 12:56
@@ -74,11 +71,6 @@ public class AccessGatewayFilter implements GlobalFilter {
         if (requestUrl.toString().indexOf("ws/endpoint") != -1) {
             return webSockerFilter.filter(exchange,chain);
         }
-        /*if (StringUtils.isNotEmpty(request.getHeaders().getFirst(WEBSOCKET_PROTOCOL))) {
-            log.info("WebSocket In AccessGatewayFilter ");
-            return webSockerFilter.filter(exchange,chain);
-        }*/
-
         //不需要网关签权的url
         if (authService.ignoreAuthentication(url)) {
             return chain.filter(exchange);
