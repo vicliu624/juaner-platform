@@ -1,6 +1,7 @@
 package indi.vicliu.juaner.gateway.client.service.impl;
 
 import indi.vicliu.juaner.common.core.CommonConstant;
+import indi.vicliu.juaner.common.core.exception.ErrorType;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.gateway.client.AuthProvider;
 import indi.vicliu.juaner.gateway.client.service.AuthService;
@@ -50,15 +51,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Result authenticate(String authentication, String url, String method) {
-        /*
         try{
-
+            return authProvider.auth(authentication, url, method);
         } catch (Exception e){
             log.error("authenticate fail",e);
             return Result.fail(ErrorType.AUTH_ERROR,"暂时不能访问");
         }
-         */
-        return authProvider.auth(authentication, url, method);
     }
 
     @Override
@@ -90,6 +88,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public boolean invalidJwtAccessToken(String authentication) {
         try{
+            if(StringUtils.isEmpty(authentication)){
+                log.warn("Authorization is null");
+                return true;
+            }
             Jwt jwt = getJwt(authentication);
             return invalidJwtAccessToken(jwt);
         } catch (Exception e){

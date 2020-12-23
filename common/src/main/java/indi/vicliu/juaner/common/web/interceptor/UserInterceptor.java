@@ -31,6 +31,12 @@ public class UserInterceptor extends HandlerInterceptorAdapter {
             String content = request.getHeader(headerName);
             log.debug("request header:{}, content:{}",headerName,content);
         }
+        String rpcDeep = StringUtils.defaultIfBlank(request.getHeader(CommonConstant.X_RPC_DEEP), "0");
+        if(rpcDeep.equals("0")){
+            log.debug("网关请求");
+        } else {
+            log.debug("非网关请求");
+        }
         String userInfoString = StringUtils.defaultIfBlank(request.getHeader(CommonConstant.X_CLIENT_TOKEN_USER), "{}");
         UserContextHolder.getInstance().setContext(new ObjectMapper().readValue(userInfoString, Map.class));
         return true;

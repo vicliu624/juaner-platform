@@ -3,6 +3,7 @@ package indi.vicliu.juaner.authentication.domian.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.authentication.domian.service.AuthenticationService;
 import indi.vicliu.juaner.authentication.domian.service.PermissionService;
+import indi.vicliu.juaner.authentication.util.matcher.CustomMvcRequestMatcher;
 import indi.vicliu.juaner.authentication.vo.PermissionInfo;
 import indi.vicliu.juaner.common.core.CommonConstant;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,6 @@ import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.jwt.Jwt;
 import org.springframework.security.jwt.JwtHelper;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
@@ -89,9 +89,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         this.resourceConfigAttributes.forEach((requestMatcher, configAttribute) -> log.debug("----{}",requestMatcher.toString()));
         ConfigAttribute attribute = this.resourceConfigAttributes.keySet().stream()
                 .filter(requestMatcher -> {
-                    log.debug("requestMatcher {} ",requestMatcher.toString());
+                    if(requestMatcher.toString().indexOf("/app/user/getUserAccountList") > 0){
+                        log.debug(" authRequest ,uri:{},method:{},requestMatcher:{}",authRequest.getServletPath(),authRequest.getMethod(),requestMatcher.toString());
+                    }
                     boolean isMatch = requestMatcher.matches(authRequest);
-                    log.debug(" authRequest isMatch:{},uri:{},method:{}",isMatch,authRequest.getServletPath(),authRequest.getMethod());
+                    log.debug(" authRequest isMatch:{},uri:{},method:{},requestMatcher:{} ",isMatch,authRequest.getServletPath(),authRequest.getMethod(),requestMatcher.toString());
                     return isMatch;
                 })
                 .map(requestMatcher -> this.resourceConfigAttributes.get(requestMatcher))
@@ -106,12 +108,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             PermissionInfo permissionInfo = permissionService.findByURI(authRequest.getServletPath(),authRequest.getMethod());
             if(permissionInfo != null){
                 log.info("新增资源{}:{}",permissionInfo.getPermUrl(),permissionInfo.getMethod());
-                MvcRequestMatcher mvcRequestMatcher = new MvcRequestMatcher(mvcHandlerMappingIntrospector, permissionInfo.getPermUrl());
+                CustomMvcRequestMatcher mvcRequestMatcher = new CustomMvcRequestMatcher(mvcHandlerMappingIntrospector, permissionInfo.getPermUrl());
                 mvcRequestMatcher.setMethod(HttpMethod.resolve(permissionInfo.getMethod()));
                 this.resourceConfigAttributes.put(mvcRequestMatcher,new SecurityConfig(permissionInfo.getPermUrl()));
 
                 attribute = this.resourceConfigAttributes.keySet().stream()
-                        .filter(requestMatcher -> requestMatcher.matches(authRequest))
+                        .filter(requestMatcher -> {
+                            if(requestMatcher.toString().indexOf("/app/user/getUserAccountList") > 0){
+                                log.debug(" authRequest ,uri:{},method:{},requestMatcher:{}",authRequest.getServletPath(),authRequest.getMethod(),requestMatcher.toString());
+                            }
+                            boolean isMatch = requestMatcher.matches(authRequest);
+                            log.debug(" authRequest isMatch:{},uri:{},method:{},requestMatcher:{} ",isMatch,authRequest.getServletPath(),authRequest.getMethod(),requestMatcher.toString());
+                            return isMatch;
+                        })
                         .map(requestMatcher -> this.resourceConfigAttributes.get(requestMatcher))
                         .peek(urlConfigAttribute -> log.info("重新遍历->url在资源池中配置：{}", urlConfigAttribute.getAttribute()))
                         .findFirst()
