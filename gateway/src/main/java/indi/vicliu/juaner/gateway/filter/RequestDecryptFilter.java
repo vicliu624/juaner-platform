@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
@@ -28,8 +29,9 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 @Slf4j
-@Component
-public class RequestDecryptFilter implements GatewayFilter, Ordered {
+//@Component
+//@Order(3)
+public class RequestDecryptFilter implements GatewayFilter {
 
     @Autowired
     private TblCryptoInfoMapper cryptoInfoMapper;
@@ -104,10 +106,5 @@ public class RequestDecryptFilter implements GatewayFilter, Ordered {
         } else {
             return chain.filter(exchange);
         }
-    }
-
-    @Override
-    public int getOrder() {
-        return Integer.MIN_VALUE;
     }
 }
