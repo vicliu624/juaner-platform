@@ -27,6 +27,8 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+
 @Slf4j
 @Component
 public class RequestDecryptFilter implements GlobalFilter, Ordered {
@@ -36,6 +38,12 @@ public class RequestDecryptFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
+        log.info("AccessGatewayFilter 当前访问路径为 {}",requestUrl.toString());
+        if (requestUrl.toString().indexOf("ws/endpoint") > -1) {
+            return chain.filter(exchange);
+        }
+
         ServerHttpRequest request = exchange.getRequest();
         URI uri = request.getURI();
         if (request.getMethod() != HttpMethod.POST && request.getMethod() != HttpMethod.PUT && request.getMethod() != HttpMethod.PATCH) {

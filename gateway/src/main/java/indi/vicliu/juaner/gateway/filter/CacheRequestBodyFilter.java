@@ -10,11 +10,21 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
+
+import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+
 @Slf4j
 @Component
 public class CacheRequestBodyFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
+        log.info("AccessGatewayFilter 当前访问路径为 {}",requestUrl.toString());
+        if (requestUrl.toString().indexOf("ws/endpoint") > -1) {
+            return chain.filter(exchange);
+        }
+
         // 将 request body 中的内容 copy 一份，记录到 exchange 的一个自定义属性中
         Object cachedRequestBodyObject = exchange.getAttributeOrDefault(Constant.REQUEST_BODY_OBJECT, null);
         // 如果已经缓存过，略过
