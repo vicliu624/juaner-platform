@@ -6,7 +6,6 @@ import indi.vicliu.juaner.common.core.CommonConstant;
 import indi.vicliu.juaner.gateway.client.service.AuthService;
 import indi.vicliu.juaner.gateway.utils.RedisStringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -28,7 +27,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
-import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.isAlreadyRouted;
 
 /**
  * @program: juaner-platform
@@ -56,9 +54,9 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
         String scheme = requestUrl.getScheme();
-        log.info("当前访问路径为 {}",requestUrl.toString());
+        log.info("WebSockerFilter 当前访问路径为 {}",requestUrl.toString());
         if (requestUrl.toString().indexOf("ws/endpoint") == -1) {
-            return gatewayFilter.filter(exchange, chain);
+            return chain.filter(exchange);
         }
         ServerHttpRequest request = exchange.getRequest();
         String authentication = request.getHeaders().getFirst("Sec-WebSocket-Protocol");

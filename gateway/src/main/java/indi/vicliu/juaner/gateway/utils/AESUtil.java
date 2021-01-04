@@ -19,7 +19,7 @@ public class AESUtil {
      * @param encryptMode AES加密模式，CBC或ECB
      * @return 该密文的明文
      */
-    public static byte[] AESDecrypt(Object cipertext, byte[] key,String encryptMode) {
+    public static byte[] AESDecrypt(Object cipertext, byte[] key,String encryptMode) throws Exception {
         String cipherText=null;
         try {
             cipherText = cipertext.toString();
@@ -45,8 +45,8 @@ public class AESUtil {
                 return null;
             }
         } catch (Exception ex) {
-            System.out.println(ex.toString());
-            return null;
+            log.error("解密出錯",ex);
+            throw new Exception("解密出錯" + ex.getMessage());
         }
     }
 }

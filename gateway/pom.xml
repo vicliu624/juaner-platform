@@ -115,6 +115,12 @@
             <artifactId>mapper-spring-boot-starter</artifactId>
             <version>${tk.mybatis.spring-boot.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.alibaba/druid-spring-boot-starter -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
 
     </dependencies>
 

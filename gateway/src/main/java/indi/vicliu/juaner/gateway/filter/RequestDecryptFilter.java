@@ -11,10 +11,9 @@ import indi.vicliu.juaner.gateway.utils.RSAUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
+import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.http.HttpHeaders;
@@ -29,9 +28,8 @@ import reactor.core.publisher.Mono;
 import java.net.URI;
 
 @Slf4j
-//@Component
-//@Order(3)
-public class RequestDecryptFilter implements GatewayFilter {
+@Component
+public class RequestDecryptFilter implements GlobalFilter, Ordered {
 
     @Autowired
     private TblCryptoInfoMapper cryptoInfoMapper;
@@ -55,9 +53,9 @@ public class RequestDecryptFilter implements GatewayFilter {
                 byte[] body = (byte[]) cachedRequestBodyObject;
                 String rootData = new String(body); // 客户端传过来的数据
                 JSONObject jsonObject = JSONObject.parseObject(rootData);
-                long algoIndex = (Long)jsonObject.get("i");
+                int algoIndex = (Integer)jsonObject.get("i");
                 TblCryptoInfo primaryKey = new TblCryptoInfo();
-                primaryKey.setRequester(algoIndex);
+                primaryKey.setRequester((long)algoIndex);
                 primaryKey.setCryptoAlgorithm(cryptoAlgorithm);
                 TblCryptoInfo cryptoInfo = cryptoInfoMapper.selectByPrimaryKey(primaryKey);
                 if(cryptoInfo == null){
@@ -68,9 +66,13 @@ public class RequestDecryptFilter implements GatewayFilter {
                 String encryptData = (String) jsonObject.get("v");
                 //解密出用于aes解密的密钥
                 byte[] key = RSAUtil.decrypt(encryptKey,cryptoInfo.getPrivateKey());
-                decrypBytes = AESUtil.AESDecrypt(encryptData, key, "CBC");
+                log.debug("AES Key:{}",new String(key));
+                decrypBytes = AESUtil.AESDecrypt(encryptData, key, "ECB");
+                if(decrypBytes == null){
+                    throw new BaseException(ErrorType.DECRYPT_ERROR);
+                }
             } catch (Exception e){
-                log.error("客户端数据解析异常:{}", e.toString());
+                log.error("客户端数据解析异常", e);
                 throw new BaseException(ErrorType.DECRYPT_ERROR);
             }
 
@@ -106,5 +108,10 @@ public class RequestDecryptFilter implements GatewayFilter {
         } else {
             return chain.filter(exchange);
         }
+    }
+
+    @Override
+    public int getOrder() {
+        return 10003;
     }
 }
