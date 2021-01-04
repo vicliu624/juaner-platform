@@ -29,6 +29,11 @@ import java.net.URI;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
+/**
+ * @Auther: liuweikai
+ * @Date: 2021-01-04 15:56
+ * @Description: 请求体解密过滤器
+ */
 @Slf4j
 @Component
 public class RequestDecryptFilter implements GlobalFilter, Ordered {

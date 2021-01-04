@@ -14,6 +14,11 @@ import java.net.URI;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 
+/**
+ * @Auther: liuweikai
+ * @Date: 2021-01-04 14:56
+ * @Description: 请求体缓存过滤器
+ */
 @Slf4j
 @Component
 public class CacheRequestBodyFilter implements GlobalFilter, Ordered {
