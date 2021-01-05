@@ -69,7 +69,7 @@ public class AccessGatewayFilter implements GlobalFilter {
         log.info("当前访问路径为 {}",requestUrl.toString());
         String scheme = requestUrl.getScheme();
         if (requestUrl.toString().indexOf("ws/endpoint") != -1) {
-            return webSockerFilter.filter(exchange,chain);
+            return chain.filter(exchange);
         }
         //不需要网关签权的url
         if (authService.ignoreAuthentication(url)) {

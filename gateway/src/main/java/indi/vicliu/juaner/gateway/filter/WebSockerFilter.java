@@ -58,7 +58,7 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
         String scheme = requestUrl.getScheme();
         log.info("当前访问路径为 {}",requestUrl.toString());
         if (requestUrl.toString().indexOf("ws/endpoint") == -1) {
-            return gatewayFilter.filter(exchange, chain);
+            return chain.filter(exchange);
         }
         ServerHttpRequest request = exchange.getRequest();
         String authentication = request.getHeaders().getFirst("Sec-WebSocket-Protocol");
