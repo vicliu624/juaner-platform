@@ -47,9 +47,6 @@ public class WebSockerFilter extends WebsocketRoutingFilter {
     @Autowired
     private RedisStringUtil redisStringUtil;
 
-    @Autowired
-    private AccessGatewayFilter gatewayFilter;
-
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
