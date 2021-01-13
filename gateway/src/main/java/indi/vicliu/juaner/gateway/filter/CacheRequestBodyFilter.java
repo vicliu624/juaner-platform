@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.gateway.filter;
 
+import indi.vicliu.juaner.common.custom.http.CustomHttpHeaders;
 import indi.vicliu.juaner.gateway.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -7,7 +8,6 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBufferUtils;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
@@ -33,14 +33,16 @@ public class CacheRequestBodyFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        String cryptoAlgorithm = exchange.getRequest().getHeaders().getFirst("Crypto-Algorithm");
+        String cryptoAlgorithm = exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.CRYPTO_ALGORITHM);
         if(StringUtils.isEmpty(cryptoAlgorithm)){
             return chain.filter(exchange);
         }
 
-        String contentType = exchange.getRequest().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
-        if(MediaType.APPLICATION_JSON_VALUE.equalsIgnoreCase(contentType)
-                || MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(contentType)) {
+        String contentType = exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.CONTENT_TYPE);
+        if(contentType.contains(MediaType.APPLICATION_JSON_VALUE)
+                || contentType.contains(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                || contentType.contains(MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+                || contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
             // 将 request body 中的内容 copy 一份，记录到 exchange 的一个自定义属性中
             Object cachedRequestBodyObject = exchange.getAttributeOrDefault(Constant.REQUEST_BODY_OBJECT, null);
             // 如果已经缓存过，略过

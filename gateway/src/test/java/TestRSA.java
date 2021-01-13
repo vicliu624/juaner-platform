@@ -1,3 +1,4 @@
+import indi.vicliu.juaner.gateway.utils.AESUtil;
 import indi.vicliu.juaner.gateway.utils.RSAUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -46,5 +47,8 @@ public class TestRSA {
 
         aesKeyByte = RSAUtil.encrypt(aesKey,"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgY9SHbkGYmwmwer+Oa89+IxJrsuQplL+qW5dnJAtlpPJOmLnXqZ8OhN5NTPpOWxj7XV0bDXWh3QBAftreaFJtkWNtpIUPZSq96PAI9f2h+Ing9UpoNXTWs4NQk6hX/0EQYHfhzeGK4g9YrC8vsYbQXA6waJwLFB+LMe5g2OT7VXOhxppA1wMIdhmsIE3BO8q0OTecatXYfTz2rFvMLpc4U735cB58T4PFUwB5mXtBgacoB+KGy/VwY9DmQ3/hqR6nRUMHEM6YOJ+BtayMrCLmoV0ilhLQhGqtZaPqESnXAw9PNWSifL0QJyMMknpgr3kpbK3NkgrMgH0b/qYgtQnqQIDAQAB");
         System.out.println(aesKey + "\t加密后的字符串为:" + new String(aesKeyByte, StandardCharsets.UTF_8));
+
+        String cipherText = "dyHRdVRfCCNpj7kj7sSfectKyl+ZsGsI0CtO9Jhvbl8EYfLbhWD5zn5CeRq9HfEU7PBsW9xOWTksxhg2EkTs4oA8TPYhg3kov+HX1eIqNAYDAArrT/UdKRiPguShYqH2";
+        System.out.println("解密内容:" + new String(AESUtil.AESDecrypt(cipherText,aesKey.getBytes(StandardCharsets.UTF_8),"ECB")));
     }
 }

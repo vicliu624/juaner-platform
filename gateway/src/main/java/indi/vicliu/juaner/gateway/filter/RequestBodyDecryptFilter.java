@@ -1,8 +1,9 @@
 package indi.vicliu.juaner.gateway.filter;
 
 import com.alibaba.fastjson.JSONObject;
-import indi.vicliu.juaner.common.core.exception.BaseException;
+import indi.vicliu.juaner.common.core.exception.BaseException;   
 import indi.vicliu.juaner.common.core.exception.ErrorType;
+import indi.vicliu.juaner.common.custom.http.CustomHttpHeaders;
 import indi.vicliu.juaner.gateway.data.mapper.TblCryptoInfoMapper;
 import indi.vicliu.juaner.gateway.domain.entity.TblCryptoInfo;
 import indi.vicliu.juaner.gateway.utils.AESUtil;
@@ -16,7 +17,6 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -45,7 +45,7 @@ import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.G
  */
 @Slf4j
 @Component
-public class RequestDecryptFilter implements GlobalFilter, Ordered {
+public class RequestBodyDecryptFilter implements GlobalFilter, Ordered {
 
     @Autowired
     private TblCryptoInfoMapper cryptoInfoMapper;
@@ -57,7 +57,7 @@ public class RequestDecryptFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
-        log.info("RequestDecryptFilter 当前访问路径为 {}",requestUrl.toString());
+        log.info("RequestBodyDecryptFilter 当前访问路径为 {}",requestUrl.toString());
         if (requestUrl.toString().indexOf("ws/endpoint") > -1) {
             return chain.filter(exchange);
         }
@@ -69,47 +69,49 @@ public class RequestDecryptFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        String cryptoAlgorithm = exchange.getRequest().getHeaders().getFirst("Crypto-Algorithm");
+        String cryptoAlgorithm = exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.CRYPTO_ALGORITHM);
         if(StringUtils.isEmpty(cryptoAlgorithm)){
             return chain.filter(exchange);
         }
 
         try {
             if (cryptoAlgorithm.equalsIgnoreCase("RSA")){
-                String contentType = exchange.getRequest().getHeaders().getFirst(HttpHeaders.CONTENT_TYPE);
+                String contentType = exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.CONTENT_TYPE);
                 if(exchange.getRequest().getHeaders().getFirst("Algorithm-Index") == null){
                     throw new BaseException(ErrorType.DECRYPT_ERROR);
                 }
-                int algoIndex = Integer.parseInt(exchange.getRequest().getHeaders().getFirst("Algorithm-Index"));
-
-                if(exchange.getRequest().getHeaders().getFirst("Crypto-Key") == null){
+                String index = exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.ALGORITHM_INDEX);
+                if(index == null){
                     throw new BaseException(ErrorType.DECRYPT_ERROR);
                 }
-                String encryptKey = exchange.getRequest().getHeaders().getFirst("Crypto-Key");
-
+                int algoIndex = Integer.parseInt(index);
+                String encryptKey = exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.CRYPTO_KEY);
+                if(encryptKey == null){
+                    throw new BaseException(ErrorType.DECRYPT_ERROR);
+                }
                 TblCryptoInfo primaryKey = new TblCryptoInfo();
                 primaryKey.setRequester((long)algoIndex);
                 primaryKey.setCryptoAlgorithm(cryptoAlgorithm);
                 TblCryptoInfo cryptoInfo = cryptoInfoMapper.selectByPrimaryKey(primaryKey);
-                if(cryptoInfo == null){
+                if(cryptoInfo == null) {
                     log.error("查询不到密钥索引{}",algoIndex);
                     throw new BaseException(ErrorType.DECRYPT_ERROR);
                 }
 
                 byte[] key = RSAUtil.decrypt(encryptKey,cryptoInfo.getPrivateKey());
                 log.debug("AES Key:{}",new String(key));
-                byte[] decrypBytes = null;
-                if(MediaType.APPLICATION_JSON_VALUE.equalsIgnoreCase(contentType)){
+                byte[] decryptBytes = null;
+                if(contentType.contains(MediaType.APPLICATION_JSON_VALUE) || contentType.contains(MediaType.APPLICATION_JSON_UTF8_VALUE)){
                     Object cachedRequestBodyObject = exchange.getAttributeOrDefault(Constant.REQUEST_BODY_OBJECT, null);
                     byte[] body = (byte[]) cachedRequestBodyObject;
                     String rootData = new String(body);
                     JSONObject jsonObject = JSONObject.parseObject(rootData);
                     String encryptData = (String) jsonObject.get("v");
-                    decrypBytes = AESUtil.AESDecrypt(encryptData, key, "ECB");
-                    if(decrypBytes == null){
+                    decryptBytes = AESUtil.AESDecrypt(encryptData, key, "ECB");
+                    if(decryptBytes == null){
                         throw new BaseException(ErrorType.DECRYPT_ERROR);
                     }
-                } else if (MediaType.APPLICATION_FORM_URLENCODED_VALUE.equalsIgnoreCase(contentType)) {
+                } else if (contentType.contains(MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
                     Object cachedRequestBodyObject = exchange.getAttributeOrDefault(Constant.REQUEST_BODY_OBJECT, null);
                     byte[] body = (byte[]) cachedRequestBodyObject;
                     String rootData = new String(body);
@@ -130,15 +132,22 @@ public class RequestDecryptFilter implements GlobalFilter, Ordered {
                         } catch (Exception e) {
                             log.error("客户端数据解析异常", e);
                             throw new BaseException(ErrorType.DECRYPT_ERROR);
-                        }
+                        }           
                     });
-                    decrypBytes = toUrlString(newParams).getBytes(StandardCharsets.UTF_8);
+                    decryptBytes = toUrlString(newParams).getBytes(StandardCharsets.UTF_8);
+                } else if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
+                    //暂不支持
+                    Object cachedRequestBodyObject = exchange.getAttributeOrDefault(Constant.REQUEST_BODY_OBJECT, null);
+                    byte[] body = (byte[]) cachedRequestBodyObject;
+                    String rootData = new String(body);
+                    log.debug("data:{}",rootData);
+                    throw new BaseException(ErrorType.DECRYPT_ERROR);
                 } else {
                     log.error("不支持MediaType{}进行加密请求",contentType);
                     throw new BaseException(ErrorType.DECRYPT_ERROR);
                 }
                 DataBufferFactory dataBufferFactory = exchange.getResponse().bufferFactory();
-                Flux<DataBuffer> bodyFlux = Flux.just(dataBufferFactory.wrap(decrypBytes));
+                Flux<DataBuffer> bodyFlux = Flux.just(dataBufferFactory.wrap(decryptBytes));
                 ServerHttpRequest newRequest = request.mutate().uri(uri).build();
                 newRequest = new ServerHttpRequestDecorator(newRequest) {
                     @Override
@@ -146,24 +155,24 @@ public class RequestDecryptFilter implements GlobalFilter, Ordered {
                         return bodyFlux;
                     }
                 };
-                HttpHeaders headers = new HttpHeaders();
+                CustomHttpHeaders headers = new CustomHttpHeaders();
                 headers.putAll(exchange.getRequest().getHeaders());
                 // 由于修改了传递参数，需要重新设置CONTENT_LENGTH，长度是字节长度，不是字符串长度
-                int length = decrypBytes.length;
-                headers.remove(HttpHeaders.CONTENT_LENGTH);
+                int length = decryptBytes.length;
+                headers.remove(CustomHttpHeaders.CONTENT_LENGTH);
                 headers.setContentLength(length);
                 // headers.set(HttpHeaders.CONTENT_TYPE, "application/json");
                 newRequest = new ServerHttpRequestDecorator(newRequest) {
                     @Override
-                    public HttpHeaders getHeaders() {
+                    public CustomHttpHeaders getHeaders() {
                         return headers;
                     }
                 };
                 // 把解密后的数据重置到exchange自定义属性中,在之后的日志GlobalLogFilter从此处获取请求参数打印日志
-                exchange.getAttributes().put(Constant.REQUEST_BODY_OBJECT, decrypBytes);
+                exchange.getAttributes().put(Constant.REQUEST_BODY_OBJECT, decryptBytes);
                 return chain.filter(exchange.mutate().request(newRequest).build());
             } else {
-                //暂时只支持RSA
+                //暂时只支持AES
                 throw new BaseException(ErrorType.DECRYPT_ERROR);
             }
         } catch (Exception e){
