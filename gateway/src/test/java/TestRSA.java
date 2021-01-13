@@ -1,3 +1,4 @@
+import indi.vicliu.juaner.gateway.utils.AESUtil;
 import indi.vicliu.juaner.gateway.utils.RSAUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -36,12 +37,18 @@ public class TestRSA {
         System.out.println("公钥:" + publicKeyString);
         System.out.println("私钥:" + privateKeyString);
 
-        String aesKey = "df723820";
+        String aesKey = "0123456789abcdef";
         System.out.println("随机生成的公钥为:" + keyMap.get(0));
         System.out.println("随机生成的私钥为:" + keyMap.get(1));
         byte[] aesKeyByte = RSAUtil.encrypt(aesKey,keyMap.get(0) );
         System.out.println(aesKey + "\t加密后的字符串为:" + new String(aesKeyByte, StandardCharsets.UTF_8));
         byte[] messageDe = RSAUtil.decrypt(new String(aesKeyByte, StandardCharsets.UTF_8),keyMap.get(1));
         System.out.println("还原后的字符串为:" + new String(messageDe, StandardCharsets.UTF_8) );
+
+        aesKeyByte = RSAUtil.encrypt(aesKey,"MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgY9SHbkGYmwmwer+Oa89+IxJrsuQplL+qW5dnJAtlpPJOmLnXqZ8OhN5NTPpOWxj7XV0bDXWh3QBAftreaFJtkWNtpIUPZSq96PAI9f2h+Ing9UpoNXTWs4NQk6hX/0EQYHfhzeGK4g9YrC8vsYbQXA6waJwLFB+LMe5g2OT7VXOhxppA1wMIdhmsIE3BO8q0OTecatXYfTz2rFvMLpc4U735cB58T4PFUwB5mXtBgacoB+KGy/VwY9DmQ3/hqR6nRUMHEM6YOJ+BtayMrCLmoV0ilhLQhGqtZaPqESnXAw9PNWSifL0QJyMMknpgr3kpbK3NkgrMgH0b/qYgtQnqQIDAQAB");
+        System.out.println(aesKey + "\t加密后的字符串为:" + new String(aesKeyByte, StandardCharsets.UTF_8));
+
+        String cipherText = "dyHRdVRfCCNpj7kj7sSfectKyl+ZsGsI0CtO9Jhvbl8EYfLbhWD5zn5CeRq9HfEU7PBsW9xOWTksxhg2EkTs4oA8TPYhg3kov+HX1eIqNAYDAArrT/UdKRiPguShYqH2";
+        System.out.println("解密内容:" + new String(AESUtil.AESDecrypt(cipherText,aesKey.getBytes(StandardCharsets.UTF_8),"ECB")));
     }
 }

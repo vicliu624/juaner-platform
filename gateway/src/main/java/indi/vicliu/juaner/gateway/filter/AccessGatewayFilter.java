@@ -9,13 +9,14 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.jwt.Jwt;
+import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,14 +25,15 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
+
 /**
  * @Auther: liuweikai
  * @Date: 2019-03-22 12:56
  * @Description: 认证过滤器
  */
 @Slf4j
-@Configuration
-public class AccessGatewayFilter implements GlobalFilter {
+@Component
+public class AccessGatewayFilter implements GlobalFilter, Ordered {
 
     /**
      * 由authentication-client模块提供签权的feign客户端
@@ -41,10 +43,6 @@ public class AccessGatewayFilter implements GlobalFilter {
 
     @Autowired
     private RedisStringUtil redisStringUtil;
-
-
-    @Autowired
-    WebSockerFilter webSockerFilter;
 
     @Autowired
     private  Environment environment;
@@ -60,20 +58,23 @@ public class AccessGatewayFilter implements GlobalFilter {
      */
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+        URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
+        log.info("AccessGatewayFilter 当前访问路径为 {}",requestUrl.toString());
+        if (requestUrl.toString().indexOf("ws/endpoint") > -1) {
+            return chain.filter(exchange);
+        }
+
         ServerHttpRequest request = exchange.getRequest();
         String authentication = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
         String method = request.getMethodValue();
         String url = request.getPath().value();
         log.info("url:{},method:{},headers:{}", url, method, request.getHeaders());
-        URI requestUrl = exchange.getRequiredAttribute(GATEWAY_REQUEST_URL_ATTR);
-        log.info("当前访问路径为 {}",requestUrl.toString());
-        String scheme = requestUrl.getScheme();
-        if (requestUrl.toString().indexOf("ws/endpoint") != -1) {
-            return chain.filter(exchange);
-        }
         //不需要网关签权的url
         if (authService.ignoreAuthentication(url)) {
-            return chain.filter(exchange);
+            //return chain.filter(exchange);
+            ServerHttpRequest.Builder builder = request.mutate();
+            builder.header(CommonConstant.X_RPC_DEEP,"0");
+            return chain.filter(exchange.mutate().request(builder.build()).build());
         }
         if(StringUtils.isEmpty(authentication)){
             return unauthorized(exchange);
@@ -133,5 +134,10 @@ public class AccessGatewayFilter implements GlobalFilter {
         DataBuffer buffer = serverWebExchange.getResponse()
                 .bufferFactory().wrap(HttpStatus.CONFLICT.getReasonPhrase().getBytes(StandardCharsets.UTF_8));
         return serverWebExchange.getResponse().writeWith(Flux.just(buffer));
+    }
+
+    @Override
+    public int getOrder() {
+        return 10001;
     }
 }
