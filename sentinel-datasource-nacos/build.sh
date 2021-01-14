@@ -2,5 +2,5 @@
 DOCKER_IMAGE='sentinel-datasource-nacos'
 cd `dirname "$0"`
 mvn -Pfat-jar -Dmaven.test.skip=true clean package
-docker build --build-arg HTTP_PROXY=http://vicliu.i234.me:8001 -t vicliu.i234.me:8001/yn-etc/$DOCKER_IMAGE:latest .
-docker push vicliu.i234.me:8001/yn-etc/$DOCKER_IMAGE:latest
+docker build -t microservice105:8443/yn-etc/$DOCKER_IMAGE:latest .
+docker push microservice105:8443/yn-etc/$DOCKER_IMAGE:latest

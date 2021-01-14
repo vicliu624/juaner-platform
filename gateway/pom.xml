@@ -12,12 +12,7 @@
     <artifactId>gateway</artifactId>
 
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.alibaba.nacos/nacos-client -->
-        <dependency>
-            <groupId>com.alibaba.nacos</groupId>
-            <artifactId>nacos-client</artifactId>
-            <version>${nacos-client.version}</version>
-        </dependency>
+        
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-gateway</artifactId>
