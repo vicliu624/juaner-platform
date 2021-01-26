@@ -1,6 +1,5 @@
 package indi.vicliu.juaner.common.scheduling.annotation;
 
-import indi.vicliu.juaner.common.scheduling.config.PrometheusMetricsConfig;
 import indi.vicliu.juaner.common.scheduling.support.ScheduledMethodRunnable;
 import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.prometheus.client.Counter;
