@@ -1,20 +1,20 @@
 package indi.vicliu.juaner.upms;
 
 import indi.vicliu.juaner.common.annotation.EnableLoginArgResolver;
+import indi.vicliu.juaner.common.annotation.EnablePrometheusScheduling;
 import indi.vicliu.juaner.common.annotation.EnableSentinelAspect;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import tk.mybatis.spring.annotation.MapperScan;
 
 @EnableSentinelAspect
 @EnableFeignClients
-@EnableScheduling
+@EnablePrometheusScheduling
 @EnableDiscoveryClient
 @EnableLoginArgResolver
-@MapperScan("indi.vicliu.juaner.upms.data.mapper")
+@MapperScan({"indi.vicliu.juaner.upms.data.mapper","indi.vicliu.juaner.common.scheduling.config"})
 @SpringBootApplication
 public class UpmsApplication {
 
