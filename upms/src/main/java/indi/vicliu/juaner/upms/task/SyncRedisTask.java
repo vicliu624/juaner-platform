@@ -17,7 +17,7 @@ public class SyncRedisTask {
     @Autowired
     private PermissionService permissionService;
 
-    @Scheduled(fixedDelay = 1000 * 10)
+    @Scheduled(fixedDelay = 1000 * 60 * 2)
     public void roleAndPermission() {
         try{
             roleService.allRoles().forEach( role -> {
