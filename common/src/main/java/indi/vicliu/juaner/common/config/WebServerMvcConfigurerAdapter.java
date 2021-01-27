@@ -1,5 +1,6 @@
 package indi.vicliu.juaner.common.config;
 
+import indi.vicliu.juaner.common.web.interceptor.MetricsInterceptor;
 import indi.vicliu.juaner.common.web.interceptor.UserInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -18,11 +19,17 @@ public class WebServerMvcConfigurerAdapter implements WebMvcConfigurer {
         return new UserInterceptor();
     }
 
+    @Bean
+    public HandlerInterceptor metricsInterceptor() {
+        return new MetricsInterceptor();
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         /**
          * 服务需要获取用户信息的话添加此拦截器
          */
         registry.addInterceptor(userInterceptor());
+        registry.addInterceptor(metricsInterceptor());
     }
 }
