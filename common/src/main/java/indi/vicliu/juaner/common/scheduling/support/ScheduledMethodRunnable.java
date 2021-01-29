@@ -7,8 +7,6 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.UndeclaredThrowableException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 public class ScheduledMethodRunnable implements Runnable {
 
@@ -64,8 +62,7 @@ public class ScheduledMethodRunnable implements Runnable {
     @Override
     public void run() {
         try {
-            //sDateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            counter.labels(this.method.getName()).inc();
+            counter.labels(this.method.getDeclaringClass().getName()+ "." + this.method.getName()).inc();
             ReflectionUtils.makeAccessible(this.method);
             this.method.invoke(this.target);
         }
