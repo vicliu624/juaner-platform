@@ -390,7 +390,7 @@ public class ScheduledAnnotationBeanPostProcessor
                         else {
                             timeZone = TimeZone.getDefault();
                         }
-                        logger.info("add cron task:" + bean.toString() + " cron expression:" + zone);
+                        logger.info("add cron task:" + method.getDeclaringClass().getName()+ "." + method.getName() + " cron expression:" + zone);
                         tasks.add(this.registrar.scheduleCronTask(new CronTask(runnable, new CronTrigger(cron, timeZone))));
                     }
                 }
@@ -406,7 +406,7 @@ public class ScheduledAnnotationBeanPostProcessor
             if (fixedDelay >= 0) {
                 Assert.isTrue(!processedSchedule, errorMessage);
                 processedSchedule = true;
-                logger.info("add fixed delay task:" + bean + " fixedDelay:" + fixedDelay);
+                logger.info("add fixed delay task:" + method.getDeclaringClass().getName()+ "." + method.getName() + " fixedDelay:" + fixedDelay);
                 tasks.add(this.registrar.scheduleFixedDelayTask(new FixedDelayTask(runnable, fixedDelay, initialDelay)));
             }
             String fixedDelayString = scheduled.fixedDelayString();
@@ -424,7 +424,7 @@ public class ScheduledAnnotationBeanPostProcessor
                         throw new IllegalArgumentException(
                                 "Invalid fixedDelayString value \"" + fixedDelayString + "\" - cannot parse into long");
                     }
-                    logger.info("add fixed delay task:" + bean.toString() + " fixedDelay:" + fixedDelay);
+                    logger.info("add fixed delay task:" + method.getDeclaringClass().getName()+ "." + method.getName() + " fixedDelay:" + fixedDelay);
                     tasks.add(this.registrar.scheduleFixedDelayTask(new FixedDelayTask(runnable, fixedDelay, initialDelay)));
                 }
             }
@@ -434,7 +434,7 @@ public class ScheduledAnnotationBeanPostProcessor
             if (fixedRate >= 0) {
                 Assert.isTrue(!processedSchedule, errorMessage);
                 processedSchedule = true;
-                logger.info("add fixed rate task:" + bean.toString() + " fixedRate:" + fixedRate);
+                logger.info("add fixed rate task:" + method.getDeclaringClass().getName()+ "." + method.getName() + " fixedRate:" + fixedRate);
                 tasks.add(this.registrar.scheduleFixedRateTask(new FixedRateTask(runnable, fixedRate, initialDelay)));
             }
             String fixedRateString = scheduled.fixedRateString();
@@ -452,7 +452,7 @@ public class ScheduledAnnotationBeanPostProcessor
                         throw new IllegalArgumentException(
                                 "Invalid fixedRateString value \"" + fixedRateString + "\" - cannot parse into long");
                     }
-                    logger.info("add fixed rate task:" + bean.toString() + " fixedRate:" + fixedRate);
+                    logger.info("add fixed rate task:" + method.getDeclaringClass().getName()+ "." + method.getName() + " fixedRate:" + fixedRate);
                     tasks.add(this.registrar.scheduleFixedRateTask(new FixedRateTask(runnable, fixedRate, initialDelay)));
                 }
             }

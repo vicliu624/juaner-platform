@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.core.env.Environment;
 import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,9 +42,6 @@ public class AccessGatewayFilter implements GlobalFilter, Ordered {
 
     @Autowired
     private RedisStringUtil redisStringUtil;
-
-    @Autowired
-    private  Environment environment;
 
     private static String WEBSOCKET_PROTOCOL = "Sec-WebSocket-Protocol";
     /**

@@ -27,4 +27,42 @@ public class SyncRedisTask {
             log.error("定时器出错",e);
         }
     }
+
+
+    @Scheduled(fixedDelay = 1000 * 2)
+    public void a() {
+        try{
+            System.out.println("----a exec---");
+            Thread.sleep(1000 * 60 * 10);
+        } catch (Exception e){
+            log.error("定时器出错",e);
+        }
+    }
+
+    @Scheduled(fixedDelay = 1000 * 2)
+    public void b() {
+        try{
+            System.out.println("----b exec---");
+        } catch (Exception e){
+            log.error("定时器出错",e);
+        }
+    }
+
+    @Scheduled(fixedRate = 1000 * 2)
+    public void c() {
+        try{
+            System.out.println("----c exec---");
+        } catch (Exception e){
+            log.error("定时器出错",e);
+        }
+    }
+
+    @Scheduled(cron = "0 */5 * * * *")
+    public void d() {
+        try{
+            System.out.println("----d exec---");
+        } catch (Exception e){
+            log.error("定时器出错",e);
+        }
+    }
 }
