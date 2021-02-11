@@ -25,6 +25,7 @@
 
     <properties>
         <java.version>1.8</java.version>
+        <servlet.version>4.0.1</servlet.version>
 
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -209,6 +210,43 @@
             <artifactId>json-path</artifactId>
             <version>2.4.0</version>
         </dependency>
+
+        <!-- apijson-framework 需要用的依赖库，4.0.0 以上 -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${servlet.version}</version>
+        </dependency>
+
+        <!-- start JSONAPI依赖 -->
+        <!-- 单元测试 -->
+        <dependency>
+            <groupId>com.github.TommyLemon</groupId>
+            <artifactId>unitauto-java</artifactId>
+            <version>2.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.TommyLemon</groupId>
+            <artifactId>unitauto-jar</artifactId>
+            <version>2.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.classgraph</groupId>
+            <artifactId>classgraph</artifactId>
+            <version>4.8.87</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.Tencent</groupId>
+            <artifactId>APIJSON</artifactId>
+            <version>4.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.APIJSON</groupId>
+            <artifactId>apijson-framework</artifactId>
+            <version>4.6.0</version>
+        </dependency>
+        <!-- end JSONAPI依赖 -->
     </dependencies>
 
     <dependencyManagement>
@@ -322,4 +360,15 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <!-- APIJSON 必须用到的托管平台 -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 </project>
