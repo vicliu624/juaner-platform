@@ -9,7 +9,6 @@ package indi.vicliu.juaner.jsonapi;
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
@@ -52,84 +51,41 @@ public class JSONAPIRegistrar implements ImportBeanDefinitionRegistrar, Resource
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
-        registerDefaultConfiguration(importingClassMetadata, registry);
         registerJSONAPITable(importingClassMetadata, registry);
-        //registerJSONAPIFunction(importingClassMetadata, registry);
     }
-
-    private void registerDefaultConfiguration(AnnotationMetadata metadata,
-                                              BeanDefinitionRegistry registry) {
-        Map<String, Object> defaultAttrs = metadata
-                .getAnnotationAttributes(EnableJSONAPI.class.getName(), true);
-
-        if (defaultAttrs != null && defaultAttrs.containsKey("defaultConfiguration")) {
-            String name;
-            // 注解只用的类进行判断是否为内部类或者方法内的本地类
-            if (metadata.hasEnclosingClass()) {
-                name = "default." + metadata.getEnclosingClassName();
-            }
-            else {
-                name = "default." + metadata.getClassName();
-            }
-            registerJSONAPIConfiguration(registry, name,
-                    defaultAttrs.get("defaultConfiguration"));
-        }
-    }
-
-    private void registerJSONAPIConfiguration(BeanDefinitionRegistry registry, Object name,
-                                             Object configuration) {
-        BeanDefinitionBuilder builder = BeanDefinitionBuilder
-                .genericBeanDefinition(JSONAPISpecification.class);
-        builder.addConstructorArgValue(name);
-        builder.addConstructorArgValue(configuration);
-        registry.registerBeanDefinition(
-                name + "." + JSONAPISpecification.class.getSimpleName(),
-                builder.getBeanDefinition());
-    }
-
 
     public void registerJSONAPITable(AnnotationMetadata metadata,
                                      BeanDefinitionRegistry registry) {
         ClassPathScanningCandidateComponentProvider scanner = getScanner();
         scanner.setResourceLoader(this.resourceLoader);
-        Map<String, Object> attrs = metadata
-                .getAnnotationAttributes(EnableJSONAPI.class.getName());
+//        Map<String, Object> attrs = metadata
+//                .getAnnotationAttributes(EnableJSONAPI.class.getName());
         AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(
                 JSONAPITable.class);
         scanner.addIncludeFilter(annotationTypeFilter);
-        Set<String> basePackages = getBasePackages(metadata);
-        for (String basePackage : basePackages) {
-            Set<BeanDefinition> candidateComponents = scanner
-                    .findCandidateComponents(basePackage);
-            for (BeanDefinition candidateComponent : candidateComponents) {
-                if (candidateComponent instanceof AnnotatedBeanDefinition) {
-                    // verify annotated class is an interface
-                    AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
-                    AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
-                    Assert.isTrue(annotationMetadata.isConcrete(),
-                            "@JSONAPITable can only be specified on an concrete class");
-                    Map<String, Object> attributes = annotationMetadata
-                            .getAnnotationAttributes(
-                                    JSONAPITable.class.getCanonicalName());
-                    String name = getTableName(attributes);
-                    try {
-                        accessTables.put(Class.forName(annotationMetadata.getClassName()).getSimpleName(),name);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-    }
-
-    private void registerJSONAPITable(BeanDefinitionRegistry registry,
-                                      AnnotationMetadata annotationMetadata, Map<String, Object> attributes) {
-
-    }
-
-    public void registerJSONAPIFunction(AnnotationMetadata metadata,
-                                      BeanDefinitionRegistry registry) {
-
+//        Set<String> basePackages = getBasePackages(metadata);
+//        for (String basePackage : basePackages) {
+//            Set<BeanDefinition> candidateComponents = scanner
+//                    .findCandidateComponents(basePackage);
+//            for (BeanDefinition candidateComponent : candidateComponents) {
+//                if (candidateComponent instanceof AnnotatedBeanDefinition) {
+//                    // verify annotated class is an interface
+//                    AnnotatedBeanDefinition beanDefinition = (AnnotatedBeanDefinition) candidateComponent;
+//                    AnnotationMetadata annotationMetadata = beanDefinition.getMetadata();
+//                    Assert.isTrue(annotationMetadata.isConcrete(),
+//                            "@JSONAPITable can only be specified on an concrete class");
+//                    Map<String, Object> attributes = annotationMetadata
+//                            .getAnnotationAttributes(
+//                                    JSONAPITable.class.getCanonicalName());
+//                    String name = getTableName(attributes);
+//                    try {
+//                        accessTables.put(Class.forName(annotationMetadata.getClassName()).getSimpleName(),name);
+//                    } catch (ClassNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
     }
 
     protected ClassPathScanningCandidateComponentProvider getScanner() {
