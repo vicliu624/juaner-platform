@@ -4,7 +4,7 @@
  * @Description:
  */
 
-package indi.vicliu.juaner.common.config.jsonapi;
+package indi.vicliu.juaner.jsonapi;
 
 import lombok.Data;
 

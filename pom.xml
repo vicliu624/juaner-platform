@@ -20,6 +20,7 @@
         <module>id</module>
         <module>admin</module>
         <module>sentinel-datasource-nacos</module>
+        <module>jsonapi-core</module>
 
     </modules>
 
