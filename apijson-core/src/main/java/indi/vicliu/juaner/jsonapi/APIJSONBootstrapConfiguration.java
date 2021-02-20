@@ -11,6 +11,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnProperty(name = "apijson.enabled", matchIfMissing = true)
-public class JSONAPIBootstrapConfiguration {
+public class APIJSONBootstrapConfiguration {
 
 }

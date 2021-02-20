@@ -13,8 +13,8 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Documented
-@Import(JSONAPIRegistrar.class)
-public @interface EnableJSONAPI {
+@Import(APIJSONRegistrar.class)
+public @interface EnableAPIJSON {
     String[] value() default {};
     String[] basePackages() default {};
     Class<?>[] basePackageClasses() default {};

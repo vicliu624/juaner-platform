@@ -1,4 +1,4 @@
 org.springframework.cloud.bootstrap.BootstrapConfiguration=\
-indi.vicliu.juaner.jsonapi.JSONAPIBootstrapConfiguration
+indi.vicliu.juaner.jsonapi.APIJSONBootstrapConfiguration
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-indi.vicliu.juaner.jsonapi.JSONAPIAutoconfiguration
+indi.vicliu.juaner.jsonapi.APIJSONAutoconfiguration

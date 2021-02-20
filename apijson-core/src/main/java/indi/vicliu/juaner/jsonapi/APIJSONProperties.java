@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 
 @Data
 @ConfigurationProperties(prefix = "jsonapi")
-public class JSONAPIProperties {
+public class APIJSONProperties {
 
     private Datasource datasource;
 

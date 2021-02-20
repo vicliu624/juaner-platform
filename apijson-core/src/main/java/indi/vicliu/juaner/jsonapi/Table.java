@@ -14,7 +14,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target(TYPE)
 @Retention(RUNTIME)
-public @interface JSONAPITable {
+public @interface Table {
     /**
      * 数据库内正式的表名称
      * @return

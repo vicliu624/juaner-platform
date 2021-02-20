@@ -11,15 +11,15 @@ import org.springframework.cloud.context.named.NamedContextFactory;
 import java.util.Arrays;
 import java.util.Objects;
 
-public class JSONAPISpecification implements NamedContextFactory.Specification {
+public class APIJSONSpecification implements NamedContextFactory.Specification {
     private String name;
 
     private Class<?>[] configuration;
 
-    JSONAPISpecification() {
+    APIJSONSpecification() {
     }
 
-    JSONAPISpecification(String name, Class<?>[] configuration) {
+    APIJSONSpecification(String name, Class<?>[] configuration) {
         this.name = name;
         this.configuration = configuration;
     }
@@ -48,7 +48,7 @@ public class JSONAPISpecification implements NamedContextFactory.Specification {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        JSONAPISpecification that = (JSONAPISpecification) o;
+        APIJSONSpecification that = (APIJSONSpecification) o;
         return Objects.equals(this.name, that.name)
                 && Arrays.equals(this.configuration, that.configuration);
     }

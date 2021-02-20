@@ -8,7 +8,6 @@ package indi.vicliu.juaner.jsonapi;
 
 
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
@@ -18,7 +17,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
@@ -27,7 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class JSONAPIRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
+public class APIJSONRegistrar implements ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
 
     private ResourceLoader resourceLoader;
 
@@ -35,7 +33,7 @@ public class JSONAPIRegistrar implements ImportBeanDefinitionRegistrar, Resource
 
     private Map<String,String> accessTables;
 
-    JSONAPIRegistrar() {
+    APIJSONRegistrar() {
         accessTables = new HashMap<>();
     }
 
@@ -61,7 +59,7 @@ public class JSONAPIRegistrar implements ImportBeanDefinitionRegistrar, Resource
 //        Map<String, Object> attrs = metadata
 //                .getAnnotationAttributes(EnableJSONAPI.class.getName());
         AnnotationTypeFilter annotationTypeFilter = new AnnotationTypeFilter(
-                JSONAPITable.class);
+                Table.class);
         scanner.addIncludeFilter(annotationTypeFilter);
 //        Set<String> basePackages = getBasePackages(metadata);
 //        for (String basePackage : basePackages) {
@@ -106,7 +104,7 @@ public class JSONAPIRegistrar implements ImportBeanDefinitionRegistrar, Resource
 
     protected Set<String> getBasePackages(AnnotationMetadata importingClassMetadata) {
         Map<String, Object> attributes = importingClassMetadata
-                .getAnnotationAttributes(EnableJSONAPI.class.getCanonicalName());
+                .getAnnotationAttributes(EnableAPIJSON.class.getCanonicalName());
 
         Set<String> basePackages = new HashSet<>();
         for (String pkg : (String[]) attributes.get("value")) {
@@ -137,7 +135,7 @@ public class JSONAPIRegistrar implements ImportBeanDefinitionRegistrar, Resource
         String value = (String) param.get("realTableName");
         if (!StringUtils.hasText(value)) {
             throw new IllegalStateException("Either 'name' or 'value' must be provided in @"
-                    + JSONAPITable.class.getSimpleName());
+                    + Table.class.getSimpleName());
         }else {
             return value;
         }
