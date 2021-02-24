@@ -19,16 +19,14 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties({ APIJSONProperties.class })
 @ConditionalOnProperty(name = "apijson.enabled", matchIfMissing = true)
 @AutoConfigureAfter(APIJSONBootstrapConfiguration.class)
-public class APIJSONAutoconfiguration {
-    private final APIJSONProperties properties;
+public class APIJSONAutoConfiguration {
+    private final APIJSONProperties apijsonProperties;
 
-    public APIJSONAutoconfiguration(APIJSONProperties properties) {
-        this.properties = properties;
+    public APIJSONAutoConfiguration(APIJSONProperties properties) {
+        this.apijsonProperties = properties;
 
         boolean shutdownWhenServerError = false;
-        APIJSONCreator creator = new APIJSONCreator(){
-
-        };
+        APIJSONCreator creator = new APIJSONCreator();
         log.debug("\n\n\n\n\n<<<<<<<<<<<<<<<<<<<<<<<<< APIJSON 开始启动 >>>>>>>>>>>>>>>>>>>>>>>>\n");
 
         // 统一用同一个 creator

@@ -34,7 +34,8 @@ import static indi.vicliu.juaner.jsonapi.framework.APIJSONConstant.*;
 public class APIJSONSQLConfig extends AbstractSQLConfig {
 	public static final String TAG = "APIJSONSQLConfig";
 
-	private APIJSONProperties properties;
+	private static APIJSONProperties APIJSON_PROPERTIES;
+
 
 	public static Callback SIMPLE_CALLBACK;
 	public static APIJSONCreator APIJSON_CREATOR;
@@ -48,8 +49,8 @@ public class APIJSONSQLConfig extends AbstractSQLConfig {
 		//		TABLE_KEY_MAP.put(User.class.getSimpleName(), "apijson_user");
 		//		TABLE_KEY_MAP.put(Privacy.class.getSimpleName(), "apijson_privacy");
 
+		//APIJSON_PROPERTIES = SpringContextUtil.getBean(APIJSONProperties.class);
 		APIJSON_CREATOR = new APIJSONCreator();
-
 		SIMPLE_CALLBACK = new SimpleCallback() {
 
 			@Override
@@ -86,25 +87,25 @@ public class APIJSONSQLConfig extends AbstractSQLConfig {
 
 	@Override
 	public String getDBVersion() {
-		return this.properties.getDatasource().getVersion();
+		return this.APIJSON_PROPERTIES.getDatasource().getVersion();
 	}
 
 	@JSONField(serialize = false)  // 不在日志打印 账号/密码 等敏感信息，用了 UnitAuto 则一定要加
 	@Override
 	public String getDBUri() {
-		return this.properties.getDatasource().getUrl();
+		return this.APIJSON_PROPERTIES.getDatasource().getUrl();
 	}
 
 	@JSONField(serialize = false)  // 不在日志打印 账号/密码 等敏感信息，用了 UnitAuto 则一定要加
 	@Override
 	public String getDBAccount() {
-		return this.properties.getDatasource().getAccount();
+		return this.APIJSON_PROPERTIES.getDatasource().getAccount();
 	}
 
 	@JSONField(serialize = false)  // 不在日志打印 账号/密码 等敏感信息，用了 UnitAuto 则一定要加
 	@Override
 	public String getDBPassword() {
-		return this.properties.getDatasource().getPassword();
+		return this.APIJSON_PROPERTIES.getDatasource().getPassword();
 	}
 
 	//取消注释后，默认的数据库类型会由 MySQL 改为 PostgreSQL
@@ -199,6 +200,4 @@ public class APIJSONSQLConfig extends AbstractSQLConfig {
 	public static SQLConfig newSQLConfig(RequestMethod method, String table, String alias, JSONObject request, List<Join> joinList, boolean isProcedure) throws Exception {
 		return newSQLConfig(method, table, alias, request, joinList, isProcedure, SIMPLE_CALLBACK);
 	}
-
-
 }

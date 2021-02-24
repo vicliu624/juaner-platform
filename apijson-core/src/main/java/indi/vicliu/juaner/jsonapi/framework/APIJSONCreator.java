@@ -21,8 +21,6 @@ import apijson.orm.*;
  * @author Lemon
  */
 public class APIJSONCreator implements ParserCreator<Long>, VerifierCreator<Long>, SQLCreator {
-
-
 	@Override
 	public Parser<Long> createParser() {
 		return new APIJSONParser();

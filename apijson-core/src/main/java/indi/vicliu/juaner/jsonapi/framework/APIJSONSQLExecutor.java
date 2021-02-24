@@ -45,16 +45,6 @@ public class APIJSONSQLExecutor extends AbstractSQLExecutor {
 				e2.printStackTrace();
 			}
 		}
-
-		try { //加载驱动程序
-			Log.d(TAG, "尝试加载 PostgresSQL 驱动 <<<<<<<<<<<<<<<<<<<<< ");
-			Class.forName("org.postgresql.Driver");
-			Log.d(TAG, "成功加载 PostgresSQL 驱动！>>>>>>>>>>>>>>>>>>>>> ");
-		}
-		catch (ClassNotFoundException e) {
-			e.printStackTrace();
-			Log.e(TAG, "加载 PostgresSQL 驱动失败，请检查 libs 目录中 postgresql.jar 版本是否存在以及可用 ！！！");
-		}
 		
 	}
 }

@@ -127,16 +127,13 @@ public class APIJSONVerifier extends AbstractVerifier<Long> {
 	 * @throws ServerException
 	 */
 	public static JSONObject initAccess(boolean shutdownWhenServerError, APIJSONCreator creator, JSONObject table) throws ServerException {
-		if (creator == null) {
-			creator = APIJSON_CREATOR;
-		}
 		APIJSON_CREATOR = creator;
 
 		
 		boolean isAll = table == null || table.isEmpty();
 
 		JSONObject access = isAll ? new JSONRequest() : table;
-		if (Log.DEBUG == false) {
+		if (!Log.DEBUG) {
 			access.put("debug", 0);
 		}
 		JSONRequest accessItem = new JSONRequest();
@@ -147,7 +144,7 @@ public class APIJSONVerifier extends AbstractVerifier<Long> {
 
 		
 		JSONObject response = creator.createParser().setMethod(RequestMethod.GET).setNeedVerify(false).parseResponse(request);
-		if (JSONResponse.isSuccess(response) == false) {
+		if (!JSONResponse.isSuccess(response)) {
 			Log.e(TAG, "\n\n\n\n\n !!!! 查询权限配置异常 !!!\n" + response.getString(JSONResponse.KEY_MSG) + "\n\n\n\n\n");
 			onServerError("查询权限配置异常 !", shutdownWhenServerError);
 		}
@@ -194,14 +191,14 @@ public class APIJSONVerifier extends AbstractVerifier<Long> {
 			}
 
 			if (StringUtil.isEmpty(alias, true)) {
-				if (JSONRequest.isTableKey(name) == false) {
+				if (!JSONRequest.isTableKey(name)) {
 					onServerError("name: " + name + "不合法！字段 alias 的值为空时，name 必须为合法表名！", shutdownWhenServerError);
 				}
 
 				ACCESS_MAP.put(name, map);
 			}
 			else {
-				if (JSONRequest.isTableKey(alias) == false) {
+				if (!JSONRequest.isTableKey(alias)) {
 					onServerError("alias: " + alias + "不合法！字段 alias 的值只能为 空 或者 合法表名！", shutdownWhenServerError);
 				}
 
@@ -273,7 +270,7 @@ public class APIJSONVerifier extends AbstractVerifier<Long> {
 
 
 		JSONObject response = creator.createParser().setMethod(RequestMethod.GET).setNeedVerify(false).parseResponse(request);
-		if (JSONResponse.isSuccess(response) == false) {
+		if (!JSONResponse.isSuccess(response)) {
 			Log.e(TAG, "\n\n\n\n\n !!!! 查询权限配置异常 !!!\n" + response.getString(JSONResponse.KEY_MSG) + "\n\n\n\n\n");
 			onServerError("查询权限配置异常 !", shutdownWhenServerError);
 		}
@@ -322,7 +319,7 @@ public class APIJSONVerifier extends AbstractVerifier<Long> {
 
 			if (structure != null) {
 				target = structure;
-				if (structure.containsKey(tag) == false) { //tag 是 Table 名或 Table[]
+				if (!structure.containsKey(tag)) { //tag 是 Table 名或 Table[]
 
 					boolean isArrayKey = tag.endsWith(":[]");  //  JSONRequest.isArrayKey(tag);
 					String key = isArrayKey ? tag.substring(0, tag.length() - 3) : tag;

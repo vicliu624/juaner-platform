@@ -38,11 +38,6 @@ import static indi.vicliu.juaner.jsonapi.framework.APIJSONConstant.FUNCTION_;
 public class APIJSONFunctionParser extends AbstractFunctionParser {
 	public static final String TAG = "APIJSONFunctionParser";
 
-	@NotNull
-	public static APIJSONCreator APIJSON_CREATOR;
-	static {
-		APIJSON_CREATOR = new APIJSONCreator();
-	}
 
 	private HttpSession session;
 	public APIJSONFunctionParser() {
@@ -119,12 +114,6 @@ public class APIJSONFunctionParser extends AbstractFunctionParser {
 	 * @throws ServerException
 	 */
 	public static JSONObject init(boolean shutdownWhenServerError, APIJSONCreator creator, JSONObject table) throws ServerException {
-		if (creator == null) {
-			creator = APIJSON_CREATOR;
-		}
-		APIJSON_CREATOR = creator;
-
-
 		boolean isAll = table == null || table.isEmpty();
 		
 		JSONObject function = isAll ? new JSONRequest() : table;
