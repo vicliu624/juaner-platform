@@ -3,7 +3,6 @@ package indi.vicliu.juaner.gateway.filter;
 import indi.vicliu.juaner.common.core.exception.BaseException;
 import indi.vicliu.juaner.common.core.exception.ErrorType;
 import indi.vicliu.juaner.common.custom.http.CustomHttpHeaders;
-import indi.vicliu.juaner.gateway.custom.PrometheusCustomMonitor;
 import indi.vicliu.juaner.gateway.data.mapper.TblCryptoInfoMapper;
 import indi.vicliu.juaner.gateway.domain.entity.TblCryptoInfo;
 import indi.vicliu.juaner.gateway.utils.AESUtil;
@@ -37,12 +36,11 @@ public class ResponseBodyEncryptFilter implements GlobalFilter, Ordered {
     @Autowired
     private TblCryptoInfoMapper cryptoInfoMapper;
 
-    @Autowired
-    PrometheusCustomMonitor monitor;
+
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-        monitor.getHttpRequestCount().labels(exchange.getRequest().getPath().value(),String.valueOf(exchange.getResponse().getStatusCode().value())).inc();
+
         String cryptoAlgorithm = exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.CRYPTO_ALGORITHM);
         if (StringUtils.isEmpty(cryptoAlgorithm)) {
             return chain.filter(exchange);

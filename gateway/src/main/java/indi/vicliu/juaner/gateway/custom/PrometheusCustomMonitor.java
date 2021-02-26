@@ -20,7 +20,7 @@ public class PrometheusCustomMonitor {
     }
     @PostConstruct
     private void init() {
-        httpRequestCount = Counter.build().name("http_request_result_count").help("任务执行次数统计").labelNames("uri","status")
+        httpRequestCount = Counter.build().name("http_request_error_result_count").help("网关获取出错请求统计").labelNames("uri","status")
                 .register(this.registry.getPrometheusRegistry());
     }
 

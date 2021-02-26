@@ -12,9 +12,12 @@ public enum ErrorType implements Error {
     SYSTEM_ERROR("-1", "系统异常"),
     OAUTH_ERROR("-2", "认证异常"),
     AUTH_ERROR("-3", "鉴权异常"),
-    TOO_MANY_REQUEST_ERROR("-4", "请求过于频繁"),
+    TOO_MANY_REQUEST_ERROR("429", "请求过于频繁"),
     DECRYPT_ERROR("-5","密文包体解密出错"),
-    NOT_FOUND("404", "访问的资源不存在");
+    NOT_FOUND("404", "访问的资源不存在"),
+    HANDLE_ERROR("500", "处理请求时发生错误"),
+    REQUEST_DOWNSTREAM_TIMEOUT_ERROR("504", "请求超时,请稍后重试"),
+    UNKNOWN_ERROR("-100", "未知错误");
 
     /**
      * 错误类型码
