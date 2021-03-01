@@ -100,6 +100,7 @@ public class ResponseBodyEncryptFilter implements GlobalFilter, Ordered {
                     return super.writeWith(body);
                 }
             };
+            exchange.getResponse().getHeaders().add("enc","true");
             return chain.filter(exchange.mutate().response(decoratedResponse).build());
         } catch (Exception e){
             log.error("加密应答数据异常", e);
