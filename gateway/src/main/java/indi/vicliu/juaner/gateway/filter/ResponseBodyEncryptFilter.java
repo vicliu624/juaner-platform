@@ -19,6 +19,7 @@ import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.core.io.buffer.DataBufferFactory;
 import org.springframework.core.io.buffer.DataBufferUtils;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.http.server.reactive.ServerHttpResponseDecorator;
 import org.springframework.stereotype.Component;
@@ -100,7 +101,8 @@ public class ResponseBodyEncryptFilter implements GlobalFilter, Ordered {
                     return super.writeWith(body);
                 }
             };
-            exchange.getResponse().getHeaders().add("enc","true");
+            exchange.getResponse().getHeaders().set(CustomHttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN_VALUE);
+            exchange.getResponse().getHeaders().add(CustomHttpHeaders.ENCRYPTED,"true");
             return chain.filter(exchange.mutate().response(decoratedResponse).build());
         } catch (Exception e){
             log.error("加密应答数据异常", e);

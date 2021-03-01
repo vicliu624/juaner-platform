@@ -100,8 +100,8 @@ public class RequestBodyDecryptFilter implements GlobalFilter, Ordered {
 
                 byte[] key = RSAUtil.decrypt(encryptKey,cryptoInfo.getPrivateKey());
                 log.debug("AES Key:{}",new String(key));
-                byte[] decryptBytes = null;
-                if(contentType.contains(MediaType.APPLICATION_JSON_VALUE) || contentType.contains(MediaType.APPLICATION_JSON_UTF8_VALUE)){
+                byte[] decryptBytes;
+                if(contentType.contains(MediaType.APPLICATION_JSON_VALUE)){
                     Object cachedRequestBodyObject = exchange.getAttributeOrDefault(Constant.REQUEST_BODY_OBJECT, null);
                     byte[] body = (byte[]) cachedRequestBodyObject;
                     String rootData = new String(body);
