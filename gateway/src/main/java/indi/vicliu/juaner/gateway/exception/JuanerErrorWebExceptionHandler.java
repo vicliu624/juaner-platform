@@ -12,7 +12,6 @@ package indi.vicliu.juaner.gateway.exception;
  * @Description:
  */
 
-import com.alibaba.fastjson.JSONObject;
 import indi.vicliu.juaner.common.core.exception.ErrorType;
 import indi.vicliu.juaner.common.core.message.Result;
 import indi.vicliu.juaner.gateway.custom.PrometheusCustomMonitor;
