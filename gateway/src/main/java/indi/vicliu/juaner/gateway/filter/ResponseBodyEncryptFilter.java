@@ -53,15 +53,15 @@ public class ResponseBodyEncryptFilter implements GlobalFilter, Ordered {
 
         try {
             ServerHttpResponse originalResponse = exchange.getResponse();
-            if (exchange.getRequest().getHeaders().getFirst("Algorithm-Index") == null) {
+            if (exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.ALGORITHM_INDEX) == null) {
                 throw new BaseException(ErrorType.DECRYPT_ERROR);
             }
             int algoIndex = Integer.parseInt(exchange.getRequest().getHeaders().getFirst("Algorithm-Index"));
 
-            if (exchange.getRequest().getHeaders().getFirst("Crypto-Key") == null) {
+            if (exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.CRYPTO_KEY) == null) {
                 throw new BaseException(ErrorType.DECRYPT_ERROR);
             }
-            String encryptKey = exchange.getRequest().getHeaders().getFirst("Crypto-Key");
+            String encryptKey = exchange.getRequest().getHeaders().getFirst(CustomHttpHeaders.CRYPTO_KEY);
 
             TblCryptoInfo primaryKey = new TblCryptoInfo();
             primaryKey.setRequester((long) algoIndex);
