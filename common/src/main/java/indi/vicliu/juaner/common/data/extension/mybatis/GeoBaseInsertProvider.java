@@ -31,7 +31,7 @@ public class GeoBaseInsertProvider extends MapperTemplate {
             if (column.getEntityField().isAnnotationPresent(VirtualGenerated.class)) {
                 continue;
             }
-            sql.append(column.getColumn() + ",");
+            sql.append(column.getColumn()).append(",");
         }
         sql.append("</trim>");
         sql.append("<trim prefix=\"VALUES(\" suffix=\")\" suffixOverrides=\",\">");

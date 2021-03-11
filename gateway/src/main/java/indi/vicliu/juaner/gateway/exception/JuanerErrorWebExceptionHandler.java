@@ -95,6 +95,7 @@ public class JuanerErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
     }
 
     @Data
+    static
     class Tips{
         private int httpStatus;
         private String path;

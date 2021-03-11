@@ -23,6 +23,7 @@ public class TblRoleInfo implements Serializable {
     /**
      * 角色描述
      */
+    @lombok.Getter
     @Column(name = "role_desc")
     private String roleDesc;
 

@@ -39,9 +39,6 @@ public class OauthClientDetails implements Serializable {
 
     private String autoapprove;
 
-    @Column(name = "tenant_id")
-    private String tenantId;
-
     private String status;
 
     private String purpose;

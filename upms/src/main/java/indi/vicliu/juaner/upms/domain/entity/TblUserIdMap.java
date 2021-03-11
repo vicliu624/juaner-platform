@@ -14,6 +14,7 @@ public class TblUserIdMap implements Serializable {
     @Column(name = "user_id")
     private Long userId;
 
+    @lombok.Getter
     @Column(name = "wechat_open_id")
     private String wechatOpenId;
 
