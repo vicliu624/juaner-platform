@@ -115,10 +115,10 @@ public class RequestBodyDecryptFilter implements GlobalFilter, Ordered {
                     Object cachedRequestBodyObject = exchange.getAttributeOrDefault(Constant.REQUEST_BODY_OBJECT, null);
                     byte[] body = (byte[]) cachedRequestBodyObject;
                     String rootData = new String(body);
-                    log.debug("data:{}",rootData);
+                    log.info("data:{}",rootData);
                     Map<String, String> params = toMap(rootData);
                     Map<String,String> newParams = new HashMap<>();
-                    log.debug("params:{}",params);
+                    log.info("params:{}",params);
                     params.forEach((k, v) -> {
                         try {
                             byte[] srcKey = AESUtil.AESDecrypt(URLDecoder.decode(k,StandardCharsets.UTF_8.name()), key, "ECB");
@@ -135,7 +135,7 @@ public class RequestBodyDecryptFilter implements GlobalFilter, Ordered {
                             throw new BaseException(ErrorType.DECRYPT_ERROR);
                         }           
                     });
-                    log.debug("newParams:{}",newParams);
+                    log.info("newParams:{}",newParams);
                     decryptBytes = toUrlString(newParams).getBytes(StandardCharsets.UTF_8);
                 } else if (contentType.contains(MediaType.MULTIPART_FORM_DATA_VALUE)) {
                     //暂不支持
